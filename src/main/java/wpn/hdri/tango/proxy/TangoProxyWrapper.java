@@ -92,20 +92,18 @@ public final class TangoProxyWrapper {
     }
 
     /**
-     * Returns {@link TangoAttributeInfoWrapper} for the attribute specified by name.
+     * Returns {@link TangoAttributeInfoWrapper} for the attribute specified by name or null.
      *
      * @param attrName name
      * @return TangoAttributeInfoWrapper
      * @throws TangoProxyException
      */
-    public TangoAttributeInfoWrapper getAttributeInfo(String attrName) throws TangoProxyException {
+    public TangoAttributeInfoWrapper getAttributeInfo(String attrName) {
         try {
             AttributeInfo attributeInfo = this.proxy.get_attribute_info(attrName);
             return new TangoAttributeInfoWrapper(attributeInfo);
         } catch (DevFailed devFailed) {
-            throw new TangoProxyException(devFailed);
-        } catch (Throwable throwable) {
-            throw new TangoProxyException(throwable);
+            return null;
         }
     }
 
@@ -267,6 +265,21 @@ public final class TangoProxyWrapper {
             throw new TangoProxyException(devFailed);
         } catch (Throwable throwable) {
             throw new TangoProxyException(throwable);
+        }
+    }
+
+    /**
+     * Returns {@link TangoCommandInfoWrapper} instance or null.
+     *
+     * @param cmdName
+     * @return
+     * @throws TangoProxyException
+     */
+    public TangoCommandInfoWrapper getCommandInfo(String cmdName) {
+        try {
+            return new TangoCommandInfoWrapper(proxy.command_query(cmdName));
+        } catch (DevFailed devFailed) {
+            return null;
         }
     }
 
