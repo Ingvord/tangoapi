@@ -70,7 +70,7 @@ public final class TangoAttributeInfoWrapper {
         this.info = info;
         this.format = TangoDataFormat.createForAttrDataFormat(info.data_format);
         this.type = TangoDataTypes.forTangoDevDataType(info.data_type);
-        this.clazz = this.type.getDataType();
+        this.clazz = this.format.getDataType(this.type.getAlias()).getDataType();
     }
 
     public TangoDataFormat<?> getFormat() {
