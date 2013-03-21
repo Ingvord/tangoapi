@@ -31,6 +31,7 @@ package wpn.hdri.tango.data.type;
 
 import fr.esrf.TangoDs.TangoConst;
 
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -63,6 +64,20 @@ public final class TangoDataTypes {
         //TODO others
     }
 
+    private static final Map<String, TangoDataType<?>> strings = new HashMap<String, TangoDataType<?>>();
+
+    static {
+        strings.put("DevString", ScalarTangoDataTypes.STRING);
+        strings.put("DevDouble", ScalarTangoDataTypes.DOUBLE);
+        strings.put("DevFloat", ScalarTangoDataTypes.FLOAT);
+        strings.put("DevLong64", ScalarTangoDataTypes.LONG);
+        strings.put("DevLong", ScalarTangoDataTypes.INT);
+        strings.put("DevShort", ScalarTangoDataTypes.SHORT);
+        strings.put("DevUShort", ScalarTangoDataTypes.U_SHORT);
+        strings.put("DevULong", ScalarTangoDataTypes.U_INT);
+        strings.put("DevUChar", ScalarTangoDataTypes.U_CHAR);
+    }
+
     private static final TangoDataType<?>[] imageTypes = new TangoDataType<?>[30];
 
     static {
@@ -80,6 +95,10 @@ public final class TangoDataTypes {
 
     public static <T> TangoDataType<T> forClass(Class<T> clazz) {
         return (TangoDataType<T>) classes.get(clazz);
+    }
+
+    public static <T> TangoDataType<T> forString(String devType) {
+        return (TangoDataType<T>) strings.get(devType);
     }
 
     public static <T> TangoDataType<T> imageTypeForDevDataType(int devDataType) {
