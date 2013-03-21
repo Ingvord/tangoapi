@@ -35,7 +35,7 @@
 
     <groupId>hzg.wpn</groupId>
     <artifactId>TangoAPI</artifactId>
-    <version>1.9-SNAPSHOT</version>
+    <version>1.9</version>
     <packaging>jar</packaging>
     <description>Library that extends standard Tango Java API</description>
 
@@ -110,11 +110,11 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                        <descriptorRefs>
-                            <descriptorRef>jar-with-dependencies</descriptorRef>
-                        </descriptorRefs>
-                        <appendAssemblyId>false</appendAssemblyId>
-                    </configuration>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <appendAssemblyId>false</appendAssemblyId>
+                        </configuration>
                     </execution>
                 </executions>
 
