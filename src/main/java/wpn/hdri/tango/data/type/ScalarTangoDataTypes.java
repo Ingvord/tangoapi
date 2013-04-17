@@ -61,7 +61,7 @@ public class ScalarTangoDataTypes {
         }
     }, new ValueInserter<EnumDevState>() {
         @Override
-        public void insert(TangoDataWrapper data, EnumDevState value, int dimX, int dimY) {
+        public void insert(TangoDataWrapper data, EnumDevState value, int dimX, int dimY) throws ValueInsertionException {
             data.insert(value.toDevState());
         }
     }
@@ -74,7 +74,7 @@ public class ScalarTangoDataTypes {
         }
     }, new ValueInserter<Void>() {
         @Override
-        public void insert(TangoDataWrapper data, Void value, int dimX, int dimY) {
+        public void insert(TangoDataWrapper data, Void value, int dimX, int dimY) throws ValueInsertionException {
         }
     }
     );
@@ -90,7 +90,7 @@ public class ScalarTangoDataTypes {
         }
     }, new ValueInserter<Boolean>() {
         @Override
-        public void insert(TangoDataWrapper data, Boolean value, int dimX, int dimY) {
+        public void insert(TangoDataWrapper data, Boolean value, int dimX, int dimY) throws ValueInsertionException {
             data.insert(value);
         }
     }
@@ -106,7 +106,7 @@ public class ScalarTangoDataTypes {
         }
     }, new ValueInserter<Double>() {
         @Override
-        public void insert(TangoDataWrapper data, Double value, int dimX, int dimY) {
+        public void insert(TangoDataWrapper data, Double value, int dimX, int dimY) throws ValueInsertionException {
             data.insert(value);
         }
     }
@@ -122,7 +122,7 @@ public class ScalarTangoDataTypes {
         }
     }, new ValueInserter<Float>() {
         @Override
-        public void insert(TangoDataWrapper data, Float value, int dimX, int dimY) {
+        public void insert(TangoDataWrapper data, Float value, int dimX, int dimY) throws ValueInsertionException {
             data.insert(value);
         }
     }
@@ -138,7 +138,7 @@ public class ScalarTangoDataTypes {
         }
     }, new ValueInserter<Short>() {
         @Override
-        public void insert(TangoDataWrapper data, Short value, int dimX, int dimY) {
+        public void insert(TangoDataWrapper data, Short value, int dimX, int dimY) throws ValueInsertionException {
             data.insert(value);
         }
     }
@@ -154,7 +154,7 @@ public class ScalarTangoDataTypes {
         }
     }, new ValueInserter<Integer>() {
         @Override
-        public void insert(TangoDataWrapper data, Integer value, int dimX, int dimY) {
+        public void insert(TangoDataWrapper data, Integer value, int dimX, int dimY) throws ValueInsertionException {
             data.insert(value);
         }
     }
@@ -170,7 +170,7 @@ public class ScalarTangoDataTypes {
         }
     }, new ValueInserter<Integer>() {
         @Override
-        public void insert(TangoDataWrapper data, Integer value, int dimX, int dimY) {
+        public void insert(TangoDataWrapper data, Integer value, int dimX, int dimY) throws ValueInsertionException {
             data.insert(value);
         }
     }
@@ -186,7 +186,7 @@ public class ScalarTangoDataTypes {
         }
     }, new ValueInserter<Long>() {
         @Override
-        public void insert(TangoDataWrapper data, Long value, int dimX, int dimY) {
+        public void insert(TangoDataWrapper data, Long value, int dimX, int dimY) throws ValueInsertionException {
             data.insert(value);
         }
     }
@@ -202,7 +202,7 @@ public class ScalarTangoDataTypes {
         }
     }, new ValueInserter<Long>() {
         @Override
-        public void insert(TangoDataWrapper data, Long value, int dimX, int dimY) {
+        public void insert(TangoDataWrapper data, Long value, int dimX, int dimY) throws ValueInsertionException {
             data.insert(value);
         }
     }
@@ -218,7 +218,7 @@ public class ScalarTangoDataTypes {
         }
     }, new ValueInserter<Long>() {
         @Override
-        public void insert(TangoDataWrapper data, Long value, int dimX, int dimY) {
+        public void insert(TangoDataWrapper data, Long value, int dimX, int dimY) throws ValueInsertionException {
             data.insert(value);
         }
     }
@@ -234,7 +234,7 @@ public class ScalarTangoDataTypes {
         }
     }, new ValueInserter<String>() {
         @Override
-        public void insert(TangoDataWrapper data, String value, int dimX, int dimY) {
+        public void insert(TangoDataWrapper data, String value, int dimX, int dimY) throws ValueInsertionException {
             data.insert(value);
         }
     }
@@ -251,7 +251,7 @@ public class ScalarTangoDataTypes {
         }
     }, new ValueInserter<Character>() {
         @Override
-        public void insert(TangoDataWrapper data, Character value, int dimX, int dimY) {
+        public void insert(TangoDataWrapper data, Character value, int dimX, int dimY) throws ValueInsertionException {
             data.insert((short) value.charValue());
         }
     }
@@ -274,7 +274,7 @@ public class ScalarTangoDataTypes {
         }
 
         @Override
-        public void insert(TangoDataWrapper data, T value) {
+        public void insert(TangoDataWrapper data, T value) throws ValueInsertionException {
             inserter.insert(data, value, 1, 0);
         }
     }

@@ -130,10 +130,16 @@ public abstract class AbsCommand<V extends DeviceImpl, I, O> extends Command {
     }
 
     private Any convertOutputToAny(O result) throws DevFailed {
-        DeviceData data = new DeviceData();
-        TangoDataWrapper dataWrapper = TangoDataWrapper.create(data);
-        this.typeOut.insert(dataWrapper, result);
-        return data.extractAny();
+        try {
+            DeviceData data = new DeviceData();
+            TangoDataWrapper dataWrapper = TangoDataWrapper.create(data);
+            this.typeOut.insert(dataWrapper, result);
+            return data.extractAny();
+        } catch (Throwable e) {
+            throw new DevFailed(new DevError[]{
+                    new DevError(e.toString(), ErrSeverity.ERR, Throwables.getStackTraceAsString(e), get_name())
+            });
+        }
     }
 
     private I convertAnyToInput(Any any) throws DevFailed, ValueExtractionException {

@@ -42,5 +42,5 @@ public interface ValueInserter<V> {
      * @param dimX  array length
      * @param dimY  level-2 array length
      */
-    public void insert(TangoDataWrapper data, V value, int dimX, int dimY);
+    public void insert(TangoDataWrapper data, V value, int dimX, int dimY) throws ValueInsertionException;
 }

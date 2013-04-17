@@ -60,7 +60,7 @@ public abstract class TangoDataType<T> {
 
     public abstract T extract(TangoDataWrapper data) throws ValueExtractionException;
 
-    public abstract void insert(TangoDataWrapper data, T value);
+    public abstract void insert(TangoDataWrapper data, T value) throws ValueInsertionException;
 
     public int getAlias() {
         return tangoDevDataType;

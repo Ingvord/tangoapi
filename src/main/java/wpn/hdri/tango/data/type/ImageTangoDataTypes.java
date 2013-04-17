@@ -68,7 +68,7 @@ public class ImageTangoDataTypes {
     },
             new ValueInserter<float[]>() {
                 @Override
-                public void insert(TangoDataWrapper data, float[] value, int dimX, int dimY) {
+                public void insert(TangoDataWrapper data, float[] value, int dimX, int dimY) throws ValueInsertionException {
                     data.insert(value, dimX, dimY);
                 }
             }
@@ -87,7 +87,7 @@ public class ImageTangoDataTypes {
     },
             new ValueInserter<double[]>() {
                 @Override
-                public void insert(TangoDataWrapper data, double[] value, int dimX, int dimY) {
+                public void insert(TangoDataWrapper data, double[] value, int dimX, int dimY) throws ValueInsertionException {
                     data.insert(value, dimX, dimY);
                 }
             }
@@ -106,7 +106,7 @@ public class ImageTangoDataTypes {
     },
             new ValueInserter<short[]>() {
                 @Override
-                public void insert(TangoDataWrapper data, short[] value, int dimX, int dimY) {
+                public void insert(TangoDataWrapper data, short[] value, int dimX, int dimY) throws ValueInsertionException {
                     data.insert(value, dimX, dimY);
                 }
             }
@@ -125,7 +125,7 @@ public class ImageTangoDataTypes {
     },
             new ValueInserter<int[]>() {
                 @Override
-                public void insert(TangoDataWrapper data, int[] value, int dimX, int dimY) {
+                public void insert(TangoDataWrapper data, int[] value, int dimX, int dimY) throws ValueInsertionException {
                     data.insert_us(value, dimX, dimY);
                 }
             }
@@ -144,7 +144,7 @@ public class ImageTangoDataTypes {
     },
             new ValueInserter<int[]>() {
                 @Override
-                public void insert(TangoDataWrapper data, int[] value, int dimX, int dimY) {
+                public void insert(TangoDataWrapper data, int[] value, int dimX, int dimY) throws ValueInsertionException {
                     data.insert(value, dimX, dimY);
                 }
             }
@@ -163,7 +163,7 @@ public class ImageTangoDataTypes {
     },
             new ValueInserter<long[]>() {
                 @Override
-                public void insert(TangoDataWrapper data, long[] value, int dimX, int dimY) {
+                public void insert(TangoDataWrapper data, long[] value, int dimX, int dimY) throws ValueInsertionException {
                     data.insert(value, dimX, dimY);
                 }
             }
@@ -235,7 +235,7 @@ public class ImageTangoDataTypes {
         }
 
         @Override
-        public void insert(TangoDataWrapper data, T src) {
+        public void insert(TangoDataWrapper data, T src) throws ValueInsertionException {
             Preconditions.checkArgument(src.getClass().isArray());
             int dimX = Array.getLength(Array.get(src, 0));
             int dimY = Array.getLength(src);

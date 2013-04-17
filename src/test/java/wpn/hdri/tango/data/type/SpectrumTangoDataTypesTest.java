@@ -41,7 +41,7 @@ import static org.junit.Assert.assertArrayEquals;
  */
 public class SpectrumTangoDataTypesTest {
     @Test
-    public void testStringsArr() throws Exception {
+    public void testStringArr() throws Exception {
         TangoDataType<String[]> instance = SpectrumTangoDataTypes.STRING_ARR;
 
         String[] values = {"Hello", "World", "!!!"};
@@ -50,5 +50,42 @@ public class SpectrumTangoDataTypesTest {
         String[] result = instance.extract(data);
 
         assertArrayEquals(new String[]{"Hello", "World", "!!!"}, result);
+    }
+
+    @Test
+    public void testDoubleArr() throws Exception {
+        TangoDataType<double[]> instance = SpectrumTangoDataTypes.DOUBLE_ARR;
+
+        double[] values = {1., 2., 3.};
+        DeviceAttribute attribute = new DeviceAttribute("test", values, values.length, 0);
+        TangoDataWrapper data = TangoDataWrapper.create(attribute);
+        double[] result = instance.extract(data);
+
+        assertArrayEquals(new double[]{1., 2., 3.}, result, 0.00001);
+    }
+
+
+    @Test
+    public void testShortArr() throws Exception {
+        TangoDataType<short[]> instance = SpectrumTangoDataTypes.SHORT_ARR;
+
+        short[] values = {1, 2, 3, 4};
+        DeviceAttribute attribute = new DeviceAttribute("test", values, values.length, 0);
+        TangoDataWrapper data = TangoDataWrapper.create(attribute);
+        short[] result = instance.extract(data);
+
+        assertArrayEquals(new short[]{1, 2, 3, 4}, result);
+    }
+
+    @Test
+    public void testCharArr() throws Exception {
+        TangoDataType<char[]> instance = SpectrumTangoDataTypes.CHAR_ARR;
+
+        char[] values = {'a', 'b', 'c', 'd'};
+        DeviceAttribute attribute = new DeviceAttribute("test", new String(values).getBytes("UTF-8"), values.length, 0);
+        TangoDataWrapper data = TangoDataWrapper.create(attribute);
+        char[] result = instance.extract(data);
+
+        assertArrayEquals(new char[]{'a', 'b', 'c', 'd'}, result);
     }
 }

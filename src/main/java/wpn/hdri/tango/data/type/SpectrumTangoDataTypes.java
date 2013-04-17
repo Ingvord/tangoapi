@@ -36,6 +36,7 @@ import fr.esrf.TangoDs.TangoConst;
 import wpn.hdri.tango.data.TangoDataWrapper;
 import wpn.hdri.tango.util.TangoUtils;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.util.Collection;
 
@@ -63,7 +64,7 @@ public class SpectrumTangoDataTypes {
             },
             new ValueInserter<String[]>() {
                 @Override
-                public void insert(TangoDataWrapper data, String[] value, int dimX, int dimY) {
+                public void insert(TangoDataWrapper data, String[] value, int dimX, int dimY) throws ValueInsertionException {
                     data.insert(value);
                 }
             }
@@ -83,7 +84,7 @@ public class SpectrumTangoDataTypes {
             },
             new ValueInserter<double[]>() {
                 @Override
-                public void insert(TangoDataWrapper data, double[] value, int dimX, int dimY) {
+                public void insert(TangoDataWrapper data, double[] value, int dimX, int dimY) throws ValueInsertionException {
                     data.insert(value);
                 }
             }
@@ -103,7 +104,7 @@ public class SpectrumTangoDataTypes {
             },
             new ValueInserter<float[]>() {
                 @Override
-                public void insert(TangoDataWrapper data, float[] value, int dimX, int dimY) {
+                public void insert(TangoDataWrapper data, float[] value, int dimX, int dimY) throws ValueInsertionException {
                     data.insert(value);
                 }
             }
@@ -123,7 +124,137 @@ public class SpectrumTangoDataTypes {
             },
             new ValueInserter<short[]>() {
                 @Override
-                public void insert(TangoDataWrapper data, short[] value, int dimX, int dimY) {
+                public void insert(TangoDataWrapper data, short[] value, int dimX, int dimY) throws ValueInsertionException {
+                    data.insert(value);
+                }
+            }
+    );
+
+    public static final TangoDataType<int[]> INT_ARR = new SpectrumTangoDataType<int[]>(
+            TangoConst.Tango_DEVVAR_LONGARRAY, "DevVarLongArr", int[].class,
+            new ValueExtracter<int[]>() {
+                @Override
+                public int[] extract(TangoDataWrapper data) throws ValueExtractionException {
+                    try {
+                        return data.extractLongArray();
+                    } catch (DevFailed devFailed) {
+                        throw new ValueExtractionException(TangoUtils.convertDevFailedToException(devFailed));
+                    }
+                }
+            },
+            new ValueInserter<int[]>() {
+                @Override
+                public void insert(TangoDataWrapper data, int[] value, int dimX, int dimY) throws ValueInsertionException {
+                    data.insert(value);
+                }
+            }
+    );
+
+    public static final TangoDataType<long[]> LONG_ARR = new SpectrumTangoDataType<long[]>(
+            TangoConst.Tango_DEVVAR_LONG64ARRAY, "DevVarLong64Arr", long[].class,
+            new ValueExtracter<long[]>() {
+                @Override
+                public long[] extract(TangoDataWrapper data) throws ValueExtractionException {
+                    try {
+                        return data.extractLong64Array();
+                    } catch (DevFailed devFailed) {
+                        throw new ValueExtractionException(TangoUtils.convertDevFailedToException(devFailed));
+                    }
+                }
+            },
+            new ValueInserter<long[]>() {
+                @Override
+                public void insert(TangoDataWrapper data, long[] value, int dimX, int dimY) throws ValueInsertionException {
+                    data.insert(value);
+                }
+            }
+    );
+
+
+    public static final String UTF_8 = "UTF-8";
+    public static final TangoDataType<char[]> CHAR_ARR = new SpectrumTangoDataType<char[]>(
+            TangoConst.Tango_DEVVAR_CHARARRAY, "DevVarCharArr", char[].class,
+            new ValueExtracter<char[]>() {
+                @Override
+                public char[] extract(TangoDataWrapper data) throws ValueExtractionException {
+                    try {
+                        //TODO creating temporary String object seems to be not the best way
+                        return new String(data.extractCharArray(), UTF_8).toCharArray();
+                    } catch (DevFailed devFailed) {
+                        throw new ValueExtractionException(TangoUtils.convertDevFailedToException(devFailed));
+                    } catch (UnsupportedEncodingException e) {
+                        throw new ValueExtractionException(e);
+                    }
+                }
+            },
+            new ValueInserter<char[]>() {
+                @Override
+                public void insert(TangoDataWrapper data, char[] value, int dimX, int dimY) throws ValueInsertionException {
+                    try {
+                        //TODO creating temporary String object seems to be not the best way
+                        data.insert(new String(value).getBytes(UTF_8));
+                    } catch (UnsupportedEncodingException e) {
+                        throw new ValueInsertionException(e);
+                    }
+                }
+            }
+    );
+
+    public static final TangoDataType<int[]> USHORT_ARR = new SpectrumTangoDataType<int[]>(
+            TangoConst.Tango_DEVVAR_USHORTARRAY, "DevVarUShortArr", int[].class,
+            new ValueExtracter<int[]>() {
+                @Override
+                public int[] extract(TangoDataWrapper data) throws ValueExtractionException {
+                    try {
+                        return data.extractUShortArray();
+                    } catch (DevFailed devFailed) {
+                        throw new ValueExtractionException(TangoUtils.convertDevFailedToException(devFailed));
+                    }
+                }
+            },
+            new ValueInserter<int[]>() {
+                @Override
+                public void insert(TangoDataWrapper data, int[] value, int dimX, int dimY) throws ValueInsertionException {
+                    data.insert(value);
+                }
+            }
+    );
+
+    public static final TangoDataType<long[]> UINT_ARR = new SpectrumTangoDataType<long[]>(
+            TangoConst.Tango_DEVVAR_ULONGARRAY, "DevVarULongArr", long[].class,
+            new ValueExtracter<long[]>() {
+                @Override
+                public long[] extract(TangoDataWrapper data) throws ValueExtractionException {
+                    try {
+                        return data.extractULongArray();
+                    } catch (DevFailed devFailed) {
+                        throw new ValueExtractionException(TangoUtils.convertDevFailedToException(devFailed));
+                    }
+                }
+            },
+            new ValueInserter<long[]>() {
+                @Override
+                public void insert(TangoDataWrapper data, long[] value, int dimX, int dimY) throws ValueInsertionException {
+                    data.insert(value);
+                }
+            }
+    );
+
+    public static final TangoDataType<long[]> ULONG_ARR = new SpectrumTangoDataType<long[]>(
+            TangoConst.Tango_DEVVAR_ULONG64ARRAY, "DevVarULong64Arr", long[].class,
+            new ValueExtracter<long[]>() {
+                @Override
+                public long[] extract(TangoDataWrapper data) throws ValueExtractionException {
+                    try {
+                        return data.extractULong64Array();
+                    } catch (DevFailed devFailed) {
+                        throw new ValueExtractionException(TangoUtils.convertDevFailedToException(devFailed));
+                    }
+                }
+            },
+            new ValueInserter<long[]>() {
+                @Override
+                public void insert(TangoDataWrapper data, long[] value, int dimX, int dimY) throws ValueInsertionException {
                     data.insert(value);
                 }
             }
@@ -131,7 +262,7 @@ public class SpectrumTangoDataTypes {
 
 
     static Collection<? extends TangoDataType<?>> values() {
-        return Sets.newHashSet(STRING_ARR, DOUBLE_ARR, FLOAT_ARR, SHORT_ARR);
+        return Sets.newHashSet(STRING_ARR, DOUBLE_ARR, FLOAT_ARR, SHORT_ARR, INT_ARR, LONG_ARR, CHAR_ARR, USHORT_ARR, UINT_ARR, ULONG_ARR);
     }
 
     public static final class SpectrumTangoDataType<T> extends TangoDataType<T> {
@@ -156,7 +287,7 @@ public class SpectrumTangoDataTypes {
         }
 
         @Override
-        public void insert(TangoDataWrapper data, T value) {
+        public void insert(TangoDataWrapper data, T value) throws ValueInsertionException {
             Preconditions.checkArgument(value.getClass().isArray());
             inserter.insert(data, value, Array.getLength(value), 0);
         }
