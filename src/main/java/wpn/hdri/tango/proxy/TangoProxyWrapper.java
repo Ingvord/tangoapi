@@ -32,6 +32,8 @@ package wpn.hdri.tango.proxy;
 import com.google.common.base.Objects;
 import fr.esrf.Tango.DevFailed;
 import fr.esrf.TangoApi.*;
+import org.javatuples.Triplet;
+import wpn.hdri.tango.attribute.Quality;
 import wpn.hdri.tango.data.TangoDataWrapper;
 import wpn.hdri.tango.data.TangoDeviceAttributeWrapper;
 import wpn.hdri.tango.data.format.TangoDataFormat;
@@ -118,13 +120,7 @@ public final class TangoProxyWrapper {
     public <T> T readAttribute(String attrName) throws TangoProxyException {
         try {
             DeviceAttribute deviceAttribute = this.proxy.read_attribute(attrName);
-            if (deviceAttribute.hasFailed()) {
-                throw new DevFailed(deviceAttribute.getErrStack());
-            }
-
-            TangoDataWrapper dataWrapper = TangoDataWrapper.create(deviceAttribute);
-            TangoDataFormat<T> dataFormat = TangoDataFormat.createForAttrDataFormat(deviceAttribute.getDataFormat());
-            return dataFormat.extract(dataWrapper);
+            return readAttributeValue(attrName, deviceAttribute);
         } catch (DevFailed devFailed) {
             throw new TangoProxyException(devFailed);
         } catch (ValueExtractionException e) {
@@ -145,13 +141,7 @@ public final class TangoProxyWrapper {
     public <T> Map.Entry<T, Long> readAttributeValueAndTime(String attrName) throws TangoProxyException {
         try {
             DeviceAttribute deviceAttribute = this.proxy.read_attribute(attrName);
-            if (deviceAttribute.hasFailed()) {
-                throw new DevFailed(deviceAttribute.getErrStack());
-            }
-            TangoDataWrapper dataWrapper = TangoDataWrapper.create(deviceAttribute);
-            AttributeInfo attributeInfo = this.proxy.get_attribute_info(attrName);
-            TangoDataFormat<T> dataFormat = TangoDataFormat.createForAttrDataFormat(attributeInfo.data_format);
-            T result = dataFormat.extract(dataWrapper);
+            T result = readAttributeValue(attrName, deviceAttribute);
 
             long time = deviceAttribute.getTimeValMillisSec();
             return new AbstractMap.SimpleImmutableEntry<T, Long>(result, time);
@@ -161,6 +151,38 @@ public final class TangoProxyWrapper {
             throw new TangoProxyException(e);
         } catch (Throwable throwable) {
             throw new TangoProxyException(throwable);
+        }
+    }
+
+    private <T> T readAttributeValue(String attrName, DeviceAttribute deviceAttribute) throws DevFailed, ValueExtractionException {
+        if (deviceAttribute.hasFailed()) {
+            throw new DevFailed(deviceAttribute.getErrStack());
+        }
+        TangoDataWrapper dataWrapper = TangoDataWrapper.create(deviceAttribute);
+        AttributeInfo attributeInfo = this.proxy.get_attribute_info(attrName);
+        TangoDataFormat<T> dataFormat = TangoDataFormat.createForAttrDataFormat(attributeInfo.data_format);
+        return dataFormat.extract(dataWrapper);
+    }
+
+    /**
+     * @param attrName
+     * @param <T>
+     * @return a triplet(val,time,quality)
+     * @throws TangoProxyException
+     */
+    public <T> Triplet<T, Long, Quality> readAttributeValueTimeQuality(String attrName) throws TangoProxyException {
+        try {
+            DeviceAttribute deviceAttribute = this.proxy.read_attribute(attrName);
+            T result = readAttributeValue(attrName, deviceAttribute);
+
+            long time = deviceAttribute.getTimeValMillisSec();
+            Quality quality = Quality.fromAttrQuality(deviceAttribute.getQuality());
+
+            return new Triplet<T, Long, Quality>(result, time, quality);
+        } catch (DevFailed devFailed) {
+            throw new TangoProxyException(devFailed);
+        } catch (ValueExtractionException e) {
+            throw new TangoProxyException(e);
         }
     }
 

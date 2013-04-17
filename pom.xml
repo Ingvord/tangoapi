@@ -72,6 +72,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.javatuples</groupId>
+            <artifactId>javatuples</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
             <groupId>fr.esrf.tango</groupId>
             <artifactId>TangORB</artifactId>
             <version>7.4.4</version>
