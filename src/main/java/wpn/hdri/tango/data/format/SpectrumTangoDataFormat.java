@@ -51,6 +51,13 @@ public final class SpectrumTangoDataFormat<T> extends TangoDataFormat<T> {
         typesMapping.put(TangoConst.Tango_DEV_STRING, TangoConst.Tango_DEVVAR_STRINGARRAY);
         typesMapping.put(TangoConst.Tango_DEV_DOUBLE, TangoConst.Tango_DEVVAR_DOUBLEARRAY);
         typesMapping.put(TangoConst.Tango_DEV_FLOAT, TangoConst.Tango_DEVVAR_FLOATARRAY);
+        typesMapping.put(TangoConst.Tango_DEV_SHORT, TangoConst.Tango_DEVVAR_SHORTARRAY);
+        typesMapping.put(TangoConst.Tango_DEV_LONG, TangoConst.Tango_DEVVAR_LONGARRAY);
+        typesMapping.put(TangoConst.Tango_DEV_LONG64, TangoConst.Tango_DEVVAR_LONG64ARRAY);
+        typesMapping.put(TangoConst.Tango_DEV_CHAR, TangoConst.Tango_DEVVAR_CHARARRAY);
+        typesMapping.put(TangoConst.Tango_DEV_USHORT, TangoConst.Tango_DEVVAR_USHORTARRAY);
+        typesMapping.put(TangoConst.Tango_DEV_ULONG, TangoConst.Tango_DEVVAR_ULONGARRAY);
+        typesMapping.put(TangoConst.Tango_DEV_ULONG64, TangoConst.Tango_DEVVAR_ULONG64ARRAY);
         //TODO other
     }
 
