@@ -46,4 +46,8 @@ public class TangoProxyException extends Exception {
     public TangoProxyException(Throwable cause) {
         super(cause);
     }
+
+    public TangoProxyException(String msg) {
+        super(msg);
+    }
 }

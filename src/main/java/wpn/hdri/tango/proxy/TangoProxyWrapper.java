@@ -30,6 +30,7 @@
 package wpn.hdri.tango.proxy;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Maps;
 import fr.esrf.Tango.DevFailed;
 import fr.esrf.TangoApi.*;
 import org.javatuples.Triplet;
@@ -310,5 +311,21 @@ public final class TangoProxyWrapper {
         return Objects.toStringHelper(this)
                 .add("proxy", proxy.name())
                 .toString();
+    }
+
+    private final Map<String, Boolean> hasCommandCache = Maps.newHashMap();
+
+    /**
+     * Uses unsynchronized {@link java.util.HashMap} for caching values. This is thread safe because cached value is not changing over time
+     * and if two or more threads add a similar value - who cares. Performance might suffer in this case because threads perform network call.
+     * But this should be an issue and if it is implementation will be changed (introduce Future)
+     *
+     * @param name
+     * @return
+     */
+    public boolean hasCommand(String name) {
+        Boolean hasCommand = hasCommandCache.get(name);
+        if (hasCommand == null) hasCommandCache.put(name, hasCommand = getCommandInfo(name) != null);
+        return hasCommand;
     }
 }
