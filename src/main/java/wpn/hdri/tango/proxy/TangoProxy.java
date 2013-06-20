@@ -27,9 +27,9 @@ public class TangoProxy {
                 if (tangoProxy.hasCommand(methodName))
                     return tangoProxy.executeCommand(methodName, args[0]);
                 else if (methodName.startsWith("get"))
-                    tangoProxy.readAttribute(methodName.substring(3));
+                    return tangoProxy.readAttribute(methodName.substring(3));
                 else if (methodName.startsWith("is"))
-                    tangoProxy.readAttribute(methodName.substring(2));
+                    return tangoProxy.readAttribute(methodName.substring(2));
                 else if (methodName.startsWith("set"))
                     tangoProxy.writeAttribute(methodName.substring(3), args[0]);
                 else
