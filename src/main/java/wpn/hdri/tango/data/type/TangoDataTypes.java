@@ -57,10 +57,26 @@ public final class TangoDataTypes {
     static {
         classes.put(String.class, ScalarTangoDataTypes.STRING);
         classes.put(Boolean.class, ScalarTangoDataTypes.BOOLEAN);
+        classes.put(Short.class, ScalarTangoDataTypes.SHORT);
+        classes.put(Character.class, ScalarTangoDataTypes.U_CHAR);
         classes.put(Integer.class, ScalarTangoDataTypes.INT);
         classes.put(Long.class, ScalarTangoDataTypes.LONG);
         classes.put(Float.class, ScalarTangoDataTypes.FLOAT);
         classes.put(Double.class, ScalarTangoDataTypes.DOUBLE);
+        classes.put(boolean.class, ScalarTangoDataTypes.BOOLEAN);
+        classes.put(short.class, ScalarTangoDataTypes.SHORT);
+        classes.put(char.class, ScalarTangoDataTypes.U_CHAR);
+        classes.put(int.class, ScalarTangoDataTypes.INT);
+        classes.put(long.class, ScalarTangoDataTypes.LONG);
+        classes.put(float.class, ScalarTangoDataTypes.FLOAT);
+        classes.put(double.class, ScalarTangoDataTypes.DOUBLE);
+        classes.put(String[].class, SpectrumTangoDataTypes.STRING_ARR);
+        classes.put(short[].class, SpectrumTangoDataTypes.SHORT_ARR);
+        classes.put(char[].class, SpectrumTangoDataTypes.CHAR_ARR);
+        classes.put(int[].class, SpectrumTangoDataTypes.INT_ARR);
+        classes.put(long[].class, SpectrumTangoDataTypes.LONG_ARR);
+        classes.put(float[].class, SpectrumTangoDataTypes.FLOAT_ARR);
+        classes.put(double[].class, SpectrumTangoDataTypes.DOUBLE_ARR);
         //TODO others
     }
 
@@ -76,6 +92,15 @@ public final class TangoDataTypes {
         strings.put("DevUShort", ScalarTangoDataTypes.U_SHORT);
         strings.put("DevULong", ScalarTangoDataTypes.U_INT);
         strings.put("DevUChar", ScalarTangoDataTypes.U_CHAR);
+        strings.put("DevVarStringArr", SpectrumTangoDataTypes.STRING_ARR);
+        strings.put("DevVarDoubleArr", SpectrumTangoDataTypes.DOUBLE_ARR);
+        strings.put("DevVarFloatArr", SpectrumTangoDataTypes.FLOAT_ARR);
+        strings.put("DevVarLong64Arr", SpectrumTangoDataTypes.LONG_ARR);
+        strings.put("DevVarLongArr", SpectrumTangoDataTypes.INT_ARR);
+        strings.put("DevVarShortArr", SpectrumTangoDataTypes.SHORT_ARR);
+        strings.put("DevVarUShortArr", SpectrumTangoDataTypes.USHORT_ARR);
+        strings.put("DevVarULongArr", SpectrumTangoDataTypes.ULONG_ARR);
+        //TODO etc
     }
 
     private static final TangoDataType<?>[] imageTypes = new TangoDataType<?>[30];
