@@ -72,7 +72,7 @@
         <dependency>
             <groupId>fr.esrf.tango</groupId>
             <artifactId>TangORB</artifactId>
-            <version>7.4.4</version>
+            <version>8.3.3</version>
         </dependency>
     </dependencies>
     <properties>
