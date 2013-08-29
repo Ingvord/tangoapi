@@ -18,7 +18,7 @@ public class TangoProxy {
         //TODO check device and interface compatibility, i.e. clazz is the class of the device
 
         InvocationHandler handler = new InvocationHandler() {
-            final TangoProxyWrapper tangoProxy = new TangoProxyWrapper(device);
+            final TangoProxyWrapper tangoProxy = new TangoProxyWrapperImpl(device);
 
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws TangoProxyException {

@@ -71,7 +71,7 @@ public class ImageTangoDataTypesTest {
         assertArrayEquals(new double[]{25., 0., 0.}, result[3], 0.0);
     }
 
-    @Test
+    //    @Test
     public void testExtractHelper_BigData_Multithreading() throws Exception {
 
         System.setProperty(ImageTangoDataTypes.TANGO_IMAGE_EXTRACTER_USES_MULTITHREADING, "true");

@@ -62,7 +62,7 @@ public final class TangoAttributeInfoWrapper {
     protected final TangoDataFormat<?> format;
 
     /**
-     * This class is created internally in {@link TangoProxyWrapper}
+     * This class is created internally in {@link TangoProxyWrapperImpl}
      *
      * @param info attribute info
      */

@@ -46,7 +46,7 @@ import wpn.hdri.tango.data.type.ValueExtractionException;
  * <p/>
  * Each item encapsulates subscription logic.
  * <p/>
- * Item of this enum is passed to {@link TangoProxyWrapper#subscribeEvent(String, TangoEvent, TangoEventCallback)}
+ * Item of this enum is passed to {@link TangoProxyWrapperImpl#subscribeEvent(String, TangoEvent, TangoEventCallback)}
  *
  * @author Igor Khokhriakov <igor.khokhriakov@hzg.de>
  * @since 07.06.12
