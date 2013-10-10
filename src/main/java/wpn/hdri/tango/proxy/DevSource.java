@@ -20,4 +20,17 @@ public enum DevSource {
     fr.esrf.Tango.DevSource asDevSource() {
         return value;
     }
+
+    public static DevSource fromInt(int id) {
+        switch (id) {
+            case 0:
+                return DEV;
+            case 1:
+                return CACHE;
+            case 2:
+                return DEV_CACHE;
+            default:
+                throw new IllegalArgumentException("Unknown DevSource id:" + id + ". Valid values are: 0, 1, 2");
+        }
+    }
 }
