@@ -1,0 +1,23 @@
+package wpn.hdri.tango.proxy;
+
+/**
+ * Wraps {@link fr.esrf.Tango.DevSource} into enum
+ *
+ * @author Igor Khokhriakov <igor.khokhriakov@hzg.de>
+ * @since 10.10.13
+ */
+public enum DevSource {
+    DEV(fr.esrf.Tango.DevSource.DEV),
+    CACHE(fr.esrf.Tango.DevSource.CACHE),
+    DEV_CACHE(fr.esrf.Tango.DevSource.CACHE_DEV);
+
+    private final fr.esrf.Tango.DevSource value;
+
+    DevSource(fr.esrf.Tango.DevSource devSource) {
+        this.value = devSource;
+    }
+
+    fr.esrf.Tango.DevSource asDevSource() {
+        return value;
+    }
+}

@@ -340,4 +340,13 @@ public final class DeviceProxyWrapper implements TangoProxy {
         if (hasCommand == null) hasCommandCache.put(name, hasCommand = getCommandInfo(name) != null);
         return hasCommand;
     }
+
+    @Override
+    public void setSource(DevSource src) throws TangoProxyException {
+        try {
+            proxy.set_source(src.asDevSource());
+        } catch (DevFailed devFailed) {
+            throw new TangoProxyException(devFailed);
+        }
+    }
 }

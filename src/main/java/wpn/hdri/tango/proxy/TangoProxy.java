@@ -33,4 +33,13 @@ public interface TangoProxy {
     TangoCommandInfoWrapper getCommandInfo(String cmdName);
 
     boolean hasCommand(String name);
+
+    /**
+     * Exports set_source method from DeviceProxy class
+     *
+     * @param devSource DevSource
+     * @throws TangoProxyException
+     * @see <a href="http://www.esrf.eu/computing/cs/tango/tango_doc/kernel_doc/ds_prog/node7.html#SECTION00713300000000000000">Tango API C++ documentation</a>
+     */
+    void setSource(DevSource devSource) throws TangoProxyException;
 }
