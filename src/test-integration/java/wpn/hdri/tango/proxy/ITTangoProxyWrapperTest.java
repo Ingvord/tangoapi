@@ -91,14 +91,14 @@ public class ITTangoProxyWrapperTest {
 
     @Test(expected = TangoProxyException.class)
     public void testReadAttribute_Failed() throws Exception {
-        TangoProxyWrapper instance = new TangoProxyWrapperImpl(TEST_TANGO);
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
         instance.readAttribute("string_scalarxxx");//no such attribute
     }
 
     //@Test
     public void testReadAttribute_Exception() throws Exception {
-        TangoProxyWrapper instance = new TangoProxyWrapperImpl(TEST_TANGO);
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
         instance.readAttribute("string_scalar");
 
@@ -110,7 +110,7 @@ public class ITTangoProxyWrapperTest {
 
     @Test
     public void testWriteReadAttribute_String() throws Exception {
-        TangoProxyWrapper instance = new TangoProxyWrapperImpl(TEST_TANGO);
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
         instance.writeAttribute("string_scalar", "Some test value");
         instance.writeAttribute("string_scalar", "Some test value");
@@ -129,7 +129,7 @@ public class ITTangoProxyWrapperTest {
 
     @Test
     public void testWriteReadAttribute_Double() throws Exception {
-        TangoProxyWrapper instance = new TangoProxyWrapperImpl(TEST_TANGO);
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
         instance.writeAttribute("double_scalar_w", 0.1984D);
         instance.writeAttribute("double_scalar_w", 0.1984D);
@@ -143,7 +143,7 @@ public class ITTangoProxyWrapperTest {
 
     @Test
     public void testWriteReadAttribute_DoubleSpectrum() throws Exception {
-        TangoProxyWrapper instance = new TangoProxyWrapperImpl(TEST_TANGO);
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
         instance.writeAttribute("double_spectrum",new double[]{0.1D,0.2D,0.3D,0.4D});
         double[] result = instance.<double[]>readAttribute("double_spectrum");
@@ -155,7 +155,7 @@ public class ITTangoProxyWrapperTest {
     //WAttribute::check_written_value():API_IncompatibleAttrDataType(Incompatible attribute type, expected type is : Tango::DevVarCharArray (even for single value))
     @Test(expected = TangoProxyException.class)
     public void testWriteReadAttribute_UChar() throws Exception {
-        TangoProxyWrapper instance = new TangoProxyWrapperImpl(TEST_TANGO);
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
         instance.writeAttribute("uchar_scalar", 'a');
         instance.writeAttribute("uchar_scalar", 'a');
@@ -169,7 +169,7 @@ public class ITTangoProxyWrapperTest {
 
     @Test
     public void testWriteReadAttribute_DoubleArr() throws Exception {
-        TangoProxyWrapper instance = new TangoProxyWrapperImpl(TEST_TANGO);
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
         instance.writeAttribute("double_spectrum", new double[]{0.1D, 0.9D, 0.8D, 0.4D});
         instance.writeAttribute("double_spectrum", new double[]{0.1D, 0.9D, 0.8D, 0.4D});
@@ -186,7 +186,7 @@ public class ITTangoProxyWrapperTest {
 
     @Test
     public void testWriteReadAttribute_DoubleArrArr() throws Exception {
-        TangoProxyWrapper instance = new TangoProxyWrapperImpl(TEST_TANGO);
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
         instance.writeAttribute("double_image", new double[][]{{0.1D, 0.4D}, {0.9D, 0.8D}, {0.8D, 0.9D}, {0.4D, 0.1D}});
         instance.writeAttribute("double_image", new double[][]{{0.1D, 0.4D}, {0.9D, 0.8D}, {0.8D, 0.9D}, {0.4D, 0.1D}});
@@ -207,14 +207,14 @@ public class ITTangoProxyWrapperTest {
 
     @Test(expected = TangoProxyException.class)
     public void testWriteReadAttribute_DoubleArrArr_Failed() throws Exception {
-        TangoProxyWrapper instance = new TangoProxyWrapperImpl(TEST_TANGO);
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
         instance.writeAttribute("double_image", new double[][]{{0.1D, 0.4D}, {0.9D}});
     }
 
     @Test(expected = TangoProxyException.class)
     public void testWriteReadAttribute_DoubleArrArr_TooBig() throws Exception {
-        TangoProxyWrapper instance = new TangoProxyWrapperImpl(TEST_TANGO);
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
         instance.writeAttribute("double_image", new double[256][256]);//251 max
     }
@@ -231,7 +231,7 @@ public class ITTangoProxyWrapperTest {
 
     @Test
     public void testExecuteCommand_String() throws Exception {
-        TangoProxyWrapper instance = new TangoProxyWrapperImpl(TEST_TANGO);
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
         String result = instance.executeCommand("DevString", "Some test value");
 
@@ -240,7 +240,7 @@ public class ITTangoProxyWrapperTest {
 
     @Test
     public void testExecuteCommand_Void() throws Exception {
-        TangoProxyWrapper instance = new TangoProxyWrapperImpl(TEST_TANGO);
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
         Void result = instance.executeCommand("DevVoid", null);
 
@@ -249,7 +249,7 @@ public class ITTangoProxyWrapperTest {
 
     @Test
     public void testExecuteCommand_DblArr() throws Exception {
-        TangoProxyWrapper instance = new TangoProxyWrapperImpl(TEST_TANGO);
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
         double[] result = instance.executeCommand("DevVarDoubleArray", new double[]{0.1D, 0.9D, 0.8D, 0.4D});
 
@@ -258,7 +258,7 @@ public class ITTangoProxyWrapperTest {
 
     @Test
     public void testExecuteCommand_FltArr() throws Exception {
-        TangoProxyWrapper instance = new TangoProxyWrapperImpl(TEST_TANGO);
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
         float[] result = instance.executeCommand("DevVarFloatArray", new float[]{0.1F, 0.9F, 0.8F, 0.4F});
 

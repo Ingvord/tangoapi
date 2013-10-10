@@ -56,14 +56,14 @@ import java.util.Map;
  * @author Igor Khokhriakov <igor.khokhriakov@hzg.de>
  * @since 07.06.12
  */
-public final class TangoProxyWrapperImpl implements TangoProxyWrapper {
+public final class DeviceProxyWrapper implements TangoProxy {
     private final DeviceProxy proxy;
 
     /**
      * @param name path to tango server
      * @throws TangoProxyException
      */
-    public TangoProxyWrapperImpl(String name) throws TangoProxyException {
+    protected DeviceProxyWrapper(String name) throws TangoProxyException {
         try {
             this.proxy = new DeviceProxy(name);
         } catch (DevFailed devFailed) {
@@ -71,7 +71,7 @@ public final class TangoProxyWrapperImpl implements TangoProxyWrapper {
         }
     }
 
-    public TangoProxyWrapperImpl(DeviceProxy proxy) {
+    protected DeviceProxyWrapper(DeviceProxy proxy) {
         this.proxy = proxy;
     }
 
@@ -136,7 +136,7 @@ public final class TangoProxyWrapperImpl implements TangoProxyWrapper {
     }
 
     /**
-     * Same as {@link TangoProxyWrapperImpl#readAttribute(String)} but returns a pair of value and time in milliseconds.
+     * Same as {@link DeviceProxyWrapper#readAttribute(String)} but returns a pair of value and time in milliseconds.
      *
      * @param attrName name
      * @param <T>      type of value

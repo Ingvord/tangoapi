@@ -30,7 +30,7 @@
 package wpn.hdri.tango.proxy;
 
 /**
- * Implementations of this class is passed to {@link TangoProxyWrapperImpl#subscribeEvent(String, TangoEvent, TangoEventCallback)}
+ * Implementations of this class is passed to {@link DeviceProxyWrapper#subscribeEvent(String, TangoEvent, TangoEventCallback)}
  *
  * @author Igor Khokhriakov <igor.khokhriakov@hzg.de>
  * @since 07.06.12

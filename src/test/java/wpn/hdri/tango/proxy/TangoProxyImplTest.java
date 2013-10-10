@@ -8,7 +8,7 @@ import java.io.IOException;
  * @author Igor Khokhriakov <igor.khokhriakov@hzg.de>
  * @since 20.06.13
  */
-public class TangoProxyTest {
+public class TangoProxyImplTest {
     @Test
     public void testProxy() throws Exception {
         //TODO create "remote" device

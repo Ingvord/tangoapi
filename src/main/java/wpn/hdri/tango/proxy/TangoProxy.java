@@ -1,44 +1,36 @@
 package wpn.hdri.tango.proxy;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import org.javatuples.Triplet;
+import wpn.hdri.tango.attribute.Quality;
+
+import java.util.Map;
 
 /**
- * This utility class creates interface specific proxy of the remote device.
- *
  * @author Igor Khokhriakov <igor.khokhriakov@hzg.de>
- * @since 20.06.13
+ * @since 29.08.13
  */
-public class TangoProxy {
-    private TangoProxy() {
-    }
+public interface TangoProxy {
+    String getName();
 
-    public static <T> T proxy(final String device, Class<T> clazz) throws TangoProxyException {
-        //TODO check device and interface compatibility, i.e. clazz is the class of the device
+    boolean checkAttribute(String attrName);
 
-        InvocationHandler handler = new InvocationHandler() {
-            final TangoProxyWrapper tangoProxy = new TangoProxyWrapperImpl(device);
+    TangoAttributeInfoWrapper getAttributeInfo(String attrName);
 
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws TangoProxyException {
-                String methodName = method.getName();
+    <T> T readAttribute(String attrName) throws TangoProxyException;
 
-                if (tangoProxy.hasCommand(methodName))
-                    return tangoProxy.executeCommand(methodName, args != null ? args[0] : null);
-                else if (methodName.startsWith("get"))
-                    return tangoProxy.readAttribute(methodName.substring(3));
-                else if (methodName.startsWith("is"))
-                    return tangoProxy.readAttribute(methodName.substring(2));
-                else if (methodName.startsWith("set"))
-                    tangoProxy.writeAttribute(methodName.substring(3), args != null ? args[0] : null);
-                else
-                    throw new TangoProxyException("unknown method " + methodName);
+    <T> Map.Entry<T, Long> readAttributeValueAndTime(String attrName) throws TangoProxyException;
 
-                return null;
-            }
-        };
+    <T> Triplet<T, Long, Quality> readAttributeValueTimeQuality(String attrName) throws TangoProxyException;
 
-        return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, handler);
-    }
+    <T> void writeAttribute(String attrName, T value) throws TangoProxyException;
+
+    <T, V> V executeCommand(String cmd, T value) throws TangoProxyException;
+
+    <T> int subscribeEvent(String attrName, TangoEvent event, TangoEventCallback<T> cbk) throws TangoProxyException;
+
+    void unsubscribeEvent(int eventId) throws TangoProxyException;
+
+    TangoCommandInfoWrapper getCommandInfo(String cmdName);
+
+    boolean hasCommand(String name);
 }
