@@ -148,8 +148,8 @@ public class ITTangoProxyWrapperTest {
         instance.writeAttribute("double_spectrum",new double[]{0.1D,0.2D,0.3D,0.4D});
         double[] result = instance.<double[]>readAttribute("double_spectrum");
 
-        assertArrayEquals(new double[]{0.1D,0.2D,0.3D,0.4D},result,0.07);
         assertEquals(4, result.length);
+        assertArrayEquals(new double[]{0.1D,0.2D,0.3D,0.4D},result,0.07D);
     }
 
     //WAttribute::check_written_value():API_IncompatibleAttrDataType(Incompatible attribute type, expected type is : Tango::DevVarCharArray (even for single value))
