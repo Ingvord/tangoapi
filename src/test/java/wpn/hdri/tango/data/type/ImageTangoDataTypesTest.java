@@ -38,7 +38,6 @@ import wpn.hdri.tango.data.format.TangoDataFormat;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -183,7 +182,7 @@ public class ImageTangoDataTypesTest {
         BufferedImage gray8 = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
         gray8.getGraphics().drawImage(image, 0, 0, null);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        ImageIO.write(gray8, "jpg", os);
+        ImageIO.write(gray8, "jpeg", os);
         os.close();
 
         DevEncoded encoded = new DevEncoded("JPEG_GRAY8", os.toByteArray());
@@ -195,16 +194,13 @@ public class ImageTangoDataTypesTest {
 
         TangoDataWrapper data = TangoDataWrapper.create(attribute);
 
-        TangoDataFormat<byte[]> format = TangoDataFormat.createForAttrDataFormat(attribute.getDataFormat());
+        TangoDataFormat<BufferedImage> format = TangoDataFormat.createForAttrDataFormat(attribute.getDataFormat());
 
-        TangoDataType<byte[]> type = format.getDataType(data.getType());
+        TangoDataType<BufferedImage> type = format.getDataType(data.getType());
 
-        byte[] result = type.extract(data);
+        BufferedImage result = type.extract(data);
 
-        ByteArrayInputStream bis = new ByteArrayInputStream(result);
-        BufferedImage resultImage = ImageIO.read(bis);
-
-        ImageIO.write(resultImage, "jpg", new File("target/testEncodedImage_result.jpg"));
+        ImageIO.write(result, "jpg", new File("target/testEncodedImage_result.jpg"));
 
         //TODO check image
     }

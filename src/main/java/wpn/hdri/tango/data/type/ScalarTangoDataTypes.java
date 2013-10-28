@@ -29,6 +29,7 @@
 
 package wpn.hdri.tango.data.type;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import fr.esrf.Tango.DevEncoded;
 import fr.esrf.Tango.DevFailed;
@@ -38,6 +39,11 @@ import wpn.hdri.tango.data.EnumDevState;
 import wpn.hdri.tango.data.TangoDataWrapper;
 import wpn.hdri.tango.util.TangoUtils;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -261,21 +267,38 @@ public class ScalarTangoDataTypes {
     /**
      * This only supports JPEG_GRAY8 format, i.e. use BufferedImage.TYPE_BYTE_GRAY and read images as jpeg to extract data
      */
-    public static final TangoDataType<byte[]> DEV_ENCODED = new TangoDataType<byte[]>(TangoConst.Tango_DEV_ENCODED, "DevEncoded", byte[].class, null, null) {
+    public static final TangoDataType<BufferedImage> DEV_ENCODED = new TangoDataType<BufferedImage>(TangoConst.Tango_DEV_ENCODED, "DevEncoded", BufferedImage.class, null, null) {
         public static final String ENCODED_FORMAT = "JPEG_GRAY8";
 
         @Override
-        public byte[] extract(TangoDataWrapper data) throws ValueExtractionException {
+        public BufferedImage extract(TangoDataWrapper data) throws ValueExtractionException {
             try {
-                return data.extractDevEncoded().encoded_data;
+                DevEncoded devEncoded = data.extractDevEncoded();
+                Preconditions.checkArgument(devEncoded.encoded_format.equals(ENCODED_FORMAT), "Only JPEG_GRAY8 encoded format is supported.");
+                ByteArrayInputStream bais = new ByteArrayInputStream(devEncoded.encoded_data);
+                BufferedImage value = ImageIO.read(bais);
+                return value;
             } catch (DevFailed devFailed) {
                 throw new ValueExtractionException(TangoUtils.convertDevFailedToException(devFailed));
+            } catch (IOException e) {
+                throw new ValueExtractionException(e);
             }
         }
 
         @Override
-        public void insert(TangoDataWrapper data, byte[] value) throws ValueInsertionException {
-            data.insert(new DevEncoded(ENCODED_FORMAT, value));
+        public void insert(TangoDataWrapper data, BufferedImage value) throws ValueInsertionException {
+            if (value.getType() != BufferedImage.TYPE_BYTE_GRAY) {
+                BufferedImage converted = new BufferedImage(value.getWidth(), value.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+                converted.getGraphics().drawImage(value, 0, 0, null);
+                value = converted;
+            }
+            try {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(value, "jpeg", baos);
+                data.insert(new DevEncoded(ENCODED_FORMAT, baos.toByteArray()));
+            } catch (IOException e) {
+                throw new ValueInsertionException(e);
+            }
         }
     };
 
