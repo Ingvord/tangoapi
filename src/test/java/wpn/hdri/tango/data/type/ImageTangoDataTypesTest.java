@@ -38,9 +38,9 @@ import wpn.hdri.tango.data.format.TangoDataFormat;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -176,15 +176,17 @@ public class ImageTangoDataTypesTest {
         assertArrayEquals(new double[]{1., 3., 2., 4.}, attribute.extractDoubleArray(), 0.0);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testEncodedImage() throws Exception {
-        BufferedImage image = ImageIO.read(new URL("http://www.hzg.de/cms01/res/img/gkss-logo.jpg"));
+        BufferedImage image = ImageIO.read(new File("target/test-classes/1290338792.jpg"));//☭
 
+        BufferedImage gray8 = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+        gray8.getGraphics().drawImage(image, 0, 0, null);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        ImageIO.write(image, "jpg", os);
+        ImageIO.write(gray8, "jpg", os);
         os.close();
 
-        DevEncoded encoded = new DevEncoded("JPEG_RGB", os.toByteArray());
+        DevEncoded encoded = new DevEncoded("JPEG_GRAY8", os.toByteArray());
 
         DeviceAttribute attribute = new DeviceAttribute("encoded", "prevent NPE in the following insert method");
 
@@ -193,34 +195,17 @@ public class ImageTangoDataTypesTest {
 
         TangoDataWrapper data = TangoDataWrapper.create(attribute);
 
-        TangoDataFormat<byte[][]> format = TangoDataFormat.createForAttrDataFormat(attribute.getDataFormat());
+        TangoDataFormat<byte[]> format = TangoDataFormat.createForAttrDataFormat(attribute.getDataFormat());
 
-        TangoDataType<byte[][]> type = format.getDataType(data.getType());
+        TangoDataType<byte[]> type = format.getDataType(data.getType());
 
-        byte[][] result = type.extract(data);
+        byte[] result = type.extract(data);
 
-        int height = image.getHeight();
-        int width = image.getWidth();
-        BufferedImage resultImage = new BufferedImage(width, height, image.getType());
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                int r = result[y][x * 3 + 2] & 0xFF;
-                int g = result[y][x * 3 + 1] & 0xFF;
-                int b = result[y][x * 3 + 0] & 0xFF;
-                int rgb = (r << 16) + (g << 8) + b;
-
-                resultImage.setRGB(x, y, rgb);
-            }
-        }
+        ByteArrayInputStream bis = new ByteArrayInputStream(result);
+        BufferedImage resultImage = ImageIO.read(bis);
 
         ImageIO.write(resultImage, "jpg", new File("target/testEncodedImage_result.jpg"));
 
-//        for(int y = 0; y< height; y++){
-//            for(int x = 0; x< width; x++){
-//                System.out.println("asserting [x,y]="+x+","+y);
-//                assertEquals(image.getRGB(x, y), resultImage.getRGB(x, y));
-//            }
-//        }
-
+        //TODO check image
     }
 }
