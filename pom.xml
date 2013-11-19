@@ -37,7 +37,7 @@
     <artifactId>TangoAPI</artifactId>
     <version>1.0.7-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <description>Library that extends standard Tango Java API</description>
+    <description>Library that facades standard Tango Java API</description>
 
     <dependencies>
         <dependency>
@@ -70,9 +70,9 @@
             <version>1.2</version>
         </dependency>
         <dependency>
-            <groupId>fr.esrf.tango</groupId>
+            <groupId>org.tango</groupId>
             <artifactId>TangORB</artifactId>
-            <version>8.3.3</version>
+            <version>8.4.0</version>
         </dependency>
     </dependencies>
     <properties>
