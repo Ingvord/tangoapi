@@ -194,7 +194,7 @@ public class ScalarTangoDataTypes {
     }, new ValueInserter<Long>() {
         @Override
         public void insert(TangoDataWrapper data, Long value, int dimX, int dimY) throws ValueInsertionException {
-            data.insert(value);
+            data.insert_ul(value);
         }
     }
     );
@@ -226,7 +226,7 @@ public class ScalarTangoDataTypes {
     }, new ValueInserter<Long>() {
         @Override
         public void insert(TangoDataWrapper data, Long value, int dimX, int dimY) throws ValueInsertionException {
-            data.insert(value);
+            data.insert_u64(value);
         }
     }
     );

@@ -145,11 +145,23 @@ public class ITTangoProxyWrapperTest {
     public void testWriteReadAttribute_DoubleSpectrum() throws Exception {
         TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
-        instance.writeAttribute("double_spectrum",new double[]{0.1D,0.2D,0.3D,0.4D});
+        instance.writeAttribute("double_spectrum", new double[]{0.1D, 0.2D, 0.3D, 0.4D});
         double[] result = instance.<double[]>readAttribute("double_spectrum");
 
         assertEquals(4, result.length);
-        assertArrayEquals(new double[]{0.1D,0.2D,0.3D,0.4D},result,0.07D);
+        assertArrayEquals(new double[]{0.1D, 0.2D, 0.3D, 0.4D}, result, 0.07D);
+    }
+
+    @Test
+    public void testWriteReadAttribute_ULongScalar() throws Exception {
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
+
+        instance.writeAttribute("ulong_scalar", 1234L);
+        long result = instance.<Long>readAttribute("ulong_scalar");
+
+        //TangoTest returns random number here
+        //assume that test has passed if not failed
+        //assertEquals(1234L, result);
     }
 
     //WAttribute::check_written_value():API_IncompatibleAttrDataType(Incompatible attribute type, expected type is : Tango::DevVarCharArray (even for single value))
