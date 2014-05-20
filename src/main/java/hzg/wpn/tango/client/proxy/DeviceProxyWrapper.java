@@ -87,7 +87,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
      * @return true if attribute is ok, false - otherwise
      */
     @Override
-    public boolean checkAttribute(String attrName) {
+    public boolean isAttributeExists(String attrName) {
         try {
             AttributeInfo attributeInfo = this.proxy.get_attribute_info(attrName);
             return true;

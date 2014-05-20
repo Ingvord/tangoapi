@@ -12,7 +12,7 @@ import java.util.Map;
 public interface TangoProxy {
     String getName();
 
-    boolean checkAttribute(String attrName);
+    boolean isAttributeExists(String attrName);
 
     TangoAttributeInfoWrapper getAttributeInfo(String attrName);
 
