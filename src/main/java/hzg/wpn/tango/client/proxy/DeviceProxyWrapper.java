@@ -37,10 +37,7 @@ import hzg.wpn.tango.client.attribute.Quality;
 import hzg.wpn.tango.client.data.TangoDataWrapper;
 import hzg.wpn.tango.client.data.TangoDeviceAttributeWrapper;
 import hzg.wpn.tango.client.data.format.TangoDataFormat;
-import hzg.wpn.tango.client.data.type.TangoDataType;
-import hzg.wpn.tango.client.data.type.TangoDataTypes;
-import hzg.wpn.tango.client.data.type.ValueExtractionException;
-import hzg.wpn.tango.client.data.type.ValueInsertionException;
+import hzg.wpn.tango.client.data.type.*;
 import org.javatuples.Triplet;
 
 import java.lang.reflect.Field;
@@ -108,7 +105,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
         try {
             AttributeInfo attributeInfo = this.proxy.get_attribute_info(attrName);
             return new TangoAttributeInfoWrapper(attributeInfo);
-        } catch (DevFailed devFailed) {
+        } catch (DevFailed | UnknownTangoDataType ex) {
             return null;
         }
     }
@@ -312,7 +309,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
     public TangoCommandInfoWrapper getCommandInfo(String cmdName) {
         try {
             return new TangoCommandInfoWrapper(proxy.command_query(cmdName));
-        } catch (DevFailed devFailed) {
+        } catch (DevFailed | UnknownTangoDataType devFailed) {
             return null;
         }
     }

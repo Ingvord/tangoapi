@@ -31,6 +31,7 @@ package hzg.wpn.tango.client.data.format;
 
 import hzg.wpn.tango.client.data.type.TangoDataType;
 import hzg.wpn.tango.client.data.type.TangoDataTypes;
+import hzg.wpn.tango.client.data.type.UnknownTangoDataType;
 
 /**
  * @author Igor Khokhriakov <igor.khokhriakov@hzg.de>
@@ -42,7 +43,7 @@ public final class ScalarTangoDataFormat<T> extends TangoDataFormat<T> {
     }
 
     @Override
-    public TangoDataType<T> getDataType(int devDataType) {
+    public TangoDataType<T> getDataType(int devDataType) throws UnknownTangoDataType {
         TangoDataType<T> type = TangoDataTypes.forTangoDevDataType(devDataType);
         return type;
     }

@@ -35,6 +35,7 @@ import com.google.common.collect.HashBiMap;
 import fr.esrf.TangoDs.TangoConst;
 import hzg.wpn.tango.client.data.type.TangoDataType;
 import hzg.wpn.tango.client.data.type.TangoDataTypes;
+import hzg.wpn.tango.client.data.type.UnknownTangoDataType;
 
 /**
  * @author Igor Khokhriakov <igor.khokhriakov@hzg.de>
@@ -67,9 +68,11 @@ public final class SpectrumTangoDataFormat<T> extends TangoDataFormat<T> {
      * @param devDataType alias ({@link TangoConst}.Tango_DEV_XXX)
      * @return TangoDataType
      * @throws NullPointerException if no mapping was found
+     * @throws hzg.wpn.tango.client.data.type.UnknownTangoDataType
+     *
      */
     @Override
-    public TangoDataType<T> getDataType(int devDataType) {
+    public TangoDataType<T> getDataType(int devDataType) throws UnknownTangoDataType {
         Integer typeMapping = typesMapping.get(devDataType);
         if (typeMapping == null) {
             typeMapping = typesMapping.inverse().get(devDataType);

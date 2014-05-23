@@ -1,4 +1,4 @@
-package wpn.hdri.tango.data.type;
+package hzg.wpn.tango.client.data.type;
 
 /**
  * @author Igor Khokhriakov <igor.khokhriakov@hzg.de>

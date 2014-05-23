@@ -33,6 +33,7 @@ import fr.esrf.Tango.AttrDataFormat;
 import fr.esrf.Tango.DevFailed;
 import hzg.wpn.tango.client.data.TangoDataWrapper;
 import hzg.wpn.tango.client.data.type.TangoDataType;
+import hzg.wpn.tango.client.data.type.UnknownTangoDataType;
 import hzg.wpn.tango.client.data.type.ValueExtractionException;
 import hzg.wpn.tango.client.data.type.ValueInsertionException;
 
@@ -114,7 +115,7 @@ public abstract class TangoDataFormat<T> {
      * @return appropriate TangoDataType
      */
     //TODO replace int with enum
-    public abstract TangoDataType<T> getDataType(int devDataType);
+    public abstract TangoDataType<T> getDataType(int devDataType) throws UnknownTangoDataType;
 
     /**
      * @param data value container
@@ -126,8 +127,8 @@ public abstract class TangoDataFormat<T> {
             int devDataType = data.getType();
             TangoDataType<T> type = getDataType(devDataType);
             return type.extract(data);
-        } catch (DevFailed devFailed) {
-            throw new ValueExtractionException(devFailed);
+        } catch (DevFailed | UnknownTangoDataType e) {
+            throw new ValueExtractionException(e);
         }
     }
 
@@ -139,8 +140,12 @@ public abstract class TangoDataFormat<T> {
      *
      */
     public void insert(TangoDataWrapper data, T value, int devDataType) throws ValueInsertionException {
-        TangoDataType<T> type = getDataType(devDataType);
-        type.insert(data, value);
+        try {
+            TangoDataType<T> type = getDataType(devDataType);
+            type.insert(data, value);
+        } catch (UnknownTangoDataType unknownTangoDataType) {
+            throw new ValueInsertionException(unknownTangoDataType);
+        }
     }
 
     /**

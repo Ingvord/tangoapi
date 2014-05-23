@@ -33,6 +33,7 @@ import fr.esrf.TangoApi.AttributeInfo;
 import hzg.wpn.tango.client.data.format.TangoDataFormat;
 import hzg.wpn.tango.client.data.type.TangoDataType;
 import hzg.wpn.tango.client.data.type.TangoDataTypes;
+import hzg.wpn.tango.client.data.type.UnknownTangoDataType;
 
 /**
  * This class encapsulates {@link AttributeInfo} along with {@link TangoDataFormat}, {@link TangoDataType} and {@link Class}.
@@ -66,7 +67,7 @@ public final class TangoAttributeInfoWrapper {
      *
      * @param info attribute info
      */
-    TangoAttributeInfoWrapper(AttributeInfo info) {
+    TangoAttributeInfoWrapper(AttributeInfo info) throws UnknownTangoDataType {
         this.info = info;
         this.format = TangoDataFormat.createForAttrDataFormat(info.data_format);
         this.type = TangoDataTypes.forTangoDevDataType(info.data_type);
