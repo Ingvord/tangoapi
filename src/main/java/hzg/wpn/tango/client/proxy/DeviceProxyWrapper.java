@@ -33,6 +33,8 @@ import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 import fr.esrf.Tango.DevFailed;
 import fr.esrf.TangoApi.*;
+import fr.esrf.TangoApi.events.TangoChange;
+import fr.esrf.TangoApi.events.TangoPeriodic;
 import hzg.wpn.tango.client.attribute.Quality;
 import hzg.wpn.tango.client.data.TangoDataWrapper;
 import hzg.wpn.tango.client.data.TangoDeviceAttributeWrapper;
@@ -40,9 +42,10 @@ import hzg.wpn.tango.client.data.format.TangoDataFormat;
 import hzg.wpn.tango.client.data.type.*;
 import org.javatuples.Triplet;
 
-import java.lang.reflect.Field;
 import java.util.AbstractMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * This class is a main entry point of the proxy framework.
@@ -252,39 +255,56 @@ public final class DeviceProxyWrapper implements TangoProxy {
         }
     }
 
+    private final ConcurrentMap<String, CallBack> callBacks = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, TangoEventDispatcher<?>> dispatchers = new ConcurrentHashMap<>();
+
     @Override
-    public <T> int subscribeEvent(String attrName, TangoEvent event, TangoEventCallback<T> cbk) throws TangoProxyException {
+    public int subscribeToEvent(String attrName, TangoEvent event) throws TangoProxyException {
         //TODO filters
+        String[] filters = new String[0];
+        String eventKey = getEventKey(attrName, event);
         try {
-            String[] filters = new String[0];
-            CallBack callBack = event.subscribe(this.proxy, attrName, filters, cbk);
+            CallBack callBack = callBacks.get(eventKey);
+            if (callBack == null) {
+                TangoEventDispatcher<?> dispatcher = new TangoEventDispatcher<>();
+                TangoEventDispatcher<?> oldDispatcher = dispatchers.putIfAbsent(eventKey, dispatcher);
+                if (oldDispatcher != null) dispatcher = oldDispatcher;//this may create unused dispatcher instance
 
+                callBack = createCallBack(attrName, event, dispatcher, filters);
+                CallBack oldCallBack = callBacks.putIfAbsent(eventKey, callBack);
+                if (oldCallBack != null) callBack = oldCallBack;//this may create unused callback instance
+            }
 
-            return getEventId(callBack);
-        } catch (DevFailed devFailed) {
-            throw new TangoProxyException(devFailed);
+            int id = this.proxy.subscribe_event(attrName, event.getAlias(), callBack, filters);
+            return id;
         } catch (Throwable throwable) {
             throw new TangoProxyException(throwable);
         }
     }
 
-    private int getEventId(CallBack callBack) throws TangoProxyException {
-        Field eventIdFld = null;
-        try {
-            eventIdFld = callBack.getClass().getDeclaredField("event_identifier");
-            eventIdFld.setAccessible(true);
-            int eventId = Integer.parseInt(String.valueOf(eventIdFld.get(callBack)));
-            return eventId;
-        } catch (NoSuchFieldException e) {
-            throw new TangoProxyException(e);
-        } catch (IllegalAccessException e) {
-            eventIdFld.setAccessible(false);
-            throw new TangoProxyException(e);
-        } catch (Exception e) {
-            throw new TangoProxyException(e);
-        } catch (Throwable throwable) {
-            throw new TangoProxyException(throwable);
+    private String getEventKey(String attrName, TangoEvent event) {
+        return this.proxy.name() + "/" + attrName + "." + event.name().toLowerCase();
+    }
+
+    private CallBack createCallBack(String attrName, TangoEvent event, TangoEventDispatcher<?> dispatcher, String... filters) throws DevFailed {
+        switch (event) {
+            case CHANGE:
+                TangoChange change = new TangoChange(proxy, attrName, filters);
+                change.addTangoChangeListener(dispatcher, true);
+                return change;
+            case PERIODIC:
+                TangoPeriodic periodic = new TangoPeriodic(proxy, attrName, filters);
+                periodic.addTangoPeriodicListener(dispatcher, true);
+                return periodic;
+            default:
+                throw new IllegalArgumentException("Unknown TangoEvent:" + event);
         }
+
+
+    }
+
+    public <T> void addEventListener(String attrName, TangoEvent event, TangoEventListener<T> listener) {
+        ((TangoEventDispatcher<T>) dispatchers.get(getEventKey(attrName, event))).addListener(listener);
     }
 
     @Override

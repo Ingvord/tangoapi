@@ -29,58 +29,18 @@
 
 package hzg.wpn.tango.client.proxy;
 
-import fr.esrf.Tango.DevFailed;
-import fr.esrf.TangoApi.CallBack;
-import fr.esrf.TangoApi.DeviceAttribute;
-import fr.esrf.TangoApi.DeviceProxy;
-import fr.esrf.TangoApi.events.ITangoChangeListener;
-import fr.esrf.TangoApi.events.TangoChange;
-import fr.esrf.TangoApi.events.TangoChangeEvent;
 import fr.esrf.TangoDs.TangoConst;
-import hzg.wpn.tango.client.data.TangoDataWrapper;
-import hzg.wpn.tango.client.data.format.TangoDataFormat;
-import hzg.wpn.tango.client.data.type.ValueExtractionException;
 
 /**
  * This enum contains items corresponded to {@link TangoConst}.XXX_EVENT.
- * <p/>
- * Each item encapsulates subscription logic.
- * <p/>
- * Item of this enum is passed to {@link DeviceProxyWrapper#subscribeEvent(String, TangoEvent, TangoEventCallback)}
+ * Item of this enum is passed to {@link DeviceProxyWrapper#subscribeToEvent(String, TangoEvent)}
  *
  * @author Igor Khokhriakov <igor.khokhriakov@hzg.de>
  * @since 07.06.12
  */
 public enum TangoEvent {
-    CHANGE(TangoConst.CHANGE_EVENT) {
-        @Override
-        <T> CallBack subscribe(DeviceProxy proxy, String attrName, String[] filters, final TangoEventCallback<T> callback) throws DevFailed {
-            TangoChange result = new TangoChange(proxy, attrName, filters);
-            result.addTangoChangeListener(new ITangoChangeListener() {
-                @Override
-                public void change(TangoChangeEvent event) {
-                    try {
-                        DeviceAttribute deviceAttribute = event.getValue();
-                        if (deviceAttribute.hasFailed()) {
-                            throw new DevFailed(deviceAttribute.getErrStack());
-                        }
-                        TangoDataWrapper data = TangoDataWrapper.create(deviceAttribute);
-                        TangoDataFormat<T> format = TangoDataFormat.createForAttrDataFormat(deviceAttribute.getDataFormat());
-                        EventData<T> result = new EventData<T>(format.extract(data), deviceAttribute.getTimeValMillisSec());
-                        callback.onEvent(result);
-                    } catch (DevFailed devFailed) {
-                        callback.onError(devFailed);
-                    } catch (ValueExtractionException e) {
-                        callback.onError(e);
-                    } catch (Throwable throwable) {
-                        callback.onError(throwable);
-                    }
-
-                }
-            }, true);
-            return result;
-        }
-    };
+    CHANGE(TangoConst.CHANGE_EVENT),
+    PERIODIC(TangoConst.PERIODIC_EVENT);
     //TODO other events
 
     private final int alias;
@@ -92,6 +52,4 @@ public enum TangoEvent {
     public int getAlias() {
         return alias;
     }
-
-    abstract <T> CallBack subscribe(DeviceProxy proxy, String attrName, String[] filters, final TangoEventCallback<T> callback) throws DevFailed;
 }

@@ -34,7 +34,7 @@ package hzg.wpn.tango.client.proxy;
  * <p/>
  * This class contains a value passed through event and a time in milliseconds.
  * <p/>
- * An instance of this class is passed to {@link TangoEventCallback#onEvent(EventData)}.
+ * An instance of this class is passed to {@link TangoEventListener#onEvent(EventData)}.
  *
  * @author Igor Khokhriakov <igor.khokhriakov@hzg.de>
  * @since 08.06.12

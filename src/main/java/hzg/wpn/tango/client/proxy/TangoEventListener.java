@@ -30,12 +30,12 @@
 package hzg.wpn.tango.client.proxy;
 
 /**
- * Implementations of this class is passed to {@link DeviceProxyWrapper#subscribeEvent(String, TangoEvent, TangoEventCallback)}
+ * Implementations of this class is passed to {@link DeviceProxyWrapper#subscribeToEvent(String, TangoEvent)}
  *
  * @author Igor Khokhriakov <igor.khokhriakov@hzg.de>
  * @since 07.06.12
  */
-public interface TangoEventCallback<T> {
+public interface TangoEventListener<T> {
     /**
      * This method is called when corresponding event is successfully fired.
      *
@@ -49,6 +49,4 @@ public interface TangoEventCallback<T> {
      * @param cause failure cause
      */
     void onError(Throwable cause);
-
-    //TODO add TangoProxyException
 }

@@ -26,7 +26,21 @@ public interface TangoProxy {
 
     <T, V> V executeCommand(String cmd, T value) throws TangoProxyException;
 
-    <T> int subscribeEvent(String attrName, TangoEvent event, TangoEventCallback<T> cbk) throws TangoProxyException;
+    int subscribeToEvent(String attrName, TangoEvent event) throws TangoProxyException;
+
+    /**
+     * Before calling this method make sure that client is already subscribed to the attribute.
+     * Otherwise a NPE will be thrown.
+     * <p/>
+     * This method caches listener in a weak reference. So it is users responsibility to preserve a reference to it.
+     *
+     * @param attrName
+     * @param event
+     * @param listener
+     * @param <T>
+     * @throws NullPointerException
+     */
+    <T> void addEventListener(String attrName, TangoEvent event, TangoEventListener<T> listener);
 
     void unsubscribeEvent(int eventId) throws TangoProxyException;
 
