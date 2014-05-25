@@ -46,6 +46,8 @@ import java.util.AbstractMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This class is a main entry point of the proxy framework.
@@ -257,9 +259,12 @@ public final class DeviceProxyWrapper implements TangoProxy {
 
     private final ConcurrentMap<String, CallBack> callBacks = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, TangoEventDispatcher<?>> dispatchers = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Integer> eventIds = new ConcurrentHashMap<>();
+
+    private final Lock subscriptionGuard = new ReentrantLock();
 
     @Override
-    public int subscribeToEvent(String attrName, TangoEvent event) throws TangoProxyException {
+    public void subscribeToEvent(String attrName, TangoEvent event) throws TangoProxyException {
         //TODO filters
         String[] filters = new String[0];
         String eventKey = getEventKey(attrName, event);
@@ -273,10 +278,18 @@ public final class DeviceProxyWrapper implements TangoProxy {
                 callBack = createCallBack(attrName, event, dispatcher, filters);
                 CallBack oldCallBack = callBacks.putIfAbsent(eventKey, callBack);
                 if (oldCallBack != null) callBack = oldCallBack;//this may create unused callback instance
+
+                subscriptionGuard.lock();
+                try {
+                    if (eventIds.containsKey(eventKey)) return;
+                    int id = this.proxy.subscribe_event(attrName, event.getAlias(), callBack, filters);
+                    eventIds.put(eventKey, id);
+                } finally {
+                    subscriptionGuard.unlock();
+                }
             }
 
-            int id = this.proxy.subscribe_event(attrName, event.getAlias(), callBack, filters);
-            return id;
+
         } catch (Throwable throwable) {
             throw new TangoProxyException(throwable);
         }
@@ -308,13 +321,18 @@ public final class DeviceProxyWrapper implements TangoProxy {
     }
 
     @Override
-    public void unsubscribeEvent(int eventId) throws TangoProxyException {
+    public void unsubscribeFromEvent(String attrName, TangoEvent event) throws TangoProxyException {
+        String eventKey = getEventKey(attrName, event);
+        subscriptionGuard.lock();
         try {
+            if (!eventIds.containsKey(eventKey)) return;
+            int eventId = eventIds.get(eventKey);
+            eventIds.remove(eventKey);
             this.proxy.unsubscribe_event(eventId);
-        } catch (DevFailed devFailed) {
-            throw new TangoProxyException(devFailed);
         } catch (Throwable throwable) {
             throw new TangoProxyException(throwable);
+        } finally {
+            subscriptionGuard.unlock();
         }
     }
 

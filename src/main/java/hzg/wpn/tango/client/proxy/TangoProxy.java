@@ -26,7 +26,7 @@ public interface TangoProxy {
 
     <T, V> V executeCommand(String cmd, T value) throws TangoProxyException;
 
-    int subscribeToEvent(String attrName, TangoEvent event) throws TangoProxyException;
+    void subscribeToEvent(String attrName, TangoEvent event) throws TangoProxyException;
 
     /**
      * Before calling this method make sure that client is already subscribed to the attribute.
@@ -42,7 +42,7 @@ public interface TangoProxy {
      */
     <T> void addEventListener(String attrName, TangoEvent event, TangoEventListener<T> listener);
 
-    void unsubscribeEvent(int eventId) throws TangoProxyException;
+    public void unsubscribeFromEvent(String attrName, TangoEvent event) throws TangoProxyException;
 
     TangoCommandInfoWrapper getCommandInfo(String cmdName);
 
