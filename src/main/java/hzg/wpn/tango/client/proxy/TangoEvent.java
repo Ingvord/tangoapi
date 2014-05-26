@@ -40,7 +40,9 @@ import fr.esrf.TangoDs.TangoConst;
  */
 public enum TangoEvent {
     CHANGE(TangoConst.CHANGE_EVENT),
-    PERIODIC(TangoConst.PERIODIC_EVENT);
+    PERIODIC(TangoConst.PERIODIC_EVENT),
+    ARCHIVE(TangoConst.ARCHIVE_EVENT),
+    USER(TangoConst.USER_EVENT);
     //TODO other events
 
     private final int alias;

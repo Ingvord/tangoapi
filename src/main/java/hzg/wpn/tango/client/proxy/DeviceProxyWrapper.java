@@ -33,8 +33,10 @@ import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 import fr.esrf.Tango.DevFailed;
 import fr.esrf.TangoApi.*;
+import fr.esrf.TangoApi.events.TangoArchive;
 import fr.esrf.TangoApi.events.TangoChange;
 import fr.esrf.TangoApi.events.TangoPeriodic;
+import fr.esrf.TangoApi.events.TangoUser;
 import hzg.wpn.tango.client.attribute.Quality;
 import hzg.wpn.tango.client.data.TangoDataWrapper;
 import hzg.wpn.tango.client.data.TangoDeviceAttributeWrapper;
@@ -128,12 +130,8 @@ public final class DeviceProxyWrapper implements TangoProxy {
         try {
             DeviceAttribute deviceAttribute = this.proxy.read_attribute(attrName);
             return readAttributeValue(attrName, deviceAttribute);
-        } catch (DevFailed devFailed) {
-            throw new TangoProxyException(devFailed);
-        } catch (ValueExtractionException e) {
+        } catch (DevFailed | ValueExtractionException e) {
             throw new TangoProxyException(e);
-        } catch (Throwable throwable) {
-            throw new TangoProxyException(throwable);
         }
     }
 
@@ -153,12 +151,8 @@ public final class DeviceProxyWrapper implements TangoProxy {
 
             long time = deviceAttribute.getTimeValMillisSec();
             return new AbstractMap.SimpleImmutableEntry<T, Long>(result, time);
-        } catch (DevFailed devFailed) {
-            throw new TangoProxyException(devFailed);
-        } catch (ValueExtractionException e) {
+        } catch (DevFailed | ValueExtractionException e) {
             throw new TangoProxyException(e);
-        } catch (Throwable throwable) {
-            throw new TangoProxyException(throwable);
         }
     }
 
@@ -188,9 +182,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
             Quality quality = Quality.fromAttrQuality(deviceAttribute.getQuality());
 
             return new Triplet<T, Long, Quality>(result, time, quality);
-        } catch (DevFailed devFailed) {
-            throw new TangoProxyException(devFailed);
-        } catch (ValueExtractionException e) {
+        } catch (DevFailed | ValueExtractionException e) {
             throw new TangoProxyException(e);
         }
     }
@@ -214,12 +206,8 @@ public final class DeviceProxyWrapper implements TangoProxy {
             TangoDataFormat<T> dataFormat = TangoDataFormat.createForAttrDataFormat(attributeInfo.data_format);
             dataFormat.insert(dataWrapper, value, devDataType);
             this.proxy.write_attribute(deviceAttribute);
-        } catch (DevFailed devFailed) {
-            throw new TangoProxyException(devFailed);
-        } catch (ValueInsertionException e) {
+        } catch (DevFailed | ValueInsertionException e) {
             throw new TangoProxyException(e);
-        } catch (Throwable throwable) {
-            throw new TangoProxyException(throwable);
         }
     }
 
@@ -248,12 +236,8 @@ public final class DeviceProxyWrapper implements TangoProxy {
 
             TangoDataType<V> typeOut = TangoDataTypes.forTangoDevDataType(cmdInfo.out_type);
             return typeOut.extract(argoutWrapper);
-        } catch (DevFailed devFailed) {
-            throw new TangoProxyException(devFailed);
-        } catch (ValueExtractionException e) {
+        } catch (Exception e) {
             throw new TangoProxyException(e);
-        } catch (Throwable throwable) {
-            throw new TangoProxyException(throwable);
         }
     }
 
@@ -290,8 +274,8 @@ public final class DeviceProxyWrapper implements TangoProxy {
             }
 
 
-        } catch (Throwable throwable) {
-            throw new TangoProxyException(throwable);
+        } catch (Exception e) {
+            throw new TangoProxyException(e);
         }
     }
 
@@ -309,11 +293,17 @@ public final class DeviceProxyWrapper implements TangoProxy {
                 TangoPeriodic periodic = new TangoPeriodic(proxy, attrName, filters);
                 periodic.addTangoPeriodicListener(dispatcher, true);
                 return periodic;
+            case ARCHIVE:
+                TangoArchive archive = new TangoArchive(proxy, attrName, filters);
+                archive.addTangoArchiveListener(dispatcher, true);
+                return archive;
+            case USER:
+                TangoUser user = new TangoUser(proxy, attrName, filters);
+                user.addTangoUserListener(dispatcher, true);
+                return user;
             default:
                 throw new IllegalArgumentException("Unknown TangoEvent:" + event);
         }
-
-
     }
 
     public <T> void addEventListener(String attrName, TangoEvent event, TangoEventListener<T> listener) {
@@ -359,6 +349,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
                 .toString();
     }
 
+    //TODO replace with set of Strings (command names)
     private final Map<String, Boolean> hasCommandCache = Maps.newHashMap();
 
     /**
@@ -377,11 +368,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
     }
 
     @Override
-    public void setSource(DevSource src) throws TangoProxyException {
-        try {
-            proxy.set_source(src.asDevSource());
-        } catch (DevFailed devFailed) {
-            throw new TangoProxyException(devFailed);
-        }
+    public DeviceProxy toDeviceProxy() {
+        return proxy;
     }
 }

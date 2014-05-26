@@ -93,5 +93,8 @@ public final class TangoAttributeInfoWrapper {
     public int getMaxDimY() {
         return info.max_dim_y;
     }
-    //TODO others
+
+    public AttributeInfo toAttributeInfo() {
+        return info;
+    }
 }

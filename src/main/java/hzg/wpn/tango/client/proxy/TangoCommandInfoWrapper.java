@@ -27,4 +27,8 @@ public class TangoCommandInfoWrapper {
     public Class<?> getArgoutType() {
         return typeOut.getDataType();
     }
+
+    public CommandInfo toCommandInfo() {
+        return info;
+    }
 }

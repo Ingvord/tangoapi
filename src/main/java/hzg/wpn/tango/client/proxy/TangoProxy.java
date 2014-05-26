@@ -1,5 +1,6 @@
 package hzg.wpn.tango.client.proxy;
 
+import fr.esrf.TangoApi.DeviceProxy;
 import hzg.wpn.tango.client.attribute.Quality;
 import org.javatuples.Triplet;
 
@@ -49,11 +50,10 @@ public interface TangoProxy {
     boolean hasCommand(String name);
 
     /**
-     * Exports set_source method from DeviceProxy class
+     * Exports standard DeviceProxy API from TangORB
      *
-     * @param devSource DevSource
+     * @return this proxy DeviceProxy representation
      * @throws TangoProxyException
-     * @see <a href="http://www.esrf.eu/computing/cs/tango/tango_doc/kernel_doc/ds_prog/node7.html#SECTION00713300000000000000">Tango API C++ documentation</a>
      */
-    void setSource(DevSource devSource) throws TangoProxyException;
+    DeviceProxy toDeviceProxy();
 }

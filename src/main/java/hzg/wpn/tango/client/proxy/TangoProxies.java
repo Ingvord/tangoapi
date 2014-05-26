@@ -1,5 +1,7 @@
 package hzg.wpn.tango.client.proxy;
 
+import hzg.wpn.util.ReflectionUtils;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -16,7 +18,7 @@ public class TangoProxies {
         return new DeviceProxyWrapper(url);
     }
 
-    public static <T> T newTangoProxy(final String device, Class<T> clazz) throws TangoProxyException {
+    public static <T extends TangoProxy> T newTangoProxy(final String device, Class<T> clazz) throws TangoProxyException {
         //TODO check device and interface compatibility, i.e. clazz is the class of the device
 
         InvocationHandler handler = new InvocationHandler() {
@@ -24,6 +26,11 @@ public class TangoProxies {
 
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws TangoProxyException {
+                //if the method is from TangoProxy interface invoke it
+                if (ReflectionUtils.hasMethod(tangoProxy.getClass(), method.getName(), method.getParameterTypes()))
+                    return ReflectionUtils.invoke(method, tangoProxy, args, TangoProxyException.class);
+
+                //otherwise delegate method execution to read/writeAttribute or executeCommand
                 String methodName = method.getName();
 
                 if (tangoProxy.hasCommand(methodName))

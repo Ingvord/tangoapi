@@ -2,16 +2,14 @@ package hzg.wpn.tango.client.proxy;
 
 import fr.esrf.Tango.DevFailed;
 import fr.esrf.TangoApi.DeviceAttribute;
-import fr.esrf.TangoApi.events.ITangoChangeListener;
-import fr.esrf.TangoApi.events.ITangoPeriodicListener;
-import fr.esrf.TangoApi.events.TangoChangeEvent;
-import fr.esrf.TangoApi.events.TangoPeriodicEvent;
+import fr.esrf.TangoApi.events.*;
 import hzg.wpn.tango.client.data.TangoDataWrapper;
 import hzg.wpn.tango.client.data.format.TangoDataFormat;
 
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * This class is a common implementation for all ITangoXXXListener.
@@ -21,8 +19,9 @@ import java.util.Vector;
  * @author ingvord
  * @since 5/26/14@1:20 AM
  */
-public class TangoEventDispatcher<T> implements ITangoChangeListener, ITangoPeriodicListener { //TODO implement others
-    private final Vector<WeakReference<TangoEventListener<T>>> listeners = new Vector<>();
+public class TangoEventDispatcher<T> implements ITangoChangeListener, ITangoPeriodicListener,
+        ITangoArchiveListener, ITangoUserListener {
+    private final Queue<WeakReference<TangoEventListener<T>>> listeners = new ConcurrentLinkedQueue<>();
 
     public void addListener(TangoEventListener<T> listener) {
         listeners.add(new WeakReference<>(listener));
@@ -73,6 +72,24 @@ public class TangoEventDispatcher<T> implements ITangoChangeListener, ITangoPeri
 
     @Override
     public void periodic(TangoPeriodicEvent e) {
+        try {
+            dispatch(e.getValue());
+        } catch (DevFailed devFailed) {
+            handleError(devFailed);
+        }
+    }
+
+    @Override
+    public void archive(TangoArchiveEvent e) {
+        try {
+            dispatch(e.getValue());
+        } catch (DevFailed devFailed) {
+            handleError(devFailed);
+        }
+    }
+
+    @Override
+    public void user(TangoUserEvent e) {
         try {
             dispatch(e.getValue());
         } catch (DevFailed devFailed) {
