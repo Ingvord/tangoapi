@@ -30,7 +30,6 @@
 package hzg.wpn.tango.client.proxy;
 
 import com.google.common.base.Objects;
-import com.google.common.collect.Maps;
 import fr.esrf.Tango.DevFailed;
 import fr.esrf.TangoApi.*;
 import fr.esrf.TangoApi.events.TangoArchive;
@@ -84,38 +83,6 @@ public final class DeviceProxyWrapper implements TangoProxy {
         return this.proxy.name();
     }
 
-    /**
-     * Checks if attribute specified by name is exists.
-     *
-     * @param attrName name
-     * @return true if attribute is ok, false - otherwise
-     */
-    @Override
-    public boolean isAttributeExists(String attrName) {
-        try {
-            AttributeInfo attributeInfo = this.proxy.get_attribute_info(attrName);
-            return true;
-        } catch (DevFailed devFailed) {
-            return false;
-        }
-    }
-
-    /**
-     * Returns {@link TangoAttributeInfoWrapper} for the attribute specified by name or null.
-     *
-     * @param attrName name
-     * @return TangoAttributeInfoWrapper
-     * @throws TangoProxyException
-     */
-    @Override
-    public TangoAttributeInfoWrapper getAttributeInfo(String attrName) {
-        try {
-            AttributeInfo attributeInfo = this.proxy.get_attribute_info(attrName);
-            return new TangoAttributeInfoWrapper(attributeInfo);
-        } catch (DevFailed | UnknownTangoDataType ex) {
-            return null;
-        }
-    }
 
     /**
      * Reads attribute specified by name and returns value of appropriate type (if defined in TangoDataFormat and TangoDataTypes)
@@ -326,21 +293,6 @@ public final class DeviceProxyWrapper implements TangoProxy {
         }
     }
 
-    /**
-     * Returns {@link TangoCommandInfoWrapper} instance or null.
-     *
-     * @param cmdName
-     * @return
-     * @throws TangoProxyException
-     */
-    @Override
-    public TangoCommandInfoWrapper getCommandInfo(String cmdName) {
-        try {
-            return new TangoCommandInfoWrapper(proxy.command_query(cmdName));
-        } catch (DevFailed | UnknownTangoDataType devFailed) {
-            return null;
-        }
-    }
 
     @Override
     public String toString() {
@@ -349,22 +301,87 @@ public final class DeviceProxyWrapper implements TangoProxy {
                 .toString();
     }
 
-    //TODO replace with set of Strings (command names)
-    private final Map<String, Boolean> hasCommandCache = Maps.newHashMap();
+    private final ConcurrentMap<String, TangoAttributeInfoWrapper> attributeInfo = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, TangoCommandInfoWrapper> commandInfo = new ConcurrentHashMap<>();
+    private final Object commandInfoQueryGuard = new Object();
+    private final Object attributeInfoQueryGuard = new Object();
 
     /**
-     * Uses unsynchronized {@link java.util.HashMap} for caching values. This is thread safe because cached value is not changing over time
-     * and if two or more threads add a similar value - who cares. Performance might suffer in this case because threads perform network call.
-     * But this should be an issue and if it is implementation will be changed (introduce Future)
+     * Returns {@link TangoAttributeInfoWrapper} for the attribute specified by name or null.
      *
-     * @param name
-     * @return
+     * @param attrName name
+     * @return TangoAttributeInfoWrapper or null
+     * @throws TangoProxyException
      */
     @Override
-    public boolean hasCommand(String name) {
-        Boolean hasCommand = hasCommandCache.get(name);
-        if (hasCommand == null) hasCommandCache.put(name, hasCommand = getCommandInfo(name) != null);
-        return hasCommand;
+    public TangoAttributeInfoWrapper getAttributeInfo(String attrName) throws TangoProxyException {
+        TangoAttributeInfoWrapper attrInf = attributeInfo.get(attrName);
+        if (attrInf != null) return attrInf;
+        synchronized (attributeInfoQueryGuard) {
+            //double check
+            attrInf = attributeInfo.get(attrName);
+            if (attrInf != null) return attrInf;
+
+            try {
+                AttributeInfo info = proxy.get_attribute_info(attrName);
+                attrInf = new TangoAttributeInfoWrapper(info);
+                attributeInfo.put(attrName, attrInf);
+                return attrInf;
+            } catch (DevFailed devFailed) {
+                return null;
+            } catch (UnknownTangoDataType unknownTangoDataType) {
+                throw new TangoProxyException(unknownTangoDataType);
+            }
+        }
+    }
+
+    /**
+     * Checks if attribute specified by name is exists.
+     *
+     * @param attrName name
+     * @return true if attribute is ok, false - otherwise
+     */
+    @Override
+    public boolean hasAttribute(String attrName) {
+        TangoAttributeInfoWrapper attrInf = attributeInfo.get(attrName);
+        return attrInf != null;
+    }
+
+    /**
+     * Returns {@link TangoCommandInfoWrapper} instance or null.
+     *
+     * @param cmdName
+     * @return a TangoCommandInfoWrapper instance or null
+     * @throws TangoProxyException
+     */
+    @Override
+    public TangoCommandInfoWrapper getCommandInfo(String cmdName) throws TangoProxyException {
+        TangoCommandInfoWrapper cmdInf = commandInfo.get(cmdName);
+        if (cmdInf != null) return cmdInf;
+        //only one thread actually queries remote tango
+        synchronized (commandInfoQueryGuard) {
+            //double check whether other thread might already query info
+            cmdInf = commandInfo.get(cmdName);
+            if (cmdInf != null) return cmdInf;
+
+            try {
+                CommandInfo info = proxy.command_query(cmdName);
+                cmdInf = new TangoCommandInfoWrapper(info);
+                commandInfo.put(cmdName, cmdInf);
+                return cmdInf;
+            } catch (DevFailed devFailed) {
+                //TODO do we need to distinguish between different devFailed, aka connection error?
+                return null;
+            } catch (UnknownTangoDataType e) {
+                throw new TangoProxyException(e);
+            }
+        }
+    }
+
+    @Override
+    public boolean hasCommand(String name) throws TangoProxyException {
+        TangoCommandInfoWrapper cmdInf = getCommandInfo(name);
+        return cmdInf != null;
     }
 
     @Override

@@ -15,6 +15,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * This class is a common implementation for all ITangoXXXListener.
  * <p/>
  * Class contains its own listeners cache. Each listener is wrapped with WeakReference and therefore user must keep references to its callbacks.
+ * <p/>
+ * This class does not implement ITangoAttrConfigListener nor ITangoDataReadyListener. Use standard TangORB API
  *
  * @author ingvord
  * @since 5/26/14@1:20 AM

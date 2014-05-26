@@ -11,11 +11,16 @@ import java.util.Map;
  * @since 29.08.13
  */
 public interface TangoProxy {
+    /**
+     * Convenience method
+     *
+     * @return a name of this device, i.e. sys/tg_test/1
+     */
     String getName();
 
-    boolean isAttributeExists(String attrName);
+    boolean hasAttribute(String attrName);
 
-    TangoAttributeInfoWrapper getAttributeInfo(String attrName);
+    TangoAttributeInfoWrapper getAttributeInfo(String attrName) throws TangoProxyException;
 
     <T> T readAttribute(String attrName) throws TangoProxyException;
 
@@ -45,9 +50,9 @@ public interface TangoProxy {
 
     public void unsubscribeFromEvent(String attrName, TangoEvent event) throws TangoProxyException;
 
-    TangoCommandInfoWrapper getCommandInfo(String cmdName);
+    TangoCommandInfoWrapper getCommandInfo(String cmdName) throws TangoProxyException;
 
-    boolean hasCommand(String name);
+    boolean hasCommand(String name) throws TangoProxyException;
 
     /**
      * Exports standard DeviceProxy API from TangORB

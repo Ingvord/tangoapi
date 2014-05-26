@@ -217,7 +217,7 @@ public class ITTangoProxyWrapperTest {
         assertArrayEquals(new double[]{0.4D, 0.1D}, result[3], 0.0);
     }
 
-    @Test(expected = TangoProxyException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testWriteReadAttribute_DoubleArrArr_Failed() throws Exception {
         TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 

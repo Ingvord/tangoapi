@@ -39,6 +39,7 @@ import hzg.wpn.tango.client.util.TangoUtils;
  * @since 07.06.12
  */
 public class TangoProxyException extends Exception {
+    //TODO some useful fields
     public TangoProxyException(DevFailed devFailed) {
         super(TangoUtils.convertDevFailedToException(devFailed));
     }
