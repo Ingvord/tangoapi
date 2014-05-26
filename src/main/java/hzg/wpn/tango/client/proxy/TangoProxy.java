@@ -1,6 +1,7 @@
 package hzg.wpn.tango.client.proxy;
 
 import fr.esrf.TangoApi.DeviceProxy;
+import fr.esrf.TangoApi.events.TangoEventsAdapter;
 import hzg.wpn.tango.client.attribute.Quality;
 import org.javatuples.Triplet;
 
@@ -61,4 +62,6 @@ public interface TangoProxy {
      * @throws TangoProxyException
      */
     DeviceProxy toDeviceProxy();
+
+    TangoEventsAdapter toTangoEventsAdapter();
 }
