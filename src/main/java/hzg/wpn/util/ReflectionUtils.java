@@ -31,11 +31,7 @@ public class ReflectionUtils {
             try {
                 throw exceptionToThrow.getConstructor(Throwable.class).newInstance(e);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e1) {
-                StringBuilder sb = new StringBuilder();
-                // Send all output to the Appendable object sb
-                Formatter formatter = new Formatter(sb, Locale.US);
-                formatter.format("Can not invoke method[%1$s] on object[%2$s] with args[%3$s]", method.getName(), object.toString(), Arrays.toString(args));
-                throw new RuntimeException(sb.toString(), e);
+                throw new RuntimeException(String.format("Can not invoke method[%1$s] on object[%2$s] with args[%3$s]", method.getName(), object.toString(), Arrays.toString(args)), e);
             }
         }
 
