@@ -3,8 +3,6 @@ package hzg.wpn.util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Formatter;
-import java.util.Locale;
 
 /**
  * @author Igor Khokhriakov <igor.khokhriakov@hzg.de>
