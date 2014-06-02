@@ -36,13 +36,14 @@
 <body>
 <p>This is a proxy framework. It simplifies usage of fr.esrf.TangoApi.DeviceProxy.</p>
 
-<p>Main class of this package is {@link hzg.wpn.tango.client.proxy.TangoProxyWrapper}. {@link
-    hzg.wpn.tango.client.proxy.TangoEventCallback}
-    is used in event mechanism.</p>
+<p>Main interface of this package is {@link org.tango.client.ez.proxy.TangoProxy}. {@link
+    org.tango.client.ez.proxy.TangoEventListener} is used in event mechanism.</p>
 
-<p>User creates an instance of {@link hzg.wpn.tango.client.proxy.TangoProxyWrapper} through constructor:</p>
-<pre>public TangoProxyWrapper(String deviceName)</pre>
-<p>Internally TangoProxyWrapper creates a {@link fr.esrf.TangoApi.DeviceProxy} and operates on it. It greatly simplifies
+<p>User creates an instance of {@link org.tango.client.ez.proxy.TangoProxy} using one of the {@link
+    org.tango.client.ez.proxy.TangoProxies} factory method:</p>
+<pre>TangoProxies.newDeviceProxyWrapper(String deviceName)</pre>
+<p>Internally DeviceProxyWrapper creates a {@link fr.esrf.TangoApi.DeviceProxy} and operates on it. It greatly
+    simplifies
     the usage of DeviceProxy in client code.
     Consider the following example: we want to read a double attribute from proxy. Usually we would need to write
     approximately the following code:</p>
@@ -66,29 +67,32 @@
     }
     ...
 </pre>
-<p>Using TangoProxyWrapper we can achieve the same result with the following code:</p>
+<p>Using TangoProxy we can achieve the same result with the following code:</p>
 <pre>
-    TangoProxyWrapper proxy = new TangoProxyWrapper("some-device");
+    TangoProxy proxy = TangoProxies.newDeviceProxyWrapper("some-device");
     double result = proxy.&lt;Double>readAttribute("some-attribute");
     ...
 </pre>
 <p>
     TangoProxyWrapper provides high-level methods to interact with the device: command execution, event un/subscription,
     checking attributes etc.
-    See {@link hzg.wpn.tango.client.proxy.TangoProxyWrapper} for more details.
+    See {@link org.tango.client.ez.proxy.DeviceProxyWrapper} for more details.
 </p>
 <hr/>
 <h1>Event subscription</h1>
 
-<p>Client subscribes to the event through {@link hzg.wpn.tango.client.proxy.TangoProxyWrapper#subscribeEvent(String,
-    TangoEvent, TangoEventCallback)}. TangoEventCallback defines two methods: onEvent({@link
-    hzg.wpn.tango.client.proxy.EventData})
-    and onError(Throwable). EventData contains a value of appropriate type and a time. Consider the following
+<p>Client subscribes to the event through {@link org.tango.client.ez.proxy.TangoProxy#subscribeToEvent(String,
+    org.tango.client.ez.proxy.TangoEvent)}. TangoEventListeners defines two methods: onEvent({@link
+    org.tango.client.ez.proxy.EventData}) and onError(Throwable). Users then add listeners using {@link
+    org.tango.client.ez.proxy.TangoProxy#addEventListener(java.lang.String,
+    org.tango.client.ez.proxy.TangoEvent, org.tango.client.ez.proxy.TangoEventListener)}. EventData contains a value of
+    appropriate type and a time. Consider the following
     example:</p>
 <pre>
-    TangoProxyWrapper proxy = new TangoProxyWrapper("some-device");
+    TangoProxy proxy = TangoProxies.newDeviceProxyWrapper("some-device");
     ...
-    int eventId = proxy.subscribeEvent("some-attribute",TangoEvent.CHANGE,new TangoEventCallback&lt;Double>(){
+    proxy.subscribeToEvent("some-attribute",TangoEvent.CHANGE);
+    proxy.addListener(new TangoEventCallback&lt;Double>(){
         public void onEvent(EventData&lt;Double> data){
             //do something with data
         }
@@ -99,12 +103,15 @@
     });
     ...
     //now unsubscribe
-    proxy.unsubscribeEvent(eventId);
+    proxy.unsubscribeFromEvent(eventId);
     ...
 </pre>
 <p>
-    Of course user should know which attribute of which type.
+    User must know which attribute of which type.
 </p>
 
+<p>
+    For more info see <a href="https://bitbucket.org/hzgwpn/tangoapi/wiki/Home">project's wiki</a>
+</p>
 </body>
 </html>

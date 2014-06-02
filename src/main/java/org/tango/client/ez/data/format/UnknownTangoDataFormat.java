@@ -128,7 +128,7 @@ public class UnknownTangoDataFormat<T> extends TangoDataFormat<T> {
      * Returned type does not used in insert/extract methods
      *
      * @param devDataType int code of TangoConst.Tango_DEV_XXX
-     * @return
+     * @return UnsupportedOperationException
      * @throws UnsupportedOperationException
      */
     @Override

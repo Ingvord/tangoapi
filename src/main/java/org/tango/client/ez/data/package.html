@@ -40,7 +40,7 @@
 
 <h1>TangoDataWrapper</h1>
 
-<p>{@link hzg.wpn.tango.client.data.TangoDataWrapper} is an abstract class which provides polymorphic interface to</p>
+<p>{@link org.tango.client.ez.data.TangoDataWrapper} is an abstract class which provides polymorphic interface to</p>
 <ul>
     <li>fr.esrf.TangoApi.DeviceData</li>
     <li>fr.esrf.TangoApi.DeviceAttribute</li>
@@ -71,7 +71,7 @@
 <hr/>
 <h1>TangoDataFormat</h1>
 
-<p>{@link hzg.wpn.tango.client.data.format.TangoDataFormat} is an abstract class from which three classes are derived:
+<p>{@link org.tango.client.ez.data.format.TangoDataFormat} is an abstract class from which three classes are derived:
     Image,
     Spectrum and Scalar.
     Appropriate instance is created via static method TangoDataFormat.createXXX() or TangoDataFormat.createForAlias(int)
@@ -91,20 +91,20 @@
     double[] result = format.extract(dataWrapper,typeAlias);
     ...
 </pre>
-<p>Example above demonstrates the way how {@link hzg.wpn.tango.client.proxy.TangoProxyWrapper#readAttribute(String)} is
+<p>Example above demonstrates the way how {@link org.tango.client.ez.proxy.TangoProxy#readAttribute(String)} is
     implemented.</p>
 <hr/>
 <h1>TangoDataType</h1>
 
-<p>{@link hzg.wpn.tango.client.data.type.TangoDataType} is an abstract class which instances represent corresponding
+<p>{@link org.tango.client.ez.data.type.TangoDataType} is an abstract class which instances represent corresponding
     TangoConst.Tango_DEV_XXX data type (String, boolean, long, double, double[], double[][] etc)
     Instances organized into three groups: Scalar, Spectrum, Image. Instance of each group is located in the
     corresponding class. For instance scalar double is represented by {@link
-    hzg.wpn.tango.client.data.type.ScalarTangoDataTypes#DOUBLE}.
+    org.tango.client.ez.data.type.ScalarTangoDataTypes#DOUBLE}.
 </p>
 
-<p>TangoDataType uses {@link hzg.wpn.tango.client.data.type.ValueExtracter} and {@link
-    hzg.wpn.tango.client.data.type.ValueInserter}. Each of them knows precisely how to extract or insert data. For
+<p>TangoDataType uses {@link org.tango.client.ez.data.type.ValueExtracter} and {@link
+    org.tango.client.ez.data.type.ValueInserter}. Each of them knows precisely how to extract or insert data. For
     instance:</p>
 <pre>
     new ValueInserter&lt;String>(){
