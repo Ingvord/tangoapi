@@ -2,8 +2,8 @@ package org.tango.client.ez.proxy;
 
 import fr.esrf.TangoApi.DeviceProxy;
 import fr.esrf.TangoApi.events.TangoEventsAdapter;
-import org.tango.client.ez.attribute.Quality;
 import org.javatuples.Triplet;
+import org.tango.client.ez.attribute.Quality;
 
 import java.util.Map;
 
@@ -19,7 +19,7 @@ public interface TangoProxy {
      */
     String getName();
 
-    boolean hasAttribute(String attrName);
+    boolean hasAttribute(String attrName) throws TangoProxyException;
 
     TangoAttributeInfoWrapper getAttributeInfo(String attrName) throws TangoProxyException;
 

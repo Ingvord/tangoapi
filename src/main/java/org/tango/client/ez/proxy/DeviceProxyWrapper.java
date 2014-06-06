@@ -33,12 +33,12 @@ import com.google.common.base.Objects;
 import fr.esrf.Tango.DevFailed;
 import fr.esrf.TangoApi.*;
 import fr.esrf.TangoApi.events.TangoEventsAdapter;
+import org.javatuples.Triplet;
 import org.tango.client.ez.attribute.Quality;
 import org.tango.client.ez.data.TangoDataWrapper;
 import org.tango.client.ez.data.TangoDeviceAttributeWrapper;
 import org.tango.client.ez.data.format.TangoDataFormat;
 import org.tango.client.ez.data.type.*;
-import org.javatuples.Triplet;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.AbstractMap;
@@ -348,8 +348,8 @@ public final class DeviceProxyWrapper implements TangoProxy {
      * @return true if attribute is ok, false - otherwise
      */
     @Override
-    public boolean hasAttribute(String attrName) {
-        TangoAttributeInfoWrapper attrInf = attributeInfo.get(attrName);
+    public boolean hasAttribute(String attrName) throws TangoProxyException {
+        TangoAttributeInfoWrapper attrInf = getAttributeInfo(attrName);
         return attrInf != null;
     }
 
