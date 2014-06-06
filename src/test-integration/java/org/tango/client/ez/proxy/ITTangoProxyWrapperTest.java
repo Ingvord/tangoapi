@@ -49,6 +49,10 @@ public class ITTangoProxyWrapperTest {
     public static final String TANGO_DEV_NAME = "test/local/0";
     public static final int TANGO_PORT = 16547;
     public static final String TEST_TANGO = "tango://localhost:" + TANGO_PORT + "/" + TANGO_DEV_NAME + "#dbase=no";
+    public static final String X64 = "x64";
+    public static final String LINUX = "linux";
+    public static final String WINDOWS_7 = "windows 7";
+    public static final String AMD64 = "amd64";
 
     private static Process PRC;
 
@@ -56,7 +60,17 @@ public class ITTangoProxyWrapperTest {
     public static void beforeClass() throws Exception {
         String crtDir = System.getProperty("user.dir");
         //TODO define executable according to current OS
-        StringBuilder bld = new StringBuilder(crtDir).append("/exec/tango/win64/").append("TangoTest");
+        String os = System.getProperty("os.name");
+        String arch = System.getProperty("os.arch");
+        StringBuilder bld = new StringBuilder(crtDir);
+        //TODO other platforms or rely on the environmet
+        if (LINUX.equalsIgnoreCase(os) && AMD64.equals(arch))
+            bld.append("/exec/tango/debian/").append("TangoTest");
+        else if (WINDOWS_7.equalsIgnoreCase(os) && AMD64.equals(arch))
+            bld.append("\\exec\\tango\\win64\\").append("TangoTest");
+        else
+            throw new RuntimeException(String.format("Unsupported platform: name=%s arch=%s", os, arch));
+
         PRC = new ProcessBuilder(bld.toString(), "test", "-ORBendPoint", "giop:tcp::" + TANGO_PORT, "-nodb", "-dlist", TANGO_DEV_NAME)
                 .start();
 
@@ -88,6 +102,7 @@ public class ITTangoProxyWrapperTest {
             }
         }).start();
     }
+
 
     @Test(expected = TangoProxyException.class)
     public void testReadAttribute_Failed() throws Exception {
