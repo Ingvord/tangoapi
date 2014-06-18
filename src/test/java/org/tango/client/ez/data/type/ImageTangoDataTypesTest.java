@@ -1,40 +1,45 @@
-/*
- * The main contributor to this project is Institute of Materials Research,
- * Helmholtz-Zentrum Geesthacht,
- * Germany.
- *
- * This project is a contribution of the Helmholtz Association Centres and
- * Technische Universitaet Muenchen to the ESS Design Update Phase.
- *
- * The project's funding reference is FKZ05E11CG1.
- *
- * Copyright (c) 2012. Institute of Materials Research,
- * Helmholtz-Zentrum Geesthacht,
- * Germany.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
- */
+// +======================================================================
+//   $Source$
+//
+//   Project:   ezTangORB
+//
+//   Description:  java source code for the simplified TangORB API.
+//
+//   $Author: Igor Khokhriakov <igor.khokhriakov@hzg.de> $
+//
+//   Copyright (C) :      2014
+//                        Helmholtz-Zentrum Geesthacht
+//                        Max-Planck-Strasse, 1, Geesthacht 21502
+//                        GERMANY
+//                        http://hzg.de
+//
+//   This file is part of Tango.
+//
+//   Tango is free software: you can redistribute it and/or modify
+//   it under the terms of the GNU Lesser General Public License as published by
+//   the Free Software Foundation, either version 3 of the License, or
+//   (at your option) any later version.
+//
+//   Tango is distributed in the hope that it will be useful,
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//   GNU Lesser General Public License for more details.
+//
+//   You should have received a copy of the GNU Lesser General Public License
+//   along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+//
+//  $Revision: 25721 $
+//
+// -======================================================================
 
 package org.tango.client.ez.data.type;
 
 import fr.esrf.Tango.AttrDataFormat;
 import fr.esrf.Tango.DevEncoded;
 import fr.esrf.TangoApi.DeviceAttribute;
+import org.junit.Test;
 import org.tango.client.ez.data.TangoDataWrapper;
 import org.tango.client.ez.data.format.TangoDataFormat;
-import org.junit.Test;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

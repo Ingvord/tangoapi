@@ -1,31 +1,36 @@
-/*
- * The main contributor to this project is Institute of Materials Research,
- * Helmholtz-Zentrum Geesthacht,
- * Germany.
- *
- * This project is a contribution of the Helmholtz Association Centres and
- * Technische Universitaet Muenchen to the ESS Design Update Phase.
- *
- * The project's funding reference is FKZ05E11CG1.
- *
- * Copyright (c) 2012. Institute of Materials Research,
- * Helmholtz-Zentrum Geesthacht,
- * Germany.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
- */
+// +======================================================================
+//   $Source$
+//
+//   Project:   ezTangORB
+//
+//   Description:  java source code for the simplified TangORB API.
+//
+//   $Author: Igor Khokhriakov <igor.khokhriakov@hzg.de> $
+//
+//   Copyright (C) :      2014
+//                        Helmholtz-Zentrum Geesthacht
+//                        Max-Planck-Strasse, 1, Geesthacht 21502
+//                        GERMANY
+//                        http://hzg.de
+//
+//   This file is part of Tango.
+//
+//   Tango is free software: you can redistribute it and/or modify
+//   it under the terms of the GNU Lesser General Public License as published by
+//   the Free Software Foundation, either version 3 of the License, or
+//   (at your option) any later version.
+//
+//   Tango is distributed in the hope that it will be useful,
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//   GNU Lesser General Public License for more details.
+//
+//   You should have received a copy of the GNU Lesser General Public License
+//   along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+//
+//  $Revision: 25721 $
+//
+// -======================================================================
 
 package org.tango.client.ez.proxy;
 
@@ -102,7 +107,10 @@ public final class DeviceProxyWrapper implements TangoProxy {
         try {
             DeviceAttribute deviceAttribute = this.proxy.read_attribute(attrName);
             return readAttributeValue(attrName, deviceAttribute);
-        } catch (DevFailed | ValueExtractionException e) {
+        } catch (DevFailed e) {
+            logger.error("DeviceProxyWrapper#readAttribute has failed.", TangoUtils.createDevError(e));
+            throw new TangoProxyException(e);
+        } catch (ValueExtractionException e) {
             logger.error("DeviceProxyWrapper#readAttribute has failed.", e);
             throw new TangoProxyException(e);
         }
@@ -124,7 +132,10 @@ public final class DeviceProxyWrapper implements TangoProxy {
 
             long time = deviceAttribute.getTimeValMillisSec();
             return new AbstractMap.SimpleImmutableEntry<T, Long>(result, time);
-        } catch (DevFailed | ValueExtractionException e) {
+        } catch (DevFailed e) {
+            logger.error("DeviceProxyWrapper#readAttributeValueAndTime has failed.", TangoUtils.createDevError(e));
+            throw new TangoProxyException(e);
+        } catch (ValueExtractionException e) {
             logger.error("DeviceProxyWrapper#readAttributeValueAndTime has failed.", e);
             throw new TangoProxyException(e);
         }
@@ -156,7 +167,10 @@ public final class DeviceProxyWrapper implements TangoProxy {
             Quality quality = Quality.fromAttrQuality(deviceAttribute.getQuality());
 
             return new Triplet<T, Long, Quality>(result, time, quality);
-        } catch (DevFailed | ValueExtractionException e) {
+        } catch (DevFailed e) {
+            logger.error("DeviceProxyWrapper#readAttributeValueTimeQuality has failed.", TangoUtils.createDevError(e));
+            throw new TangoProxyException(e);
+        } catch (ValueExtractionException e) {
             logger.error("DeviceProxyWrapper#readAttributeValueTimeQuality has failed.", e);
             throw new TangoProxyException(e);
         }
@@ -181,7 +195,10 @@ public final class DeviceProxyWrapper implements TangoProxy {
             TangoDataFormat<T> dataFormat = TangoDataFormat.createForAttrDataFormat(attributeInfo.data_format);
             dataFormat.insert(dataWrapper, value, devDataType);
             this.proxy.write_attribute(deviceAttribute);
-        } catch (DevFailed | ValueInsertionException e) {
+        } catch (DevFailed e) {
+            logger.error("DeviceProxyWrapper#writeAttribute has failed.", TangoUtils.createDevError(e));
+            throw new TangoProxyException(e);
+        } catch (ValueInsertionException e) {
             logger.error("DeviceProxyWrapper#writeAttribute has failed.", e);
             throw new TangoProxyException(e);
         }
@@ -218,11 +235,11 @@ public final class DeviceProxyWrapper implements TangoProxy {
         }
     }
 
-    private final ConcurrentMap<String, TangoEventDispatcher<?>> dispatchers = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, TangoEventDispatcher<?>> dispatchers = new ConcurrentHashMap<String, TangoEventDispatcher<?>>();
 
     private final Object subscriptionGuard = new Object();
 
-    private final Set<String> subscriptionSet = new HashSet<>();
+    private final Set<String> subscriptionSet = new HashSet<String>();
 
     @Override
     public void subscribeToEvent(String attrName, TangoEvent event) throws TangoProxyException {
@@ -234,7 +251,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
 
         if (dispatcher != null) return;
 
-        dispatcher = new TangoEventDispatcher<>();
+        dispatcher = new TangoEventDispatcher<Object>();
         TangoEventDispatcher<?> oldDispatcher = dispatchers.putIfAbsent(eventKey, dispatcher);
         if (oldDispatcher != null) dispatcher = oldDispatcher;//this may create unused dispatcher instance
 
@@ -320,8 +337,8 @@ public final class DeviceProxyWrapper implements TangoProxy {
                 .toString();
     }
 
-    private final ConcurrentMap<String, TangoAttributeInfoWrapper> attributeInfo = new ConcurrentHashMap<>();
-    private final ConcurrentMap<String, TangoCommandInfoWrapper> commandInfo = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, TangoAttributeInfoWrapper> attributeInfo = new ConcurrentHashMap<String, TangoAttributeInfoWrapper>();
+    private final ConcurrentMap<String, TangoCommandInfoWrapper> commandInfo = new ConcurrentHashMap<String, TangoCommandInfoWrapper>();
     private final Object commandInfoQueryGuard = new Object();
     private final Object attributeInfoQueryGuard = new Object();
 
