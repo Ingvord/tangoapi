@@ -32,14 +32,15 @@
 //
 // -======================================================================
 
-package org.tango.client.ez.data.type;
+package org.tango.client.ez.data;
 
 import fr.esrf.Tango.AttrDataFormat;
 import fr.esrf.Tango.DevEncoded;
 import fr.esrf.TangoApi.DeviceAttribute;
 import org.junit.Test;
-import org.tango.client.ez.data.TangoDataWrapper;
 import org.tango.client.ez.data.format.TangoDataFormat;
+import org.tango.client.ez.data.type.ImageTangoDataTypes;
+import org.tango.client.ez.data.type.TangoDataType;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -56,7 +57,7 @@ import static org.junit.Assert.assertArrayEquals;
 public class ImageTangoDataTypesTest {
     @Test
     public void testExtractHelper() throws Exception {
-        double[][] result = (double[][]) new ImageTangoDataTypes.InsertExtractHelper().extract(new double[]{0., 0., 15., 50.0, 0., 0., 13., 0., 0., 0., 25., 0.}, 3, 4);
+        double[][] result = (double[][]) TangoImage.extract(new double[]{0., 0., 15., 50.0, 0., 0., 13., 0., 0., 0., 25., 0.}, 3, 4);
 
         assertArrayEquals(new double[]{0., 0., 15.}, result[0], 0.0);
         assertArrayEquals(new double[]{50., 0., 0.}, result[1], 0.0);
@@ -67,7 +68,7 @@ public class ImageTangoDataTypesTest {
     @Test
     public void testExtractHelper_Multi() throws Exception {
         System.setProperty(ImageTangoDataTypes.TANGO_IMAGE_EXTRACTER_USES_MULTITHREADING, "true");
-        double[][] result = (double[][]) new ImageTangoDataTypes.InsertExtractHelper().extract(new double[]{0., 0., 15., 50.0, 0., 0., 13., 0., 0., 25.0, 0., 0.}, 3, 4);
+        double[][] result = (double[][]) TangoImage.extract(new double[]{0., 0., 15., 50.0, 0., 0., 13., 0., 0., 25.0, 0., 0.}, 3, 4);
 
         assertArrayEquals(new double[]{0., 0., 15.}, result[0], 0.0);
         assertArrayEquals(new double[]{50., 0., 0.}, result[1], 0.0);
@@ -86,7 +87,7 @@ public class ImageTangoDataTypesTest {
         }
 
         long start = System.nanoTime();
-        new ImageTangoDataTypes.InsertExtractHelper().extract(hugeArray, 9000, 9000);
+        TangoImage.extract(hugeArray, 9000, 9000);
         long end = System.nanoTime();
 
         System.out.println("Total time:" + TimeUnit.NANOSECONDS.toMillis(end - start));
@@ -95,25 +96,25 @@ public class ImageTangoDataTypesTest {
         //System.setProperty(ImageTangoDataTypes.TANGO_IMAGE_EXTRACTER_USES_MULTITHREADING,"false");
 
         start = System.nanoTime();
-        new ImageTangoDataTypes.InsertExtractHelper().extract(hugeArray, 9000, 9000);
+        TangoImage.extract(hugeArray, 9000, 9000);
         end = System.nanoTime();
 
         System.out.println("Total time:" + TimeUnit.NANOSECONDS.toMillis(end - start));
 
         start = System.nanoTime();
-        new ImageTangoDataTypes.InsertExtractHelper().extract(hugeArray, 9000, 9000);
+        TangoImage.extract(hugeArray, 9000, 9000);
         end = System.nanoTime();
 
         System.out.println("Total time:" + TimeUnit.NANOSECONDS.toMillis(end - start));
 
         start = System.nanoTime();
-        new ImageTangoDataTypes.InsertExtractHelper().extract(hugeArray, 9000, 9000);
+        TangoImage.extract(hugeArray, 9000, 9000);
         end = System.nanoTime();
 
         System.out.println("Total time:" + TimeUnit.NANOSECONDS.toMillis(end - start));
 
         start = System.nanoTime();
-        new ImageTangoDataTypes.InsertExtractHelper().extract(hugeArray, 9000, 9000);
+        TangoImage.extract(hugeArray, 9000, 9000);
         end = System.nanoTime();
 
         System.out.println("Total time:" + TimeUnit.NANOSECONDS.toMillis(end - start));
@@ -132,7 +133,7 @@ public class ImageTangoDataTypesTest {
             }
 
             long start = System.nanoTime();
-            new ImageTangoDataTypes.InsertExtractHelper().extract(hugeArray, 3056, 3056);
+            TangoImage.extract(hugeArray, 3056, 3056);
             long end = System.nanoTime();
 
             long duration = end - start;
@@ -148,20 +149,22 @@ public class ImageTangoDataTypesTest {
 
     @Test
     public void testInsertHelper() throws Exception {
-        Object result = new ImageTangoDataTypes.InsertExtractHelper().insert(new double[][]{{0., 11., 0.}, {50.0, 0., 33.}, {0., 22., 0.}}, 3, 3);
+        Object result = TangoImage.insert(new double[][]{{0., 11., 0.}, {50.0, 0., 33.}, {0., 22., 0.}}, 3, 3);
 
         assertArrayEquals(new double[]{0., 11., 0., 50.0, 0., 33., 0., 22., 0.}, (double[]) result, 0.0);
     }
 
     @Test
     public void testImageDataType_extract() throws Exception {
-        TangoDataType<double[][]> type = ImageTangoDataTypes.DOUBLE_IMAGE;
+        TangoDataType<TangoImage<double[]>> type = ImageTangoDataTypes.DOUBLE_IMAGE;
 
         DeviceAttribute attribute = new DeviceAttribute("test", new double[]{1., 3., 2., 4.}, 2, 2);
 
         TangoDataWrapper attrWrapper = TangoDataWrapper.create(attribute);
 
-        double[][] result = type.extract(attrWrapper);
+        TangoImage<double[]> image = type.extract(attrWrapper);
+
+        double[][] result = image.to2DArray();
 
         assertArrayEquals(new double[]{1., 3.}, result[0], 0.0);
         assertArrayEquals(new double[]{2., 4.}, result[1], 0.0);
@@ -169,13 +172,13 @@ public class ImageTangoDataTypesTest {
 
     @Test
     public void testImageDataType_insert() throws Exception {
-        TangoDataType<double[][]> type = ImageTangoDataTypes.DOUBLE_IMAGE;
+        TangoDataType<TangoImage<double[]>> type = ImageTangoDataTypes.DOUBLE_IMAGE;
 
         DeviceAttribute attribute = new DeviceAttribute("test");
 
         TangoDataWrapper attrWrapper = TangoDataWrapper.create(attribute);
 
-        type.insert(attrWrapper, new double[][]{{1., 3.}, {2., 4.}});
+        type.insert(attrWrapper, TangoImage.<double[]>convertFrom2DArray(new double[][]{{1., 3.}, {2., 4.}}));
 
         assertArrayEquals(new double[]{1., 3., 2., 4.}, attribute.extractDoubleArray(), 0.0);
     }
