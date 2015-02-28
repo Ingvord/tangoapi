@@ -178,7 +178,7 @@ public class ImageTangoDataTypesTest {
 
         TangoDataWrapper attrWrapper = TangoDataWrapper.create(attribute);
 
-        type.insert(attrWrapper, TangoImage.<double[]>convertFrom2DArray(new double[][]{{1., 3.}, {2., 4.}}));
+        type.insert(attrWrapper, TangoImage.<double[]>from2DArray(new double[][]{{1., 3.}, {2., 4.}}));
 
         assertArrayEquals(new double[]{1., 3., 2., 4.}, attribute.extractDoubleArray(), 0.0);
     }

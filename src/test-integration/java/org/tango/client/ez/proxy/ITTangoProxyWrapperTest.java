@@ -37,8 +37,13 @@ package org.tango.client.ez.proxy;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.tango.client.ez.data.TangoImage;
+import org.tango.client.ez.util.TangoImageUtils;
 
+import javax.imageio.ImageIO;
+import java.awt.image.RenderedImage;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
@@ -228,12 +233,32 @@ public class ITTangoProxyWrapperTest {
         instance.readAttribute("double_image");
         instance.readAttribute("double_image");
         instance.readAttribute("double_image");
-        double[][] result = instance.readAttribute("double_image");
+        TangoImage<double[]> image = instance.readAttribute("double_image");
+        double[][] result = image.to2DArray();
 
         assertArrayEquals(new double[]{0.1D, 0.4D}, result[0], 0.0);
         assertArrayEquals(new double[]{0.9D, 0.8D}, result[1], 0.0);
         assertArrayEquals(new double[]{0.8D, 0.9D}, result[2], 0.0);
         assertArrayEquals(new double[]{0.4D, 0.1D}, result[3], 0.0);
+    }
+
+//    @Test
+    public void testReadImage_fromWebCam() throws Exception{
+        TangoProxy instance = new DeviceProxyWrapper("tango://localhost:10000/development/webcam/0");
+        TangoImage<int[]> image = instance.readAttribute("image");
+
+        RenderedImage renderedImage = TangoImageUtils.toRenderedImage_sRGB(image.data, image.width, image.height);
+        ImageIO.write(renderedImage, "JPEG", Files.createTempFile("testReadImage",".jpeg").toFile());
+    }
+
+    @Test
+    public void testReadImage() throws Exception{
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
+        TangoImage<float[]> image = instance.readAttribute("float_image_ro");
+
+
+        RenderedImage renderedImage = TangoImageUtils.toRenderedImageDedicatedComponents_GRAY(image.data, image.width, image.height);
+        ImageIO.write(renderedImage, "bmp", Files.createTempFile("testReadImage",".bmp").toFile());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -247,7 +272,7 @@ public class ITTangoProxyWrapperTest {
     public void testWriteReadAttribute_DoubleArrArr_TooBig() throws Exception {
         TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
-        instance.writeAttribute("double_image", new double[256][256]);//251 max
+        instance.writeAttribute("double_image", new double[256*256]);//251 max
     }
 
     @Test

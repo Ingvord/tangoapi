@@ -2,8 +2,6 @@ package org.tango.client.ez.data;
 
 import com.google.common.base.Preconditions;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.lang.reflect.Array;
 
 /**
@@ -28,11 +26,7 @@ public class TangoImage<T> {
         return (T[]) extract(data, width, height);//resulting array is of type T see first code line of extract
     }
 
-    public RenderedImage toRenderedImage(){
-        return null;//TODO
-    }
-
-    public static <T> TangoImage<T> convertFrom2DArray(Object src){
+    public static <T> TangoImage<T> from2DArray(T[] src){
         Preconditions.checkArgument(src.getClass().isArray(), "Array type is expected here!");
         int dimX = Array.getLength(Array.get(src, 0));
         int dimY = Array.getLength(src);
