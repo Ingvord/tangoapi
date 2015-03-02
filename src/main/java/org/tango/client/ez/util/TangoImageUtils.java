@@ -4,11 +4,8 @@ import com.google.common.base.Preconditions;
 
 import java.awt.*;
 import java.awt.color.ColorSpace;
-import java.awt.color.ICC_ColorSpace;
-import java.awt.color.ICC_Profile;
 import java.awt.image.*;
 import java.lang.reflect.Array;
-import java.util.Objects;
 
 /**
  * @author Igor Khokhriakov <igor.khokhriakov@hzg.de>
@@ -143,8 +140,8 @@ public class TangoImageUtils {
         WritableRaster raster = Raster.createWritableRaster(sm, db, null);
 
         ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
-        ColorModel cm = new ComponentColorModel(cs, false, false, Transparency.OPAQUE, db.getDataType());
-        return toRenderedImage(cm, raster);
+
+        ColorModel cm = new ComponentColorModel(cs, false, true, Transparency.OPAQUE, db.getDataType());        return toRenderedImage(cm, raster);
     }
 
     private static RenderedImage toRenderedImage(ColorModel cm, WritableRaster wr){

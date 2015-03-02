@@ -37,7 +37,7 @@ package org.tango.client.ez.proxy;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.tango.client.ez.data.TangoImage;
+import org.tango.client.ez.data.type.TangoImage;
 import org.tango.client.ez.util.TangoImageUtils;
 
 import javax.imageio.ImageIO;
@@ -47,6 +47,7 @@ import java.nio.file.Files;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertArrayEquals;
 
 /**
@@ -224,17 +225,19 @@ public class ITTangoProxyWrapperTest {
     public void testWriteReadAttribute_DoubleArrArr() throws Exception {
         TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
-        instance.writeAttribute("double_image", new double[][]{{0.1D, 0.4D}, {0.9D, 0.8D}, {0.8D, 0.9D}, {0.4D, 0.1D}});
-        instance.writeAttribute("double_image", new double[][]{{0.1D, 0.4D}, {0.9D, 0.8D}, {0.8D, 0.9D}, {0.4D, 0.1D}});
-        instance.writeAttribute("double_image", new double[][]{{0.1D, 0.4D}, {0.9D, 0.8D}, {0.8D, 0.9D}, {0.4D, 0.1D}});
-        instance.writeAttribute("double_image", new double[][]{{0.1D, 0.4D}, {0.9D, 0.8D}, {0.8D, 0.9D}, {0.4D, 0.1D}});
-        instance.writeAttribute("double_image", new double[][]{{0.1D, 0.4D}, {0.9D, 0.8D}, {0.8D, 0.9D}, {0.4D, 0.1D}});
+        double[][] value = {{0.1D, 0.4D}, {0.9D, 0.8D}, {0.8D, 0.9D}, {0.4D, 0.1D}};
+        TangoImage<double[]> image_in = TangoImage.from2DArray(value);
+        instance.writeAttribute("double_image", image_in);
+        instance.writeAttribute("double_image", image_in);
+        instance.writeAttribute("double_image", image_in);
+        instance.writeAttribute("double_image", image_in);
+        instance.writeAttribute("double_image", image_in);
 
         instance.readAttribute("double_image");
         instance.readAttribute("double_image");
         instance.readAttribute("double_image");
-        TangoImage<double[]> image = instance.readAttribute("double_image");
-        double[][] result = image.to2DArray();
+        TangoImage<double[]> image_out = instance.readAttribute("double_image");
+        double[][] result = image_out.to2DArray();
 
         assertArrayEquals(new double[]{0.1D, 0.4D}, result[0], 0.0);
         assertArrayEquals(new double[]{0.9D, 0.8D}, result[1], 0.0);
@@ -252,27 +255,39 @@ public class ITTangoProxyWrapperTest {
     }
 
     @Test
-    public void testReadImage() throws Exception{
+    public void testReadImage_sRGB() throws Exception{
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
+        TangoImage<int[]> image = instance.readAttribute("ushort_image_ro");
+
+
+        RenderedImage renderedImage = TangoImageUtils.toRenderedImage_sRGB(image.data, image.width, image.height);
+        assertTrue(ImageIO.write(renderedImage, "JPEG", Files.createTempFile("testReadImage_",".jpeg").toFile()));
+    }
+
+    @Test
+    public void testReadImage_GRAY() throws Exception{
         TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
         TangoImage<float[]> image = instance.readAttribute("float_image_ro");
 
 
         RenderedImage renderedImage = TangoImageUtils.toRenderedImageDedicatedComponents_GRAY(image.data, image.width, image.height);
-        ImageIO.write(renderedImage, "bmp", Files.createTempFile("testReadImage",".bmp").toFile());
+        assertTrue(ImageIO.write(renderedImage, "TIF", Files.createTempFile("testReadImage_", ".tiff").toFile()));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testWriteReadAttribute_DoubleArrArr_Failed() throws Exception {
         TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
-        instance.writeAttribute("double_image", new double[][]{{0.1D, 0.4D}, {0.9D}});
+        TangoImage<double[]> image = TangoImage.from2DArray(new double[][]{{0.1D, 0.4D}, {0.9D}});
+
+        instance.writeAttribute("double_image", image);
     }
 
     @Test(expected = TangoProxyException.class)
     public void testWriteReadAttribute_DoubleArrArr_TooBig() throws Exception {
         TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
-        instance.writeAttribute("double_image", new double[256*256]);//251 max
+        instance.writeAttribute("double_image", new TangoImage<double[]>(new double[256*256],256,256));//251 max
     }
 
     @Test

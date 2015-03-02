@@ -38,7 +38,6 @@ import com.google.common.collect.Sets;
 import fr.esrf.Tango.DevFailed;
 import fr.esrf.TangoDs.TangoConst;
 import org.tango.client.ez.data.TangoDataWrapper;
-import org.tango.client.ez.data.TangoImage;
 
 import java.util.Collection;
 
@@ -202,7 +201,11 @@ public class ImageTangoDataTypes {
 
         @Override
         public void insert(TangoDataWrapper data, T src) throws ValueInsertionException {
-            this.inserter.insert(data, src.data, src.width, src.height);
+            if(src.getClass().isArray()) {
+                TangoImage<V> argin = TangoImage.from2DArray(src);
+                this.inserter.insert(data, argin.data, argin.width, argin.height);
+            } else
+                this.inserter.insert(data, src.data, src.width, src.height);
         }
     }
 }
