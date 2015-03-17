@@ -98,7 +98,7 @@
         <dependency>
             <groupId>org.tango</groupId>
             <artifactId>TangORB</artifactId>
-            <version>8.4.2</version>
+            <version>9.0.1</version>
         </dependency>
     </dependencies>
     <properties>

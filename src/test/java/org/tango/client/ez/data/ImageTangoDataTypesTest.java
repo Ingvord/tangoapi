@@ -99,7 +99,7 @@ public class ImageTangoDataTypesTest {
         DeviceAttribute attribute = new DeviceAttribute("encoded", "prevent NPE in the following insert method");
 
         attribute.insert(encoded);
-        attribute.getAttributeValueObject_4().data_format = AttrDataFormat.SCALAR;//insert always set FMT_UNKNOWN
+        attribute.getAttributeValueObject_5().data_format = AttrDataFormat.SCALAR;//insert always set FMT_UNKNOWN
 
         TangoDataWrapper data = TangoDataWrapper.create(attribute);
 
