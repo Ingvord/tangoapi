@@ -12,9 +12,9 @@ import java.lang.reflect.Array;
  * @since 27.02.2015
  */
 public class TangoImage<T> {
-    public final T data;
-    public final int width;
-    public final int height;
+    private final T data;
+    private final int width;
+    private final int height;
 
     public TangoImage(T data, int width, int height) {
         this.data = data;
@@ -131,5 +131,17 @@ public class TangoImage<T> {
         for (int i = 0, k = 0; i < dimY; i++, k += dimX)
             System.arraycopy(Array.get(value, i), 0, result, k, dimX);
         return (V) result;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

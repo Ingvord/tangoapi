@@ -203,9 +203,9 @@ public class ImageTangoDataTypes {
         public void insert(TangoDataWrapper data, T src) throws ValueInsertionException {
             if(src.getClass().isArray()) {
                 TangoImage<V> argin = TangoImage.from2DArray(src);
-                this.inserter.insert(data, argin.data, argin.width, argin.height);
+                this.inserter.insert(data, argin.getData(), argin.getWidth(), argin.getHeight());
             } else
-                this.inserter.insert(data, src.data, src.width, src.height);
+                this.inserter.insert(data, src.getData(), src.getWidth(), src.getHeight());
         }
     }
 }

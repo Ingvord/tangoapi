@@ -250,7 +250,7 @@ public class ITTangoProxyWrapperTest {
         TangoProxy instance = new DeviceProxyWrapper("tango://localhost:10000/development/webcam/0");
         TangoImage<int[]> image = instance.readAttribute("image");
 
-        RenderedImage renderedImage = TangoImageUtils.toRenderedImage_sRGB(image.data, image.width, image.height);
+        RenderedImage renderedImage = TangoImageUtils.toRenderedImage_sRGB(image.getData(), image.getWidth(), image.getHeight());
         ImageIO.write(renderedImage, "JPEG", Files.createTempFile("testReadImage",".jpeg").toFile());
     }
 
@@ -260,7 +260,7 @@ public class ITTangoProxyWrapperTest {
         TangoImage<int[]> image = instance.readAttribute("ushort_image_ro");
 
 
-        RenderedImage renderedImage = TangoImageUtils.toRenderedImage_sRGB(image.data, image.width, image.height);
+        RenderedImage renderedImage = TangoImageUtils.toRenderedImage_sRGB(image.getData(), image.getWidth(), image.getHeight());
         assertTrue(ImageIO.write(renderedImage, "JPEG", Files.createTempFile("testReadImage_",".jpeg").toFile()));
     }
 
@@ -270,7 +270,7 @@ public class ITTangoProxyWrapperTest {
         TangoImage<float[]> image = instance.readAttribute("float_image_ro");
 
 
-        RenderedImage renderedImage = TangoImageUtils.toRenderedImageDedicatedComponents_GRAY(image.data, image.width, image.height);
+        RenderedImage renderedImage = TangoImageUtils.toRenderedImageDedicatedComponents_GRAY(image.getData(), image.getWidth(), image.getHeight());
         assertTrue(ImageIO.write(renderedImage, "TIF", Files.createTempFile("testReadImage_", ".tiff").toFile()));
     }
 
