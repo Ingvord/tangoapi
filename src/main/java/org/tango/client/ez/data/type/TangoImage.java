@@ -1,7 +1,9 @@
 package org.tango.client.ez.data.type;
 
 import com.google.common.base.Preconditions;
+import org.tango.client.ez.util.TangoImageUtils;
 
+import java.awt.image.RenderedImage;
 import java.lang.reflect.Array;
 
 /**
@@ -20,6 +22,18 @@ public class TangoImage<T> {
         this.data = data;
         this.width = width;
         this.height = height;
+    }
+
+    public RenderedImage toRenderedImage_sRGB(){
+        return TangoImageUtils.toRenderedImage_sRGB((int[])data,width,height);
+    }
+
+    public RenderedImage toRenderedImage_ARGB(){
+        return TangoImageUtils.toRenderedImage_ARGB((int[]) data, width, height);
+    }
+
+    public RenderedImage toRenderedImage_GRAY(){
+        return TangoImageUtils.toRenderedImageDedicatedComponents_GRAY(data, width, height);
     }
 
     public T[] to2DArray(){
