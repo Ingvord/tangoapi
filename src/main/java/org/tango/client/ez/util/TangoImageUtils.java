@@ -135,13 +135,15 @@ public class TangoImageUtils {
         else
             throw new IllegalArgumentException("Unsupported data type: " + componentType.getSimpleName());
 
-        SampleModel sm =  new ComponentSampleModel(db.getDataType(),width,height, GRAY_PIXEL_OFFSET,width * GRAY_PIXEL_OFFSET,new int[]{0});
+        SampleModel sm =  new PixelInterleavedSampleModel(db.getDataType(),width,height, GRAY_PIXEL_OFFSET,width * GRAY_PIXEL_OFFSET,new int[]{0});
 
         WritableRaster raster = Raster.createWritableRaster(sm, db, null);
 
         ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
 
-        ColorModel cm = new ComponentColorModel(cs, false, true, Transparency.OPAQUE, db.getDataType());        return toRenderedImage(cm, raster);
+        ColorModel cm = new ComponentColorModel(cs, false, true, Transparency.OPAQUE, db.getDataType());
+
+        return toRenderedImage(cm, raster);
     }
 
     private static RenderedImage toRenderedImage(ColorModel cm, WritableRaster wr){
