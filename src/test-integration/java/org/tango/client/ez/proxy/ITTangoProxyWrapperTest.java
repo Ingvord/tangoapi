@@ -44,6 +44,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
@@ -272,6 +274,45 @@ public class ITTangoProxyWrapperTest {
 
         RenderedImage renderedImage = TangoImageUtils.toRenderedImageDedicatedComponents_GRAY(image.getData(), image.getWidth(), image.getHeight());
         assertTrue(ImageIO.write(renderedImage, "TIF", Files.createTempFile("testReadImage_", ".tiff").toFile()));
+    }
+
+    //@Test
+    public void testReadImage_GRAY0() throws Exception{
+        TangoProxy instance = new DeviceProxyWrapper("development/test/0");
+        TangoImage<int[]> image = instance.readAttribute("image");
+
+
+        RenderedImage renderedImage = TangoImageUtils.toRenderedImageDedicatedComponents_GRAY(image.getData(), image.getWidth(), image.getHeight());
+        assertTrue(ImageIO.write(renderedImage, "TIF", Files.createTempFile("testReadImage_", ".tiff").toFile()));
+    }
+
+
+    @Test
+    public void testSubscription() throws Exception{
+        TangoProxy instance = new DeviceProxyWrapper("sys/tg_test/1");
+
+        final CountDownLatch done = new CountDownLatch(1);
+        final AtomicBoolean success = new AtomicBoolean();
+
+        instance.subscribeToEvent("long_scalar", TangoEvent.CHANGE);
+        instance.addEventListener("long_scalar", TangoEvent.CHANGE, new TangoEventListener<Long>() {
+            @Override
+            public void onEvent(EventData<Long> data) {
+                System.out.println(data.getValue());
+                success.set(true);
+                done.countDown();
+            }
+
+            @Override
+            public void onError(Throwable cause) {
+                System.err.println(cause.getLocalizedMessage());
+                success.set(false);
+                done.countDown();
+            }
+        });
+
+        done.await();
+        assertTrue(success.get());
     }
 
     @Test(expected = IllegalArgumentException.class)
