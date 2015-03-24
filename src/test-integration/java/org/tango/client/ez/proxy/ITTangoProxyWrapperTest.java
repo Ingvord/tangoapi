@@ -47,9 +47,7 @@ import java.nio.file.Files;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 import static org.junit.Assert.assertArrayEquals;
 
 /**
@@ -114,6 +112,11 @@ public class ITTangoProxyWrapperTest {
                 }
             }
         }).start();
+    }
+
+    @AfterClass
+    public static void afterClass() throws Exception {
+        PRC.destroy();
     }
 
     @Test(expected = TangoProxyException.class)
@@ -253,7 +256,7 @@ public class ITTangoProxyWrapperTest {
         TangoImage<int[]> image = instance.readAttribute("image");
 
         RenderedImage renderedImage = TangoImageUtils.toRenderedImage_sRGB(image.getData(), image.getWidth(), image.getHeight());
-        ImageIO.write(renderedImage, "JPEG", Files.createTempFile("testReadImage",".jpeg").toFile());
+        ImageIO.write(renderedImage, "JPEG", Files.createTempFile("testReadImage", ".jpeg").toFile());
     }
 
     @Test
@@ -286,7 +289,6 @@ public class ITTangoProxyWrapperTest {
         assertTrue(ImageIO.write(renderedImage, "TIF", Files.createTempFile("testReadImage_", ".tiff").toFile()));
     }
 
-
     @Test
     public void testSubscription() throws Exception{
         TangoProxy instance = new DeviceProxyWrapper("sys/tg_test/1");
@@ -304,7 +306,7 @@ public class ITTangoProxyWrapperTest {
             }
 
             @Override
-            public void onError(Throwable cause) {
+            public void onError(Exception cause) {
                 System.err.println(cause.getLocalizedMessage());
                 success.set(false);
                 done.countDown();
@@ -375,10 +377,5 @@ public class ITTangoProxyWrapperTest {
         float[] result = instance.executeCommand("DevVarFloatArray", new float[]{0.1F, 0.9F, 0.8F, 0.4F});
 
         assertArrayEquals(new float[]{0.1F, 0.9F, 0.8F, 0.4F}, result, 0.0F);
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        PRC.destroy();
     }
 }
