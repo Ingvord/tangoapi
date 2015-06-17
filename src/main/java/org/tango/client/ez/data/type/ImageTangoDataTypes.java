@@ -52,10 +52,6 @@ import java.util.Collection;
  */
 public class ImageTangoDataTypes {
     public static final String TANGO_IMAGE_EXTRACTER_USES_MULTITHREADING = "tango.image.extracter.use.multithreading";
-
-    private ImageTangoDataTypes() {
-    }
-
     public static final TangoDataType<TangoImage<float[]>> FLOAT_IMAGE = new ImageTangoDataType<TangoImage<float[]>, float[]>(
             TangoConst.Tango_DEV_FLOAT, "DevFloatImage", (Class<TangoImage<float[]>>)(Class<?>)TangoImage.class, new ValueExtracter<float[]>() {
         @Override
@@ -74,7 +70,6 @@ public class ImageTangoDataTypes {
                 }
             }
     );
-
     public static final TangoDataType<TangoImage<double[]>> DOUBLE_IMAGE = new ImageTangoDataType<TangoImage<double[]>, double[]>(
             TangoConst.Tango_DEV_DOUBLE, "DevDoubleImage", (Class<TangoImage<double[]>>)(Class<?>) TangoImage.class, new ValueExtracter<double[]>() {
         @Override
@@ -93,9 +88,8 @@ public class ImageTangoDataTypes {
                 }
             }
     );
-
     public static final TangoDataType<TangoImage<short[]>> SHORT_IMAGE = new ImageTangoDataType<TangoImage<short[]>, short[]>(
-            TangoConst.Tango_DEV_SHORT, "DevShortImage", (Class<TangoImage<short[]>>)(Class<?>)TangoImage.class, new ValueExtracter<short[]>() {
+            TangoConst.Tango_DEV_SHORT, "DevShortImage", (Class<TangoImage<short[]>>) (Class<?>) TangoImage.class, new ValueExtracter<short[]>() {
         @Override
         public short[] extract(TangoDataWrapper data) throws ValueExtractionException {
             try {
@@ -112,9 +106,8 @@ public class ImageTangoDataTypes {
                 }
             }
     );
-
     public static final TangoDataType<TangoImage<int[]>> USHORT_IMAGE = new ImageTangoDataType<TangoImage<int[]>, int[]>(
-            TangoConst.Tango_DEV_USHORT, "DevUShortImage", (Class<TangoImage<int[]>>) (Class<?>)TangoImage.class, new ValueExtracter<int[]>() {
+            TangoConst.Tango_DEV_USHORT, "DevUShortImage", (Class<TangoImage<int[]>>) (Class<?>) TangoImage.class, new ValueExtracter<int[]>() {
         @Override
         public int[] extract(TangoDataWrapper data) throws ValueExtractionException {
             try {
@@ -131,7 +124,24 @@ public class ImageTangoDataTypes {
                 }
             }
     );
-
+    public static final TangoDataType<TangoImage<short[]>> UCHAR_IMAGE = new ImageTangoDataType<TangoImage<short[]>, short[]>(
+            TangoConst.Tango_DEV_UCHAR, "DevUCharImage", (Class<TangoImage<short[]>>) (Class<?>) TangoImage.class, new ValueExtracter<short[]>() {
+        @Override
+        public short[] extract(TangoDataWrapper data) throws ValueExtractionException {
+            try {
+                return data.extractUCharArray();
+            } catch (DevFailed devFailed) {
+                throw new ValueExtractionException(devFailed);
+            }
+        }
+    },
+            new ValueInserter<short[]>() {
+                @Override
+                public void insert(TangoDataWrapper data, short[] value, int dimX, int dimY) throws ValueInsertionException {
+                    data.insert_us(value, dimX, dimY);
+                }
+            }
+    );
     public static final TangoDataType<TangoImage<int[]>> INT_IMAGE = new ImageTangoDataType<TangoImage<int[]>, int[]>(
             TangoConst.Tango_DEV_LONG, "DevLongImage", (Class<TangoImage<int[]>>) (Class<?>)TangoImage.class, new ValueExtracter<int[]>() {
         @Override
@@ -150,7 +160,6 @@ public class ImageTangoDataTypes {
                 }
             }
     );
-
     public static final TangoDataType<TangoImage<long[]>> LONG64_IMAGE = new ImageTangoDataType<TangoImage<long[]>, long[]>(
             TangoConst.Tango_DEV_LONG64, "DevLong64Image", (Class<TangoImage<long[]>>)(Class<?>)TangoImage.class, new ValueExtracter<long[]>() {
         @Override
@@ -170,8 +179,11 @@ public class ImageTangoDataTypes {
             }
     );
 
+    private ImageTangoDataTypes() {
+    }
+
     static Collection<? extends TangoDataType<?>> values() {
-        return Sets.newHashSet(FLOAT_IMAGE, DOUBLE_IMAGE, SHORT_IMAGE, USHORT_IMAGE, INT_IMAGE, LONG64_IMAGE);
+        return Sets.newHashSet(FLOAT_IMAGE, DOUBLE_IMAGE, SHORT_IMAGE, USHORT_IMAGE, UCHAR_IMAGE, INT_IMAGE, LONG64_IMAGE);
     }
 
     /**
