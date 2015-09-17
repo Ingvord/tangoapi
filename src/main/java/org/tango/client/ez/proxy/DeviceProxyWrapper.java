@@ -299,11 +299,13 @@ public final class DeviceProxyWrapper implements TangoProxy {
         return this.proxy.name() + "/" + attrName + "." + event.name().toLowerCase();
     }
 
-    public <T> void addEventListener(String attrName, TangoEvent event, TangoEventListener<T> listener) {
+    @SuppressWarnings("unchecked")
+    public <T> void addEventListener(String attrName, TangoEvent event, TangoEventListener<T> listener) throws TangoProxyException {
         logger.trace("DeviceProxyWrapper#addEventListener {}/{}.{}", getName(), attrName, event);
         String eventKey = getEventKey(attrName, event);
-        TangoEventDispatcher<T> dispatcher = (TangoEventDispatcher<T>) dispatchers.get(eventKey);
-        if (dispatcher == null) throw new IllegalStateException("Is not subscribed to " + eventKey);
+        if (!dispatchers.containsKey(eventKey))
+            subscribeToEvent(attrName, event);
+        TangoEventDispatcher<T> dispatcher = (TangoEventDispatcher<T>) dispatchers.get(eventKey);//T is irrelevant at runtime
         dispatcher.addListener(listener);
     }
 

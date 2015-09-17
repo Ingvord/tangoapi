@@ -81,7 +81,7 @@ public interface TangoProxy {
      * @param <T>
      * @throws NullPointerException
      */
-    <T> void addEventListener(String attrName, TangoEvent event, TangoEventListener<T> listener);
+    <T> void addEventListener(String attrName, TangoEvent event, TangoEventListener<T> listener) throws TangoProxyException;
 
     public void unsubscribeFromEvent(String attrName, TangoEvent event) throws TangoProxyException;
 
