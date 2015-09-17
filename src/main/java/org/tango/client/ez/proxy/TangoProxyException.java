@@ -34,11 +34,9 @@
 
 package org.tango.client.ez.proxy;
 
-import com.google.common.base.Objects;
 import fr.esrf.Tango.DevError;
 import fr.esrf.Tango.DevFailed;
 import fr.esrf.Tango.ErrSeverity;
-import org.tango.client.ez.util.TangoUtils;
 
 /**
  * Exported Exception.
@@ -55,8 +53,6 @@ public class TangoProxyException extends Exception {
     private final DevFailed devFailed;
 
     public TangoProxyException(DevFailed devFailed) {
-        super(TangoUtils.convertDevFailedToException(devFailed));
-
         DevError error = devFailed.errors[0];
         this.reason = error.reason;
         this.desc = error.desc;
@@ -88,6 +84,16 @@ public class TangoProxyException extends Exception {
 
     @Override
     public String getMessage() {
+        return String.format("%s[%s]", reason, desc);
+    }
+
+    @Override
+    public String getLocalizedMessage() {
+        return getMessage();
+    }
+
+    @Override
+    public String toString() {
         if (devFailed != null) {
             StringBuilder result = new StringBuilder(String.format("%s: %s\n\t%s\n\t%s", severity, reason, desc, origin));
 
@@ -101,20 +107,5 @@ public class TangoProxyException extends Exception {
         } else {
             return String.format("%s: %s\n\t%s\n\t%s", severity, reason, desc, origin);
         }
-    }
-
-    @Override
-    public String getLocalizedMessage() {
-        return getMessage();
-    }
-
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-                .add("reason", reason)
-                .add("desc", desc)
-                .add("severity", severity)
-                .add("origin", origin)
-                .toString();
     }
 }
