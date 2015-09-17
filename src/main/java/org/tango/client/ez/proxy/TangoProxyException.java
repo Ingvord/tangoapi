@@ -45,6 +45,8 @@ import fr.esrf.Tango.ErrSeverity;
  * @since 07.06.12
  */
 public class TangoProxyException extends Exception {
+    public final String device;
+
     public final String reason;
     public final String desc;
     public final String severity;
@@ -52,7 +54,9 @@ public class TangoProxyException extends Exception {
 
     private final DevFailed devFailed;
 
-    public TangoProxyException(DevFailed devFailed) {
+    public TangoProxyException(String device, DevFailed devFailed) {
+        this.device = device;
+
         DevError error = devFailed.errors[0];
         this.reason = error.reason;
         this.desc = error.desc;
@@ -62,8 +66,10 @@ public class TangoProxyException extends Exception {
         this.devFailed = devFailed;
     }
 
-    public TangoProxyException(Throwable cause) {
+    public TangoProxyException(String device, Throwable cause) {
         super(cause);
+        this.device = device;
+
         this.reason = cause.toString();
         this.severity = ErrSeverity.ERR.toString();
         this.desc = cause.getLocalizedMessage();
@@ -72,8 +78,10 @@ public class TangoProxyException extends Exception {
         this.devFailed = null;
     }
 
-    public TangoProxyException(String msg) {
+    public TangoProxyException(String device, String msg) {
         super(msg);
+        this.device = device;
+
         this.reason = "Exception";
         this.severity = ErrSeverity.ERR.toString();
         this.desc = msg;
@@ -84,7 +92,7 @@ public class TangoProxyException extends Exception {
 
     @Override
     public String getMessage() {
-        return String.format("%s[%s]", reason, desc);
+        return String.format("%s:%s[%s]", device, reason, desc);
     }
 
     @Override
@@ -95,8 +103,11 @@ public class TangoProxyException extends Exception {
     @Override
     public String toString() {
         if (devFailed != null) {
-            StringBuilder result = new StringBuilder(String.format("%s: %s\n\t%s\n\t%s", severity, reason, desc, origin));
+            StringBuilder result = new StringBuilder(
+                    String.format("ProxyException in %s", device));
 
+
+            result.append(String.format("\n%s: %s\n\t%s\n\t%s", severity, reason, desc, origin));
             for (int i = 1; i < devFailed.errors.length; ++i) {
                 result.append("\n\n");
                 DevError error = devFailed.errors[i];

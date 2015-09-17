@@ -10,7 +10,7 @@ public class TangoProxyExceptionTest {
         try {
             Except.throw_connection_failed("reason", "desc", "origin");
         } catch (ConnectionFailed connectionFailed) {
-            TangoProxyException result = new TangoProxyException(connectionFailed);
+            TangoProxyException result = new TangoProxyException(null, connectionFailed);
 
             System.out.println(result);
         }

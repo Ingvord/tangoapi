@@ -77,7 +77,7 @@ public class TangoProxies {
                     else if (methodName.startsWith("set"))
                         tangoProxy.writeAttribute(methodName.substring(3), args != null ? args[0] : null);
                     else
-                        throw new TangoProxyException("unknown method " + methodName);
+                        throw new TangoProxyException(tangoProxy.getName(), "unknown method " + methodName);
                 } catch (NoSuchCommandException e) {
                     throw new AssertionError(e);
                 } catch (NoSuchAttributeException e) {
