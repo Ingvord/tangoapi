@@ -34,6 +34,7 @@
 
 package org.tango.client.ez.proxy;
 
+import fr.esrf.Tango.DevState;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -49,6 +50,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static junit.framework.Assert.*;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertSame;
 
 /**
  * Some tests performs similar operation many times. It is just to make sure that it does not have any side effects.
@@ -387,4 +389,13 @@ public class ITTangoProxyWrapperTest {
         instance.writeAttribute("ushort_scalar", 4);
 
     }
+
+    @Test
+    public void testReadState() throws Exception {
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
+
+        DevState result = instance.readAttribute("State");
+        assertSame(DevState.RUNNING, result);
+    }
+
 }

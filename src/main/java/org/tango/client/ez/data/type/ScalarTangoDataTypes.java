@@ -38,7 +38,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import fr.esrf.Tango.*;
 import fr.esrf.TangoDs.TangoConst;
-import org.tango.client.ez.data.EnumDevState;
 import org.tango.client.ez.data.TangoDataWrapper;
 import org.tango.client.ez.util.TangoUtils;
 
@@ -103,21 +102,21 @@ public class ScalarTangoDataTypes {
     }
     );
     public static final String DEV_STATE = "DevState";
-    public static final TangoDataType<EnumDevState> STATE = new ScalarTangoDataType<EnumDevState>(
-            TangoConst.Tango_DEV_STATE, DEV_STATE, EnumDevState.class, new ValueExtracter<EnumDevState>() {
+    public static final TangoDataType<DevState> STATE = new ScalarTangoDataType<DevState>(
+            TangoConst.Tango_DEV_STATE, DEV_STATE, DevState.class, new ValueExtracter<DevState>() {
         @Override
-        public EnumDevState extract(TangoDataWrapper data) throws ValueExtractionException {
+        public DevState extract(TangoDataWrapper data) throws ValueExtractionException {
             try {
                 DevState state = data.extractDevState();
-                return EnumDevState.forAlias(state.value());
+                return state;
             } catch (DevFailed devFailed) {
                 throw new ValueExtractionException(TangoUtils.convertDevFailedToException(devFailed));
             }
         }
-    }, new ValueInserter<EnumDevState>() {
+    }, new ValueInserter<DevState>() {
         @Override
-        public void insert(TangoDataWrapper data, EnumDevState value, int dimX, int dimY) throws ValueInsertionException {
-            data.insert(value.toDevState());
+        public void insert(TangoDataWrapper data, DevState value, int dimX, int dimY) throws ValueInsertionException {
+            data.insert(value);
         }
     }
     );
