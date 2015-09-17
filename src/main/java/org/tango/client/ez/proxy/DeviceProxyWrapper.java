@@ -46,7 +46,6 @@ import org.tango.client.ez.data.TangoDataWrapper;
 import org.tango.client.ez.data.TangoDeviceAttributeWrapper;
 import org.tango.client.ez.data.format.TangoDataFormat;
 import org.tango.client.ez.data.type.*;
-import org.tango.client.ez.util.TangoUtils;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.AbstractMap;
@@ -87,11 +86,12 @@ public final class DeviceProxyWrapper implements TangoProxy {
      * @throws TangoProxyException
      */
     protected DeviceProxyWrapper(String name) throws TangoProxyException {
+        logger.trace("DeviceProxyWrapper({})", name);
         try {
             this.proxy = new DeviceProxy(name);
             this.eventsAdapter = new TangoEventsAdapter(this.proxy);
         } catch (DevFailed devFailed) {
-            logger.error("Can not construct DeviceProxyWrapper", TangoUtils.convertDevFailedToException(devFailed));
+            logger.error("Failed to construct DeviceProxyWrapper for device {}", name);
             throw new TangoProxyException(devFailed);
         }
     }
@@ -111,14 +111,15 @@ public final class DeviceProxyWrapper implements TangoProxy {
      */
     @Override
     public <T> T readAttribute(String attrName) throws TangoProxyException, NoSuchAttributeException {
+        logger.trace("DeviceProxyWrapper#readAttribute {}/{}", getName(), attrName);
         try {
             DeviceAttribute deviceAttribute = this.proxy.read_attribute(attrName);
             return readAttributeValue(attrName, deviceAttribute);
         } catch (DevFailed e) {
-            logger.error("DeviceProxyWrapper#readAttribute has failed.", TangoUtils.createDevError(e));
+            logger.error("DeviceProxyWrapper#readAttribute has failed. {}/{}", getName(), attrName);
             throw new TangoProxyException(e);
         } catch (ValueExtractionException e) {
-            logger.error("DeviceProxyWrapper#readAttribute has failed.", e);
+            logger.error("DeviceProxyWrapper#readAttribute has failed. {}/{}", getName(), attrName);
             throw new TangoProxyException(e);
         }
     }
@@ -133,6 +134,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
      */
     @Override
     public <T> Map.Entry<T, Long> readAttributeValueAndTime(String attrName) throws TangoProxyException, NoSuchAttributeException {
+        logger.trace("DeviceProxyWrapper#readAttributeValueAndTime {}/{}", getName(), attrName);
         try {
             DeviceAttribute deviceAttribute = this.proxy.read_attribute(attrName);
             T result = readAttributeValue(attrName, deviceAttribute);
@@ -140,10 +142,10 @@ public final class DeviceProxyWrapper implements TangoProxy {
             long time = deviceAttribute.getTimeValMillisSec();
             return new AbstractMap.SimpleImmutableEntry<T, Long>(result, time);
         } catch (DevFailed e) {
-            logger.error("DeviceProxyWrapper#readAttributeValueAndTime has failed.", TangoUtils.createDevError(e));
+            logger.error("DeviceProxyWrapper#readAttributeValueAndTime has failed. {}/{}", getName(), attrName);
             throw new TangoProxyException(e);
         } catch (ValueExtractionException e) {
-            logger.error("DeviceProxyWrapper#readAttributeValueAndTime has failed.", e);
+            logger.error("DeviceProxyWrapper#readAttributeValueAndTime has failed. {}/{}", getName(), attrName);
             throw new TangoProxyException(e);
         }
     }
@@ -166,6 +168,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
      */
     @Override
     public <T> Triplet<T, Long, Quality> readAttributeValueTimeQuality(String attrName) throws TangoProxyException, NoSuchAttributeException {
+        logger.trace("DeviceProxyWrapper#readAttributeValueTimeQuality {}/{}", getName(), attrName);
         try {
             DeviceAttribute deviceAttribute = this.proxy.read_attribute(attrName);
             T result = readAttributeValue(attrName, deviceAttribute);
@@ -175,10 +178,10 @@ public final class DeviceProxyWrapper implements TangoProxy {
 
             return new Triplet<T, Long, Quality>(result, time, quality);
         } catch (DevFailed e) {
-            logger.error("DeviceProxyWrapper#readAttributeValueTimeQuality has failed.", TangoUtils.createDevError(e));
+            logger.error("DeviceProxyWrapper#readAttributeValueTimeQuality has failed. {}/{}", getName(), attrName);
             throw new TangoProxyException(e);
         } catch (ValueExtractionException e) {
-            logger.error("DeviceProxyWrapper#readAttributeValueTimeQuality has failed.", e);
+            logger.error("DeviceProxyWrapper#readAttributeValueTimeQuality has failed. {}/{}", getName(), attrName);
             throw new TangoProxyException(e);
         }
     }
@@ -193,6 +196,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
      */
     @Override
     public <T> void writeAttribute(String attrName, T value) throws TangoProxyException, NoSuchAttributeException {
+        logger.trace("DeviceProxyWrapper#writeAttribute {}/{}={}", getName(), attrName, value);
         DeviceAttribute deviceAttribute = new DeviceAttribute(attrName);
         TangoDataWrapper dataWrapper = TangoDataWrapper.create(deviceAttribute);
 
@@ -203,10 +207,10 @@ public final class DeviceProxyWrapper implements TangoProxy {
             dataFormat.insert(dataWrapper, value, devDataType);
             this.proxy.write_attribute(deviceAttribute);
         } catch (DevFailed e) {
-            logger.error("DeviceProxyWrapper#writeAttribute has failed.", TangoUtils.createDevError(e));
+            logger.error("DeviceProxyWrapper#writeAttribute has failed. {}/{}={}", getName(), attrName, value);
             throw new TangoProxyException(e);
         } catch (ValueInsertionException e) {
-            logger.error("DeviceProxyWrapper#writeAttribute has failed.", e);
+            logger.error("DeviceProxyWrapper#writeAttribute has failed. {}/{}={}", getName(), attrName, value);
             throw new TangoProxyException(e);
         }
     }
@@ -224,6 +228,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
      */
     @Override
     public <T, V> V executeCommand(String cmd, T value) throws TangoProxyException, NoSuchCommandException {
+        logger.trace("DeviceProxyWrapper#executeCommand {}/{}({})", getName(), cmd, value);
         try {
             DeviceData argin = new DeviceData();
             TangoDataWrapper arginWrapper = TangoDeviceAttributeWrapper.create(argin);
@@ -237,7 +242,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
             TangoDataType<V> typeOut = TangoDataTypes.forTangoDevDataType(cmdInfo.toCommandInfo().out_type);
             return typeOut.extract(argoutWrapper);
         } catch (DevFailed e) {
-            logger.error("DeviceProxyWrapper#executeCommand has failed.", e);
+            logger.error("DeviceProxyWrapper#executeCommand has failed. {}/{}({})", getName(), cmd, value);
             throw new TangoProxyException(e);
         } catch (ValueExtractionException e) {
             throw new TangoProxyException(e);
@@ -250,6 +255,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
 
     @Override
     public void subscribeToEvent(String attrName, TangoEvent event) throws TangoProxyException {
+        logger.trace("DeviceProxyWrapper#subscribeToEvent {}/{}.{}", getName(), attrName, event);
         //TODO filters
         String[] filters = new String[0];
         String eventKey = getEventKey(attrName, event);
@@ -284,7 +290,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
                 subscriptionSet.add(eventKey);
             }
         } catch (DevFailed devFailed) {
-            logger.error("DeviceProxyWrapper#subscribeToEvent has failed.", TangoUtils.convertDevFailedToException(devFailed));
+            logger.error("DeviceProxyWrapper#subscribeToEvent has failed. {}/{}.{}", getName(), attrName, event);
             throw new TangoProxyException(devFailed);
         }
     }
@@ -294,6 +300,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
     }
 
     public <T> void addEventListener(String attrName, TangoEvent event, TangoEventListener<T> listener) {
+        logger.trace("DeviceProxyWrapper#addEventListener {}/{}.{}", getName(), attrName, event);
         String eventKey = getEventKey(attrName, event);
         TangoEventDispatcher<T> dispatcher = (TangoEventDispatcher<T>) dispatchers.get(eventKey);
         if (dispatcher == null) throw new IllegalStateException("Is not subscribed to " + eventKey);
@@ -302,6 +309,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
 
     @Override
     public void unsubscribeFromEvent(String attrName, TangoEvent event) throws TangoProxyException {
+        logger.trace("DeviceProxyWrapper#unsubscribeFromEvent {}/{}.{}", getName(), attrName, event);
         String eventKey = getEventKey(attrName, event);
 
         TangoEventDispatcher<?> dispatcher = dispatchers.get(eventKey);
@@ -331,7 +339,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
             }
 
         } catch (DevFailed devFailed) {
-            logger.error("DeviceProxyWrapper#unsubscribeFromEvent has failed.", TangoUtils.convertDevFailedToException(devFailed));
+            logger.error("DeviceProxyWrapper#unsubscribeFromEvent has failed. {}/{}.{}", getName(), attrName, event);
             throw new TangoProxyException(devFailed);
         }
     }
@@ -352,6 +360,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
      */
     @Override
     public TangoAttributeInfoWrapper getAttributeInfo(String attrName) throws TangoProxyException, NoSuchAttributeException {
+        logger.trace("DeviceProxyWrapper#getAttributeInfo {}/{}", getName(), attrName);
         TangoAttributeInfoWrapper attrInf = attributeInfo.get(attrName);
         if (attrInf != null) return attrInf;
         synchronized (attributeInfoQueryGuard) {
@@ -399,6 +408,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
      */
     @Override
     public TangoCommandInfoWrapper getCommandInfo(String cmdName) throws TangoProxyException, NoSuchCommandException {
+        logger.trace("DeviceProxyWrapper#getCommandInfo {}/{}", getName(), cmdName);
         TangoCommandInfoWrapper cmdInf = commandInfo.get(cmdName);
         if (cmdInf != null) return cmdInf;
         //only one thread actually queries remote tango
