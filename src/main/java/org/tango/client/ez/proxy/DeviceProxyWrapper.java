@@ -92,7 +92,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
             this.eventsAdapter = new TangoEventsAdapter(this.proxy);
         } catch (DevFailed devFailed) {
             logger.error("Failed to construct DeviceProxyWrapper for device {}", name);
-            throw new TangoProxyException(getName(), devFailed);
+            throw new TangoProxyException(name, devFailed);
         }
     }
 
