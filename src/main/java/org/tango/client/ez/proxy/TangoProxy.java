@@ -65,6 +65,8 @@ public interface TangoProxy {
 
     <T> void writeAttribute(String attrName, T value) throws TangoProxyException, NoSuchAttributeException;
 
+    <V> V executeCommand(String cmd) throws TangoProxyException, NoSuchCommandException;
+
     <T, V> V executeCommand(String cmd, T value) throws TangoProxyException, NoSuchCommandException;
 
     void subscribeToEvent(String attrName, TangoEvent event) throws TangoProxyException, NoSuchAttributeException;

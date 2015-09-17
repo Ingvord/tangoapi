@@ -215,6 +215,11 @@ public final class DeviceProxyWrapper implements TangoProxy {
         }
     }
 
+    @Override
+    public <V> V executeCommand(String cmd) throws TangoProxyException, NoSuchCommandException {
+        return executeCommand(cmd, null);
+    }
+
     /**
      * Executes command on tango server. Command is specified by name.
      * Encapsulates conversion {@link DeviceData}<->actual type (T,V).
