@@ -34,7 +34,10 @@
 
 package org.tango.client.ez.proxy;
 
+import com.google.common.base.Objects;
+import fr.esrf.Tango.DevError;
 import fr.esrf.Tango.DevFailed;
+import fr.esrf.Tango.ErrSeverity;
 import org.tango.client.ez.util.TangoUtils;
 
 /**
@@ -44,16 +47,74 @@ import org.tango.client.ez.util.TangoUtils;
  * @since 07.06.12
  */
 public class TangoProxyException extends Exception {
-    //TODO some useful fields
+    public final String reason;
+    public final String desc;
+    public final String severity;
+    public final String origin;
+
+    private final DevFailed devFailed;
+
     public TangoProxyException(DevFailed devFailed) {
         super(TangoUtils.convertDevFailedToException(devFailed));
+
+        DevError error = devFailed.errors[0];
+        this.reason = error.reason;
+        this.desc = error.desc;
+        this.severity = error.severity.toString();
+        this.origin = error.origin;
+
+        this.devFailed = devFailed;
     }
 
     public TangoProxyException(Throwable cause) {
         super(cause);
+        this.reason = cause.toString();
+        this.severity = ErrSeverity.ERR.toString();
+        this.desc = cause.getLocalizedMessage();
+        this.origin = cause.getStackTrace()[0].toString();
+
+        this.devFailed = null;
     }
 
     public TangoProxyException(String msg) {
         super(msg);
+        this.reason = "Exception";
+        this.severity = ErrSeverity.ERR.toString();
+        this.desc = msg;
+        this.origin = Thread.currentThread().getStackTrace()[1].toString();
+
+        this.devFailed = null;
+    }
+
+    @Override
+    public String getMessage() {
+        if (devFailed != null) {
+            StringBuilder result = new StringBuilder(String.format("%s: %s\n\t%s\n\t%s", severity, reason, desc, origin));
+
+            for (int i = 1; i < devFailed.errors.length; ++i) {
+                result.append("\n\n");
+                DevError error = devFailed.errors[i];
+                result.append(
+                        String.format("%s: %s\n\t%s\n\t%s", error.severity.toString(), error.reason, error.desc, error.origin));
+            }
+            return result.toString();
+        } else {
+            return String.format("%s: %s\n\t%s\n\t%s", severity, reason, desc, origin);
+        }
+    }
+
+    @Override
+    public String getLocalizedMessage() {
+        return getMessage();
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("reason", reason)
+                .add("desc", desc)
+                .add("severity", severity)
+                .add("origin", origin)
+                .toString();
     }
 }

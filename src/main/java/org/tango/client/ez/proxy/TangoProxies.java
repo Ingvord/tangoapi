@@ -67,16 +67,22 @@ public class TangoProxies {
                 //otherwise delegate method execution to read/writeAttribute or executeCommand
                 String methodName = method.getName();
 
-                if (tangoProxy.hasCommand(methodName))
-                    return tangoProxy.executeCommand(methodName, args != null ? args[0] : null);
-                else if (methodName.startsWith("get"))
-                    return tangoProxy.readAttribute(methodName.substring(3));
-                else if (methodName.startsWith("is"))
-                    return tangoProxy.readAttribute(methodName.substring(2));
-                else if (methodName.startsWith("set"))
-                    tangoProxy.writeAttribute(methodName.substring(3), args != null ? args[0] : null);
-                else
-                    throw new TangoProxyException("unknown method " + methodName);
+                try {
+                    if (tangoProxy.hasCommand(methodName))
+                        return tangoProxy.executeCommand(methodName, args != null ? args[0] : null);
+                    else if (methodName.startsWith("get"))
+                        return tangoProxy.readAttribute(methodName.substring(3));
+                    else if (methodName.startsWith("is"))
+                        return tangoProxy.readAttribute(methodName.substring(2));
+                    else if (methodName.startsWith("set"))
+                        tangoProxy.writeAttribute(methodName.substring(3), args != null ? args[0] : null);
+                    else
+                        throw new TangoProxyException("unknown method " + methodName);
+                } catch (NoSuchCommandException e) {
+                    throw new AssertionError(e);
+                } catch (NoSuchAttributeException e) {
+                    throw new AssertionError(e);
+                }
 
                 return null;
             }
