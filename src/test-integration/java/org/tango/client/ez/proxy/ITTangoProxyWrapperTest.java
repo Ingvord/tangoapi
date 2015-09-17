@@ -379,4 +379,12 @@ public class ITTangoProxyWrapperTest {
 
         assertArrayEquals(new float[]{0.1F, 0.9F, 0.8F, 0.4F}, result, 0.0F);
     }
+
+    @Test
+    public void testWriteUShort() throws Exception {
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
+
+        instance.writeAttribute("ushort_scalar", 4);
+
+    }
 }
