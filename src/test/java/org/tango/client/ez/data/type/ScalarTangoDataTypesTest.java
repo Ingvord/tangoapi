@@ -5,8 +5,7 @@ import fr.esrf.TangoApi.DeviceAttribute;
 import org.junit.Test;
 import org.tango.client.ez.data.TangoDataWrapper;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class ScalarTangoDataTypesTest {
     @Test
@@ -20,5 +19,10 @@ public class ScalarTangoDataTypesTest {
         //TODO might fail if TangORB version is different from 9
         assertEquals(AttributeDataType.ATT_USHORT, attr.getAttributeValueObject_5().value.discriminator());
         assertArrayEquals(new short[]{123}, attr.getAttributeValueObject_5().value.ushort_att_value());
+    }
+
+    @Test
+    public void test_getDataType() throws Exception {
+        assertSame(int.class, ScalarTangoDataTypes.U_SHORT.getDataType());
     }
 }
