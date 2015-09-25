@@ -69,12 +69,13 @@ public final class TangoUtils {
      * @return Exception
      */
     public static Exception convertDevFailedToException(DevFailed devFailed) {
-        StringBuilder reason = new StringBuilder();
-        reason.append("Device threw an exception:\n");
-        for (DevError error : devFailed.errors) {
-            reason.append(error.origin).append(":").append(error.reason).append("(").append(error.desc).append(")\n");
+        Exception result = new Exception(devFailed.getLocalizedMessage(), null);
+        for (int i = devFailed.errors.length - 1; i > -1; --i) {
+            DevError error = devFailed.errors[i];
+            result = new Exception(
+                    String.format("%s: %s (%s)", error.reason, error.desc, error.origin), result);
         }
-        return new Exception(reason.toString());
+        return result;
     }
 
     /**
