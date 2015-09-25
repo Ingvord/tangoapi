@@ -294,7 +294,10 @@ public class ITTangoProxyWrapperTest {
 
     @Test
     public void testSubscription() throws Exception{
-        TangoProxy instance = new DeviceProxyWrapper("sys/tg_test/1");
+        TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
+
+        instance.toDeviceProxy().poll_attribute("long_scalar", 100);
+
 
         final CountDownLatch done = new CountDownLatch(1);
         final AtomicBoolean success = new AtomicBoolean();
@@ -310,8 +313,9 @@ public class ITTangoProxyWrapperTest {
 
             @Override
             public void onError(Exception cause) {
-                System.err.println(cause.getLocalizedMessage());
-                success.set(false);
+                cause.printStackTrace();
+                //TODO set event properties remotely?
+                success.set(cause.getMessage().startsWith("API_EventPropertiesNotSet"));
                 done.countDown();
             }
         });
