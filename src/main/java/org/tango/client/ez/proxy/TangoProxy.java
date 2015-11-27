@@ -36,10 +36,6 @@ package org.tango.client.ez.proxy;
 
 import fr.esrf.TangoApi.DeviceProxy;
 import fr.esrf.TangoApi.events.TangoEventsAdapter;
-import org.javatuples.Triplet;
-import org.tango.client.ez.attribute.Quality;
-
-import java.util.Map;
 
 /**
  * @author Igor Khokhriakov <igor.khokhriakov@hzg.de>
@@ -59,9 +55,9 @@ public interface TangoProxy {
 
     <T> T readAttribute(String attrName) throws TangoProxyException, NoSuchAttributeException;
 
-    <T> Map.Entry<T, Long> readAttributeValueAndTime(String attrName) throws TangoProxyException, NoSuchAttributeException;
+    <T> ValueTime<T> readAttributeValueAndTime(String attrName) throws TangoProxyException, NoSuchAttributeException;
 
-    <T> Triplet<T, Long, Quality> readAttributeValueTimeQuality(String attrName) throws TangoProxyException, NoSuchAttributeException;
+    <T> ValueTimeQuality<T> readAttributeValueTimeQuality(String attrName) throws TangoProxyException, NoSuchAttributeException;
 
     <T> void writeAttribute(String attrName, T value) throws TangoProxyException, NoSuchAttributeException;
 

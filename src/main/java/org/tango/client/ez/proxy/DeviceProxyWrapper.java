@@ -38,7 +38,6 @@ import com.google.common.base.Objects;
 import fr.esrf.Tango.DevFailed;
 import fr.esrf.TangoApi.*;
 import fr.esrf.TangoApi.events.TangoEventsAdapter;
-import org.javatuples.Triplet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tango.client.ez.attribute.Quality;
@@ -48,9 +47,7 @@ import org.tango.client.ez.data.format.TangoDataFormat;
 import org.tango.client.ez.data.type.*;
 
 import javax.annotation.concurrent.ThreadSafe;
-import java.util.AbstractMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -133,14 +130,14 @@ public final class DeviceProxyWrapper implements TangoProxy {
      * @throws TangoProxyException
      */
     @Override
-    public <T> Map.Entry<T, Long> readAttributeValueAndTime(String attrName) throws TangoProxyException, NoSuchAttributeException {
+    public <T> ValueTime<T> readAttributeValueAndTime(String attrName) throws TangoProxyException, NoSuchAttributeException {
         logger.trace("DeviceProxyWrapper#readAttributeValueAndTime {}/{}", getName(), attrName);
         try {
             DeviceAttribute deviceAttribute = this.proxy.read_attribute(attrName);
             T result = readAttributeValue(attrName, deviceAttribute);
 
             long time = deviceAttribute.getTimeValMillisSec();
-            return new AbstractMap.SimpleImmutableEntry<T, Long>(result, time);
+            return new ValueTime<T>(result, time);
         } catch (DevFailed e) {
             logger.error("DeviceProxyWrapper#readAttributeValueAndTime has failed. {}/{}", getName(), attrName);
             throw new TangoProxyException(getName(), e);
@@ -167,7 +164,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
      * @throws TangoProxyException
      */
     @Override
-    public <T> Triplet<T, Long, Quality> readAttributeValueTimeQuality(String attrName) throws TangoProxyException, NoSuchAttributeException {
+    public <T> ValueTimeQuality<T> readAttributeValueTimeQuality(String attrName) throws TangoProxyException, NoSuchAttributeException {
         logger.trace("DeviceProxyWrapper#readAttributeValueTimeQuality {}/{}", getName(), attrName);
         try {
             DeviceAttribute deviceAttribute = this.proxy.read_attribute(attrName);
@@ -176,7 +173,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
             long time = deviceAttribute.getTimeValMillisSec();
             Quality quality = Quality.fromAttrQuality(deviceAttribute.getQuality());
 
-            return new Triplet<T, Long, Quality>(result, time, quality);
+            return new ValueTimeQuality<T>(result, time, quality);
         } catch (DevFailed e) {
             logger.error("DeviceProxyWrapper#readAttributeValueTimeQuality has failed. {}/{}", getName(), attrName);
             throw new TangoProxyException(getName(), e);
