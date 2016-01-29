@@ -107,17 +107,20 @@ public final class DeviceProxyWrapper implements TangoProxy {
      * @throws TangoProxyException
      */
     @Override
-    public <T> T readAttribute(String attrName) throws TangoProxyException, NoSuchAttributeException {
+    public <T> T readAttribute(String attrName) throws ReadAttributeException, NoSuchAttributeException {
         logger.trace("DeviceProxyWrapper#readAttribute {}/{}", getName(), attrName);
         try {
             DeviceAttribute deviceAttribute = this.proxy.read_attribute(attrName);
             return readAttributeValue(attrName, deviceAttribute);
         } catch (DevFailed e) {
             logger.error("DeviceProxyWrapper#readAttribute has failed. {}/{}", getName(), attrName);
-            throw new TangoProxyException(getName(), e);
+            throw new ReadAttributeException(getName(), attrName, e);
         } catch (ValueExtractionException e) {
             logger.error("DeviceProxyWrapper#readAttribute has failed. {}/{}", getName(), attrName);
-            throw new TangoProxyException(getName(), e);
+            throw new ReadAttributeException(getName(), attrName, e);
+        } catch (TangoProxyException e) {
+            logger.error("DeviceProxyWrapper#readAttribute has failed. {}/{}", getName(), attrName);
+            throw new ReadAttributeException(getName(), attrName, e.devFailed);
         }
     }
 
@@ -130,7 +133,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
      * @throws TangoProxyException
      */
     @Override
-    public <T> ValueTime<T> readAttributeValueAndTime(String attrName) throws TangoProxyException, NoSuchAttributeException {
+    public <T> ValueTime<T> readAttributeValueAndTime(String attrName) throws ReadAttributeException, NoSuchAttributeException {
         logger.trace("DeviceProxyWrapper#readAttributeValueAndTime {}/{}", getName(), attrName);
         try {
             DeviceAttribute deviceAttribute = this.proxy.read_attribute(attrName);
@@ -140,10 +143,13 @@ public final class DeviceProxyWrapper implements TangoProxy {
             return new ValueTime<T>(result, time);
         } catch (DevFailed e) {
             logger.error("DeviceProxyWrapper#readAttributeValueAndTime has failed. {}/{}", getName(), attrName);
-            throw new TangoProxyException(getName(), e);
+            throw new ReadAttributeException(getName(), attrName, e);
         } catch (ValueExtractionException e) {
             logger.error("DeviceProxyWrapper#readAttributeValueAndTime has failed. {}/{}", getName(), attrName);
-            throw new TangoProxyException(getName(), e);
+            throw new ReadAttributeException(getName(), attrName, e);
+        } catch (TangoProxyException e) {
+            logger.error("DeviceProxyWrapper#readAttributeValueAndTime has failed. {}/{}", getName(), attrName);
+            throw new ReadAttributeException(getName(), attrName, e.devFailed);
         }
     }
 
@@ -164,7 +170,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
      * @throws TangoProxyException
      */
     @Override
-    public <T> ValueTimeQuality<T> readAttributeValueTimeQuality(String attrName) throws TangoProxyException, NoSuchAttributeException {
+    public <T> ValueTimeQuality<T> readAttributeValueTimeQuality(String attrName) throws ReadAttributeException, NoSuchAttributeException {
         logger.trace("DeviceProxyWrapper#readAttributeValueTimeQuality {}/{}", getName(), attrName);
         try {
             DeviceAttribute deviceAttribute = this.proxy.read_attribute(attrName);
@@ -176,10 +182,13 @@ public final class DeviceProxyWrapper implements TangoProxy {
             return new ValueTimeQuality<T>(result, time, quality);
         } catch (DevFailed e) {
             logger.error("DeviceProxyWrapper#readAttributeValueTimeQuality has failed. {}/{}", getName(), attrName);
-            throw new TangoProxyException(getName(), e);
+            throw new ReadAttributeException(getName(), attrName, e);
         } catch (ValueExtractionException e) {
             logger.error("DeviceProxyWrapper#readAttributeValueTimeQuality has failed. {}/{}", getName(), attrName);
-            throw new TangoProxyException(getName(), e);
+            throw new ReadAttributeException(getName(), attrName, e);
+        } catch (TangoProxyException e) {
+            logger.error("DeviceProxyWrapper#readAttributeValueTimeQuality has failed. {}/{}", getName(), attrName);
+            throw new ReadAttributeException(getName(), attrName, e.devFailed);
         }
     }
 
@@ -192,7 +201,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
      * @throws TangoProxyException
      */
     @Override
-    public <T> void writeAttribute(String attrName, T value) throws TangoProxyException, NoSuchAttributeException {
+    public <T> void writeAttribute(String attrName, T value) throws WriteAttributeException, NoSuchAttributeException {
         logger.trace("DeviceProxyWrapper#writeAttribute {}/{}={}", getName(), attrName, value);
         DeviceAttribute deviceAttribute = new DeviceAttribute(attrName);
         TangoDataWrapper dataWrapper = TangoDataWrapper.create(deviceAttribute);
@@ -205,15 +214,18 @@ public final class DeviceProxyWrapper implements TangoProxy {
             this.proxy.write_attribute(deviceAttribute);
         } catch (DevFailed e) {
             logger.error("DeviceProxyWrapper#writeAttribute has failed. {}/{}={}", getName(), attrName, value);
-            throw new TangoProxyException(getName(), e);
+            throw new WriteAttributeException(getName(), attrName, e);
         } catch (ValueInsertionException e) {
             logger.error("DeviceProxyWrapper#writeAttribute has failed. {}/{}={}", getName(), attrName, value);
-            throw new TangoProxyException(getName(), e);
+            throw new WriteAttributeException(getName(), attrName, e);
+        } catch (TangoProxyException e) {
+            logger.error("DeviceProxyWrapper#writeAttribute has failed. {}/{}={}", getName(), attrName, value);
+            throw new WriteAttributeException(getName(), attrName, e.devFailed);
         }
     }
 
     @Override
-    public <V> V executeCommand(String cmd) throws TangoProxyException, NoSuchCommandException {
+    public <V> V executeCommand(String cmd) throws ExecuteCommandException, NoSuchCommandException {
         return executeCommand(cmd, null);
     }
 
@@ -229,7 +241,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
      * @throws TangoProxyException
      */
     @Override
-    public <T, V> V executeCommand(String cmd, T value) throws TangoProxyException, NoSuchCommandException {
+    public <T, V> V executeCommand(String cmd, T value) throws ExecuteCommandException, NoSuchCommandException {
         logger.trace("DeviceProxyWrapper#executeCommand {}/{}({})", getName(), cmd, value);
         try {
             DeviceData argin = new DeviceData();
@@ -245,13 +257,19 @@ public final class DeviceProxyWrapper implements TangoProxy {
             return typeOut.extract(argoutWrapper);
         } catch (DevFailed e) {
             logger.error("DeviceProxyWrapper#executeCommand has failed. {}/{}({})", getName(), cmd, value);
-            throw new TangoProxyException(getName(), e);
+            throw new ExecuteCommandException(getName(), cmd, e);
         } catch (ValueExtractionException e) {
-            throw new TangoProxyException(getName(), e);
+            logger.error("DeviceProxyWrapper#executeCommand has failed. {}/{}({})", getName(), cmd, value);
+            throw new ExecuteCommandException(getName(), cmd, e);
         } catch (UnknownTangoDataType unknownTangoDataType) {
+            logger.error("DeviceProxyWrapper#executeCommand has failed. {}/{}({})", getName(), cmd, value);
             throw new AssertionError(unknownTangoDataType);
         } catch (ValueInsertionException e) {
-            throw new TangoProxyException(getName(), e);
+            logger.error("DeviceProxyWrapper#executeCommand has failed. {}/{}({})", getName(), cmd, value);
+            throw new ExecuteCommandException(getName(), cmd, e);
+        } catch (TangoProxyException e) {
+            logger.error("DeviceProxyWrapper#executeCommand has failed. {}/{}({})", getName(), cmd, value);
+            throw new ExecuteCommandException(getName(), cmd, e.devFailed);
         }
     }
 

@@ -52,7 +52,7 @@ public class TangoProxyException extends Exception {
     public final String severity;
     public final String origin;
 
-    private final DevFailed devFailed;
+    public final DevFailed devFailed;
 
     public TangoProxyException(String device, DevFailed devFailed) {
         this.device = device;

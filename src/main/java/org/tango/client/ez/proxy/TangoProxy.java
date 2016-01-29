@@ -53,17 +53,17 @@ public interface TangoProxy {
 
     TangoAttributeInfoWrapper getAttributeInfo(String attrName) throws TangoProxyException, NoSuchAttributeException;
 
-    <T> T readAttribute(String attrName) throws TangoProxyException, NoSuchAttributeException;
+    <T> T readAttribute(String attrName) throws ReadAttributeException, NoSuchAttributeException;
 
-    <T> ValueTime<T> readAttributeValueAndTime(String attrName) throws TangoProxyException, NoSuchAttributeException;
+    <T> ValueTime<T> readAttributeValueAndTime(String attrName) throws ReadAttributeException, NoSuchAttributeException;
 
-    <T> ValueTimeQuality<T> readAttributeValueTimeQuality(String attrName) throws TangoProxyException, NoSuchAttributeException;
+    <T> ValueTimeQuality<T> readAttributeValueTimeQuality(String attrName) throws ReadAttributeException, NoSuchAttributeException;
 
-    <T> void writeAttribute(String attrName, T value) throws TangoProxyException, NoSuchAttributeException;
+    <T> void writeAttribute(String attrName, T value) throws WriteAttributeException, NoSuchAttributeException;
 
-    <V> V executeCommand(String cmd) throws TangoProxyException, NoSuchCommandException;
+    <V> V executeCommand(String cmd) throws ExecuteCommandException, NoSuchCommandException;
 
-    <T, V> V executeCommand(String cmd, T value) throws TangoProxyException, NoSuchCommandException;
+    <T, V> V executeCommand(String cmd, T value) throws ExecuteCommandException, NoSuchCommandException;
 
     void subscribeToEvent(String attrName, TangoEvent event) throws TangoProxyException, NoSuchAttributeException;
 
