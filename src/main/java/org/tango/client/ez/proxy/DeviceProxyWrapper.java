@@ -88,7 +88,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
             this.proxy = new DeviceProxy(name);
             this.eventsAdapter = new TangoEventsAdapter(this.proxy);
         } catch (DevFailed devFailed) {
-            logger.error("Failed to construct DeviceProxyWrapper for device {}", name);
+            logger.debug("Failed to construct DeviceProxyWrapper for device {}", name);
             throw new TangoProxyException(name, devFailed);
         }
     }
@@ -113,13 +113,13 @@ public final class DeviceProxyWrapper implements TangoProxy {
             DeviceAttribute deviceAttribute = this.proxy.read_attribute(attrName);
             return readAttributeValue(attrName, deviceAttribute);
         } catch (DevFailed e) {
-            logger.error("DeviceProxyWrapper#readAttribute has failed. {}/{}", getName(), attrName);
+            logger.debug("DeviceProxyWrapper#readAttribute has failed. {}/{}", getName(), attrName);
             throw new ReadAttributeException(getName(), attrName, e);
         } catch (ValueExtractionException e) {
-            logger.error("DeviceProxyWrapper#readAttribute has failed. {}/{}", getName(), attrName);
+            logger.debug("DeviceProxyWrapper#readAttribute has failed. {}/{}", getName(), attrName);
             throw new ReadAttributeException(getName(), attrName, e);
         } catch (TangoProxyException e) {
-            logger.error("DeviceProxyWrapper#readAttribute has failed. {}/{}", getName(), attrName);
+            logger.debug("DeviceProxyWrapper#readAttribute has failed. {}/{}", getName(), attrName);
             throw new ReadAttributeException(getName(), attrName, e.devFailed);
         }
     }
@@ -142,13 +142,13 @@ public final class DeviceProxyWrapper implements TangoProxy {
             long time = deviceAttribute.getTimeValMillisSec();
             return new ValueTime<T>(result, time);
         } catch (DevFailed e) {
-            logger.error("DeviceProxyWrapper#readAttributeValueAndTime has failed. {}/{}", getName(), attrName);
+            logger.debug("DeviceProxyWrapper#readAttributeValueAndTime has failed. {}/{}", getName(), attrName);
             throw new ReadAttributeException(getName(), attrName, e);
         } catch (ValueExtractionException e) {
-            logger.error("DeviceProxyWrapper#readAttributeValueAndTime has failed. {}/{}", getName(), attrName);
+            logger.debug("DeviceProxyWrapper#readAttributeValueAndTime has failed. {}/{}", getName(), attrName);
             throw new ReadAttributeException(getName(), attrName, e);
         } catch (TangoProxyException e) {
-            logger.error("DeviceProxyWrapper#readAttributeValueAndTime has failed. {}/{}", getName(), attrName);
+            logger.debug("DeviceProxyWrapper#readAttributeValueAndTime has failed. {}/{}", getName(), attrName);
             throw new ReadAttributeException(getName(), attrName, e.devFailed);
         }
     }
@@ -181,13 +181,13 @@ public final class DeviceProxyWrapper implements TangoProxy {
 
             return new ValueTimeQuality<T>(result, time, quality);
         } catch (DevFailed e) {
-            logger.error("DeviceProxyWrapper#readAttributeValueTimeQuality has failed. {}/{}", getName(), attrName);
+            logger.debug("DeviceProxyWrapper#readAttributeValueTimeQuality has failed. {}/{}", getName(), attrName);
             throw new ReadAttributeException(getName(), attrName, e);
         } catch (ValueExtractionException e) {
-            logger.error("DeviceProxyWrapper#readAttributeValueTimeQuality has failed. {}/{}", getName(), attrName);
+            logger.debug("DeviceProxyWrapper#readAttributeValueTimeQuality has failed. {}/{}", getName(), attrName);
             throw new ReadAttributeException(getName(), attrName, e);
         } catch (TangoProxyException e) {
-            logger.error("DeviceProxyWrapper#readAttributeValueTimeQuality has failed. {}/{}", getName(), attrName);
+            logger.debug("DeviceProxyWrapper#readAttributeValueTimeQuality has failed. {}/{}", getName(), attrName);
             throw new ReadAttributeException(getName(), attrName, e.devFailed);
         }
     }
@@ -213,13 +213,13 @@ public final class DeviceProxyWrapper implements TangoProxy {
             dataFormat.insert(dataWrapper, value, devDataType);
             this.proxy.write_attribute(deviceAttribute);
         } catch (DevFailed e) {
-            logger.error("DeviceProxyWrapper#writeAttribute has failed. {}/{}={}", getName(), attrName, value);
+            logger.debug("DeviceProxyWrapper#writeAttribute has failed. {}/{}={}", getName(), attrName, value);
             throw new WriteAttributeException(getName(), attrName, e);
         } catch (ValueInsertionException e) {
-            logger.error("DeviceProxyWrapper#writeAttribute has failed. {}/{}={}", getName(), attrName, value);
+            logger.debug("DeviceProxyWrapper#writeAttribute has failed. {}/{}={}", getName(), attrName, value);
             throw new WriteAttributeException(getName(), attrName, e);
         } catch (TangoProxyException e) {
-            logger.error("DeviceProxyWrapper#writeAttribute has failed. {}/{}={}", getName(), attrName, value);
+            logger.debug("DeviceProxyWrapper#writeAttribute has failed. {}/{}={}", getName(), attrName, value);
             throw new WriteAttributeException(getName(), attrName, e.devFailed);
         }
     }
@@ -256,19 +256,19 @@ public final class DeviceProxyWrapper implements TangoProxy {
             TangoDataType<V> typeOut = TangoDataTypes.forTangoDevDataType(cmdInfo.toCommandInfo().out_type);
             return typeOut.extract(argoutWrapper);
         } catch (DevFailed e) {
-            logger.error("DeviceProxyWrapper#executeCommand has failed. {}/{}({})", getName(), cmd, value);
+            logger.debug("DeviceProxyWrapper#executeCommand has failed. {}/{}({})", getName(), cmd, value);
             throw new ExecuteCommandException(getName(), cmd, e);
         } catch (ValueExtractionException e) {
-            logger.error("DeviceProxyWrapper#executeCommand has failed. {}/{}({})", getName(), cmd, value);
+            logger.debug("DeviceProxyWrapper#executeCommand has failed. {}/{}({})", getName(), cmd, value);
             throw new ExecuteCommandException(getName(), cmd, e);
         } catch (UnknownTangoDataType unknownTangoDataType) {
-            logger.error("DeviceProxyWrapper#executeCommand has failed. {}/{}({})", getName(), cmd, value);
+            logger.debug("DeviceProxyWrapper#executeCommand has failed. {}/{}({})", getName(), cmd, value);
             throw new AssertionError(unknownTangoDataType);
         } catch (ValueInsertionException e) {
-            logger.error("DeviceProxyWrapper#executeCommand has failed. {}/{}({})", getName(), cmd, value);
+            logger.debug("DeviceProxyWrapper#executeCommand has failed. {}/{}({})", getName(), cmd, value);
             throw new ExecuteCommandException(getName(), cmd, e);
         } catch (TangoProxyException e) {
-            logger.error("DeviceProxyWrapper#executeCommand has failed. {}/{}({})", getName(), cmd, value);
+            logger.debug("DeviceProxyWrapper#executeCommand has failed. {}/{}({})", getName(), cmd, value);
             throw new ExecuteCommandException(getName(), cmd, e.devFailed);
         }
     }
@@ -310,7 +310,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
                 subscriptionSet.add(eventKey);
             }
         } catch (DevFailed devFailed) {
-            logger.error("DeviceProxyWrapper#subscribeToEvent has failed. {}/{}.{}", getName(), attrName, event);
+            logger.debug("DeviceProxyWrapper#subscribeToEvent has failed. {}/{}.{}", getName(), attrName, event);
             throw new TangoProxyException(getName(), devFailed);
         }
     }
@@ -361,7 +361,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
             }
 
         } catch (DevFailed devFailed) {
-            logger.error("DeviceProxyWrapper#unsubscribeFromEvent has failed. {}/{}.{}", getName(), attrName, event);
+            logger.debug("DeviceProxyWrapper#unsubscribeFromEvent has failed. {}/{}.{}", getName(), attrName, event);
             throw new TangoProxyException(getName(), devFailed);
         }
     }
