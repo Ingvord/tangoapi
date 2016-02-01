@@ -37,6 +37,7 @@ package org.tango.client.ez.data;
 import fr.esrf.Tango.*;
 import fr.esrf.TangoApi.DeviceAttribute;
 import fr.esrf.TangoApi.DeviceData;
+import fr.esrf.TangoApi.DeviceDataHistory;
 
 /**
  * @author Igor Khokhriakov <igor.khokhriakov@hzg.de>
@@ -44,6 +45,10 @@ import fr.esrf.TangoApi.DeviceData;
  */
 //TODO encapsulate TangoDataType
 public abstract class TangoDataWrapper {
+    public static TangoDataWrapper create(DeviceDataHistory history){
+        return new TangoDeviceDataHistoryWrapper(history);
+    }
+
     public static TangoDataWrapper create(DeviceAttribute attribute) {
         return new TangoDeviceAttributeWrapper(attribute);
     }
