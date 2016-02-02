@@ -34,9 +34,7 @@
 
 package org.tango.client.ez.util;
 
-import fr.esrf.Tango.DevError;
-import fr.esrf.Tango.DevFailed;
-import fr.esrf.Tango.ErrSeverity;
+import fr.esrf.Tango.*;
 
 import java.util.Arrays;
 
@@ -137,4 +135,47 @@ public final class TangoUtils {
 //
 //        return result;
 //    }
+
+    public static DispLevel displayLevelFromString(String dispLevel){
+        switch (dispLevel.toUpperCase()){
+            case "OPERATOR":
+                return DispLevel.OPERATOR;
+            case "EXPERT":
+                return DispLevel.EXPERT;
+            case "DL_UNKNOWN":
+                return DispLevel.DL_UNKNOWN;
+            default:
+                throw new IllegalArgumentException("Unknown AttrWriteType:" + dispLevel);
+        }
+    }
+
+    public static AttrWriteType attrWriteTypeFromString(String attrWriteType){
+        switch (attrWriteType.toUpperCase()){
+            case "READ":
+                return AttrWriteType.READ;
+            case "WRITE":
+                return AttrWriteType.WRITE;
+            case "READ_WRITE":
+                return AttrWriteType.READ_WRITE;
+            case "READ_WITH_WRITE":
+                return AttrWriteType.READ_WITH_WRITE;
+            default:
+                throw new IllegalArgumentException("Unknown AttrWriteType:" + attrWriteType);
+        }
+    }
+
+    public static AttrDataFormat attrDataFormatFromString(String attrDataFormat){
+        switch (attrDataFormat.toUpperCase()){
+            case "IMAGE":
+                return AttrDataFormat.IMAGE;
+            case "SPECTRUM":
+                return AttrDataFormat.SPECTRUM;
+            case "SCALAR":
+                return AttrDataFormat.SCALAR;
+            case "FMT_UNKNOWN":
+                return AttrDataFormat.FMT_UNKNOWN;
+            default:
+                throw new IllegalArgumentException("Unknown AttrWriteType:" + attrDataFormat);
+        }
+    }
 }
