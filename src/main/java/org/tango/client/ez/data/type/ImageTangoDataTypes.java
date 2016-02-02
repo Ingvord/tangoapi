@@ -195,7 +195,7 @@ public class ImageTangoDataTypes {
         private final ValueInserter<V> inserter;
 
         protected ImageTangoDataType(int tango_dev_data_type, String strAlias, Class<T> clazz, ValueExtracter<V> extracter, ValueInserter<V> inserter) {
-            super(tango_dev_data_type, strAlias, clazz, null, null);
+            super(tango_dev_data_type, strAlias, clazz, clazz, null, null);
             this.extracter = extracter;
             this.inserter = inserter;
         }
@@ -205,7 +205,7 @@ public class ImageTangoDataTypes {
                 int dimY = data.getDimY();
                 int dimX = data.getDimX();
                 Object value = this.extracter.extract(data);//float[]
-                return getDataType().cast(new TangoImage<Object>(value, dimX, dimY));
+                return getDataTypeClass().cast(new TangoImage<Object>(value, dimX, dimY));
             } catch (DevFailed devFailed) {
                 throw new ValueExtractionException(devFailed);
             }

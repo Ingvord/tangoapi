@@ -46,21 +46,27 @@ import org.tango.client.ez.data.TangoDataWrapper;
 public abstract class TangoDataType<T> {
     private final int tangoDevDataType;
     private final Class<T> targetClazz;
+    private final Class<T> targetClazzBoxed;
     protected final ValueExtracter<T> extracter;
     protected final ValueInserter<T> inserter;
 
     private final String strAlias;
 
-    protected TangoDataType(int tango_dev_data_type, String strAlias, Class<T> clazz, ValueExtracter<T> extracter, ValueInserter<T> inserter) {
+    protected TangoDataType(int tango_dev_data_type, String strAlias, Class<T> clazz, Class<T> targetClazzBoxed, ValueExtracter<T> extracter, ValueInserter<T> inserter) {
         this.tangoDevDataType = tango_dev_data_type;
         this.strAlias = strAlias;
         this.targetClazz = clazz;
+        this.targetClazzBoxed = targetClazzBoxed;
         this.extracter = extracter;
         this.inserter = inserter;
     }
 
-    public Class<T> getDataType() {
+    public Class<T> getDataTypeClass() {
         return targetClazz;
+    }
+
+    public Class<T> getDataTypeClassBoxed(){
+        return targetClazzBoxed;
     }
 
     public abstract T extract(TangoDataWrapper data) throws ValueExtractionException;

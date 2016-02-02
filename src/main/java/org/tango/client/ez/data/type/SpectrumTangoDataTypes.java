@@ -289,7 +289,7 @@ public class SpectrumTangoDataTypes {
 
     public static final class SpectrumTangoDataType<T> extends TangoDataType<T> {
         protected SpectrumTangoDataType(int tango_dev_data_type, String strAlias, Class<T> clazz, ValueExtracter<T> tValueExtracter, ValueInserter<T> tValueInserter) {
-            super(tango_dev_data_type, strAlias, clazz, tValueExtracter, tValueInserter);
+            super(tango_dev_data_type, strAlias, clazz, clazz, tValueExtracter, tValueInserter);
         }
 
         @Override

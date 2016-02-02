@@ -23,6 +23,6 @@ public class ScalarTangoDataTypesTest {
 
     @Test
     public void test_getDataType() throws Exception {
-        assertSame(int.class, ScalarTangoDataTypes.U_SHORT.getDataType());
+        assertSame(int.class, ScalarTangoDataTypes.U_SHORT.getDataTypeClass());
     }
 }

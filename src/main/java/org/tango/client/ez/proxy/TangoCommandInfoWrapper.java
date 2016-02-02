@@ -55,11 +55,11 @@ public class TangoCommandInfoWrapper {
     }
 
     public Class<?> getArginType() {
-        return typeIn.getDataType();
+        return typeIn.getDataTypeClass();
     }
 
     public Class<?> getArgoutType() {
-        return typeOut.getDataType();
+        return typeOut.getDataTypeClass();
     }
 
     public CommandInfo toCommandInfo() {

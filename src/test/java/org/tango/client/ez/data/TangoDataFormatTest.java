@@ -94,7 +94,7 @@ public class TangoDataFormatTest {
     public void testGetDataTypeForBoolArr() throws Exception {
         TangoDataFormat<?> format = TangoDataFormat.createForAttrDataFormat(AttrDataFormat.SPECTRUM);
         TangoDataType<?> type = TangoDataTypes.forTangoDevDataType(TangoConst.Tango_DEV_BOOLEAN);
-        assertSame(boolean[].class, format.getDataType(type.getAlias()).getDataType());
+        assertSame(boolean[].class, format.getDataType(type.getAlias()).getDataTypeClass());
     }
 
     @Test
