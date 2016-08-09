@@ -35,6 +35,7 @@
 package org.tango.client.ez.util;
 
 import fr.esrf.Tango.*;
+import org.tango.client.ez.proxy.TangoProxyException;
 
 import java.util.Arrays;
 
@@ -64,16 +65,10 @@ public final class TangoUtils {
      * Returned {@link Exception} will contain meaningful information extracted from {@link DevFailed}.
      *
      * @param devFailed cause
-     * @return Exception
+     * @return TangoProxyException
      */
-    public static Exception convertDevFailedToException(DevFailed devFailed) {
-        Exception result = new Exception(devFailed.getLocalizedMessage(), null);
-        for (int i = devFailed.errors.length - 1; i > -1; --i) {
-            DevError error = devFailed.errors[i];
-            result = new Exception(
-                    String.format("%s: %s (%s)", error.reason, error.desc, error.origin), result);
-        }
-        return result;
+    public static TangoProxyException convertDevFailedToException(DevFailed devFailed) {
+        return new TangoProxyException("unknown",devFailed);
     }
 
     /**
