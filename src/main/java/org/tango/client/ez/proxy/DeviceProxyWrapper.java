@@ -40,7 +40,6 @@ import fr.esrf.TangoApi.*;
 import fr.esrf.TangoApi.events.TangoEventsAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.tango.client.ez.attribute.Quality;
 import org.tango.client.ez.data.TangoDataWrapper;
 import org.tango.client.ez.data.TangoDeviceAttributeWrapper;
 import org.tango.client.ez.data.format.TangoDataFormat;
@@ -177,9 +176,8 @@ public final class DeviceProxyWrapper implements TangoProxy {
             T result = readAttributeValue(attrName, deviceAttribute);
 
             long time = deviceAttribute.getTimeValMillisSec();
-            Quality quality = Quality.fromAttrQuality(deviceAttribute.getQuality());
 
-            return new ValueTimeQuality<T>(result, time, quality);
+            return new ValueTimeQuality<T>(result, time, deviceAttribute.getQuality());
         } catch (DevFailed e) {
             logger.debug("DeviceProxyWrapper#readAttributeValueTimeQuality has failed. {}/{}", getName(), attrName);
             throw new ReadAttributeException(getName(), attrName, e);
