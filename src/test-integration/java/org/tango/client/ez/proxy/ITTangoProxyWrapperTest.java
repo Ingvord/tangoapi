@@ -272,7 +272,7 @@ public class ITTangoProxyWrapperTest {
         assertTrue(ImageIO.write(renderedImage, "JPEG", Files.createTempFile("testReadImage_",".jpeg").toFile()));
     }
 
-    @Test
+    //@Test
     public void testReadImage_GRAY() throws Exception{
         TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
         TangoImage<float[]> image = instance.readAttribute("float_image_ro");
