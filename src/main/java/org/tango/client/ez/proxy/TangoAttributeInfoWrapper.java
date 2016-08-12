@@ -37,7 +37,6 @@ package org.tango.client.ez.proxy;
 import fr.esrf.TangoApi.AttributeInfo;
 import org.tango.client.ez.data.format.TangoDataFormat;
 import org.tango.client.ez.data.type.TangoDataType;
-import org.tango.client.ez.data.type.TangoDataTypes;
 import org.tango.client.ez.data.type.UnknownTangoDataType;
 
 /**
@@ -75,7 +74,7 @@ public final class TangoAttributeInfoWrapper {
     TangoAttributeInfoWrapper(AttributeInfo info) throws UnknownTangoDataType {
         this.info = info;
         this.format = TangoDataFormat.createForAttrDataFormat(info.data_format);
-        this.type = TangoDataTypes.forTangoDevDataType(info.data_type);
+        this.type = this.format.getDataType(info.data_type);
         this.clazz = this.format.getDataType(this.type.getAlias()).getDataTypeClass();
     }
 
