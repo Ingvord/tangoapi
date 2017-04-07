@@ -92,7 +92,7 @@
         <dependency>
             <groupId>org.tango</groupId>
             <artifactId>TangORB</artifactId>
-            <version>9.1.1.hzg-2</version>
+            <version>9.2.6-hzg</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -248,4 +248,11 @@
             </build>
         </profile>
     </profiles>
+
+    <repositories>
+        <repository>
+            <id>bintray-hzg</id>
+            <url>http://dl.bintray.com/hzgde/hzg-wpn-projects</url>
+        </repository>
+    </repositories>
 </project>
