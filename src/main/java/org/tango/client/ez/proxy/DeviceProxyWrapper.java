@@ -82,13 +82,25 @@ public final class DeviceProxyWrapper implements TangoProxy {
      * @throws TangoProxyException
      */
     protected DeviceProxyWrapper(String name) throws TangoProxyException {
-        logger.trace("DeviceProxyWrapper({})", name);
+        this(newDeviceProxy(name));
+    }
+
+    private static DeviceProxy newDeviceProxy(String name) throws TangoProxyException {
         try {
-            this.proxy = new DeviceProxy(name);
+            return new DeviceProxy(name);
+        } catch (DevFailed devFailed) {
+            throw new TangoProxyException(name, devFailed);
+        }
+    }
+
+    public DeviceProxyWrapper(DeviceProxy proxy) throws TangoProxyException {
+        logger.trace("DeviceProxyWrapper({})", proxy.get_name());
+        try {
+            this.proxy = proxy;
             this.eventsAdapter = new TangoEventsAdapter(this.proxy);
         } catch (DevFailed devFailed) {
-            logger.debug("Failed to construct DeviceProxyWrapper for device {}", name);
-            throw new TangoProxyException(name, devFailed);
+            logger.debug("Failed to construct DeviceProxyWrapper for device {}", proxy.get_name());
+            throw new TangoProxyException(proxy.get_name(), devFailed);
         }
     }
 
@@ -394,7 +406,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
                 attributeInfo.put(attrName, attrInf);
                 return attrInf;
             } catch (DevFailed devFailed) {
-                if(devFailed.errors.length > 0 && API_ATTR_NOT_FOUND.equalsIgnoreCase(devFailed.errors[0].reason))
+                if (devFailed.errors.length > 0 && API_ATTR_NOT_FOUND.equalsIgnoreCase(devFailed.errors[0].reason))
                     throw new NoSuchAttributeException();
                 else throw new TangoProxyException(getName(), devFailed);
             } catch (UnknownTangoDataType unknownTangoDataType) {
@@ -443,7 +455,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
                 commandInfo.put(cmdName, cmdInf);
                 return cmdInf;
             } catch (DevFailed devFailed) {
-                if(devFailed.errors.length > 0 && API_COMMAND_NOT_FOUND.equalsIgnoreCase(devFailed.errors[0].reason))
+                if (devFailed.errors.length > 0 && API_COMMAND_NOT_FOUND.equalsIgnoreCase(devFailed.errors[0].reason))
                     throw new NoSuchCommandException();
                 else throw new TangoProxyException(getName(), devFailed);
             } catch (UnknownTangoDataType e) {

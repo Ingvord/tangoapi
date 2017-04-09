@@ -34,6 +34,8 @@
 
 package org.tango.client.ez.proxy;
 
+import fr.esrf.TangoApi.DeviceProxy;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -48,6 +50,10 @@ public class TangoProxies {
 
     public static TangoProxy newDeviceProxyWrapper(String url) throws TangoProxyException {
         return new DeviceProxyWrapper(url);
+    }
+
+    public static TangoProxy newDeviceProxyWrapper(DeviceProxy proxy) throws TangoProxyException {
+        return new DeviceProxyWrapper(proxy);
     }
 
     public static <T> T newTangoProxy(final String device, Class<T> clazz) throws TangoProxyException {
