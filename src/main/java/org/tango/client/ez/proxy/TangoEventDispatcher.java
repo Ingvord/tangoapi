@@ -81,7 +81,7 @@ public class TangoEventDispatcher<T> implements ITangoChangeListener, ITangoPeri
             if (deviceAttribute.hasFailed()) {
                 throw new DevFailed(deviceAttribute.getErrStack());
             }
-            TangoDataWrapper data = TangoDataWrapper.create(deviceAttribute);
+            TangoDataWrapper data = TangoDataWrapper.create(deviceAttribute, null);//TODO extract TangoAttributeInfoWrapper.create
             TangoDataFormat<T> format = TangoDataFormat.createForAttrDataFormat(deviceAttribute.getDataFormat());
             EventData<T> result = new EventData<T>(format.extract(data), deviceAttribute.getTimeValMillisSec());
             for (Iterator<WeakReference<TangoEventListener<T>>> iterator = listeners.iterator(); iterator.hasNext(); ) {

@@ -59,7 +59,7 @@ public class TangoDataFormatTest {
         TangoDataFormat<String> instance = TangoDataFormat.createForAttrDataFormat(AttrDataFormat.SCALAR);
 
         DeviceAttribute attribute = new DeviceAttribute("test", "some value");
-        TangoDataWrapper data = TangoDataWrapper.create(attribute);
+        TangoDataWrapper data = TangoDataWrapper.create(attribute, null);
         String result = instance.extract(data);
 
         assertEquals("some value", result);
@@ -70,7 +70,7 @@ public class TangoDataFormatTest {
         TangoDataFormat<double[]> instance = TangoDataFormat.createForAttrDataFormat(AttrDataFormat.SPECTRUM);
 
         DeviceAttribute attribute = new DeviceAttribute("test", new double[]{0.1D, 0.9D, 0.8D, 0.4D}, 4, 0);
-        TangoDataWrapper data = TangoDataWrapper.create(attribute);
+        TangoDataWrapper data = TangoDataWrapper.create(attribute, null);
         double[] result = instance.extract(data);
 
         assertArrayEquals(new double[]{0.1D, 0.9D, 0.8D, 0.4D}, result, 0.0);
@@ -81,7 +81,7 @@ public class TangoDataFormatTest {
         TangoDataFormat<boolean[]> instance = TangoDataFormat.createForAttrDataFormat(AttrDataFormat.SPECTRUM);
 
         DeviceAttribute attribute = new DeviceAttribute("test", new boolean[]{true, false, false, true}, 4, 0);
-        TangoDataWrapper data = TangoDataWrapper.create(attribute);
+        TangoDataWrapper data = TangoDataWrapper.create(attribute, null);
         boolean[] result = instance.extract(data);
 
         assertTrue(result[0]);
@@ -102,7 +102,7 @@ public class TangoDataFormatTest {
         TangoDataFormat<Object> instance = TangoDataFormat.createForAttrDataFormat(AttrDataFormat.FMT_UNKNOWN);
 
         DeviceAttribute attribute = new DeviceAttribute("test", 1234);
-        TangoDataWrapper data = TangoDataWrapper.create(attribute);
+        TangoDataWrapper data = TangoDataWrapper.create(attribute, null);
 
         Object result = instance.extract(data);
         assertEquals(1234, Array.getInt(result, 0));
@@ -113,7 +113,7 @@ public class TangoDataFormatTest {
         TangoDataFormat<Object> instance = TangoDataFormat.createForAttrDataFormat(AttrDataFormat.FMT_UNKNOWN);
 
         DeviceAttribute attribute = new DeviceAttribute("test", new int[]{1, 2, 3, 4}, 4, 0);
-        TangoDataWrapper data = TangoDataWrapper.create(attribute);
+        TangoDataWrapper data = TangoDataWrapper.create(attribute, null);
 
         Object result = instance.extract(data);
         assertEquals(1, Array.getInt(result, 0));

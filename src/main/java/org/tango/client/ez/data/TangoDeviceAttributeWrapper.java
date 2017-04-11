@@ -36,8 +36,11 @@ package org.tango.client.ez.data;
 
 import fr.esrf.Tango.*;
 import fr.esrf.TangoApi.DeviceAttribute;
+import org.tango.client.ez.proxy.TangoAttributeInfoWrapper;
+import org.tango.client.ez.util.TangoUtils;
 
 import java.lang.reflect.Array;
+import java.util.Arrays;
 
 /**
  * @author Igor Khokhriakov <igor.khokhriakov@hzg.de>
@@ -45,9 +48,11 @@ import java.lang.reflect.Array;
  */
 public final class TangoDeviceAttributeWrapper extends TangoDataWrapper {
     private final DeviceAttribute data;
+    private final TangoAttributeInfoWrapper info;
 
-    protected TangoDeviceAttributeWrapper(DeviceAttribute data) {
+    protected TangoDeviceAttributeWrapper(DeviceAttribute data, TangoAttributeInfoWrapper info) {
         this.data = data;
+        this.info = info;
     }
 
     @Override
@@ -422,5 +427,29 @@ public final class TangoDeviceAttributeWrapper extends TangoDataWrapper {
     @Override
     public int getNbRead() throws DevFailed {
         return data.getNbRead();
+    }
+
+    @Override
+    public String extractEnumLabel() throws DevFailed {
+        if (info.toAttributeInfoEx().enum_label == null || info.toAttributeInfoEx().enum_label.length == 0) {
+            throw TangoUtils.createDevFailed(new IllegalStateException("Attribute[" + info.toAttributeInfo().name + "] has no enum lables"));
+        }
+
+        int ndx = data.extractShort();
+
+        assert ndx >= 0 && ndx < info.toAttributeInfoEx().enum_label.length;
+
+        return info.toAttributeInfoEx().getEnumLabel((short) ndx);
+    }
+
+    @Override
+    public void insertEnumLabel(String value) {
+        if (info.toAttributeInfoEx().enum_label == null || info.toAttributeInfoEx().enum_label.length == 0) {
+            throw new IllegalStateException("Attribute[" + info.toAttributeInfo().name + "] has no enum lables");
+        }
+
+        int ndx = Arrays.asList(info.toAttributeInfoEx().enum_label).indexOf(value);
+
+        data.insert((short) ndx);
     }
 }

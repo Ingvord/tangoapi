@@ -12,7 +12,7 @@ public class ScalarTangoDataTypesTest {
     public void test_ushort() throws Exception {
         DeviceAttribute attr = new DeviceAttribute("test_ushort");
 
-        TangoDataWrapper data = TangoDataWrapper.create(attr);
+        TangoDataWrapper data = TangoDataWrapper.create(attr, null);
 
         ScalarTangoDataTypes.U_SHORT.insert(data, 123);
 

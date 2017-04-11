@@ -53,7 +53,7 @@ public class SpectrumTangoDataTypesTest {
 
         String[] values = {"Hello", "World", "!!!"};
         DeviceAttribute attribute = new DeviceAttribute("test", values, values.length, 0);
-        TangoDataWrapper data = TangoDataWrapper.create(attribute);
+        TangoDataWrapper data = TangoDataWrapper.create(attribute, null);
         String[] result = instance.extract(data);
 
         assertArrayEquals(new String[]{"Hello", "World", "!!!"}, result);
@@ -65,7 +65,7 @@ public class SpectrumTangoDataTypesTest {
 
         double[] values = {1., 2., 3.};
         DeviceAttribute attribute = new DeviceAttribute("test", values, values.length, 0);
-        TangoDataWrapper data = TangoDataWrapper.create(attribute);
+        TangoDataWrapper data = TangoDataWrapper.create(attribute, null);
         double[] result = instance.extract(data);
 
         assertArrayEquals(new double[]{1., 2., 3.}, result, 0.00001);
@@ -78,7 +78,7 @@ public class SpectrumTangoDataTypesTest {
 
         short[] values = {1, 2, 3, 4};
         DeviceAttribute attribute = new DeviceAttribute("test", values, values.length, 0);
-        TangoDataWrapper data = TangoDataWrapper.create(attribute);
+        TangoDataWrapper data = TangoDataWrapper.create(attribute, null);
         short[] result = instance.extract(data);
 
         assertArrayEquals(new short[]{1, 2, 3, 4}, result);
@@ -90,7 +90,7 @@ public class SpectrumTangoDataTypesTest {
 
         char[] values = {'a', 'b', 'c', 'd'};
         DeviceAttribute attribute = new DeviceAttribute("test", new String(values).getBytes("UTF-8"), values.length, 0);
-        TangoDataWrapper data = TangoDataWrapper.create(attribute);
+        TangoDataWrapper data = TangoDataWrapper.create(attribute, null);
         char[] result = instance.extract(data);
 
         assertArrayEquals(new char[]{'a', 'b', 'c', 'd'}, result);
@@ -102,7 +102,7 @@ public class SpectrumTangoDataTypesTest {
 
         boolean[] values = {true, false, false, true, true};
         DeviceAttribute attribute = new DeviceAttribute("test", values, values.length, 0);
-        TangoDataWrapper data = TangoDataWrapper.create(attribute);
+        TangoDataWrapper data = TangoDataWrapper.create(attribute, null);
         boolean[] result = instance.extract(data);
 
         assertTrue(result[0]);

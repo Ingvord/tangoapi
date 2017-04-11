@@ -55,7 +55,7 @@ public class TangoDataTypeTest {
         TangoDataType<Void> type = TangoDataTypes.forTangoDevDataType(TangoConst.Tango_DEV_VOID);
 
         DeviceAttribute attribute = new DeviceAttribute("test", "some value");
-        TangoDataWrapper data = TangoDataWrapper.create(attribute);
+        TangoDataWrapper data = TangoDataWrapper.create(attribute, null);
         Void result = type.extract(data);
 
         assertNull(result);
@@ -66,7 +66,7 @@ public class TangoDataTypeTest {
         TangoDataType<String> type = TangoDataTypes.forTangoDevDataType(TangoConst.Tango_DEV_STRING);
 
         DeviceAttribute attribute = new DeviceAttribute("test", "some value");
-        TangoDataWrapper data = TangoDataWrapper.create(attribute);
+        TangoDataWrapper data = TangoDataWrapper.create(attribute, null);
         String result = type.extract(data);
 
         assertEquals("some value", result);
@@ -77,7 +77,7 @@ public class TangoDataTypeTest {
         TangoDataType<String[]> type = TangoDataTypes.forTangoDevDataType(TangoConst.Tango_DEVVAR_STRINGARRAY);
 
         DeviceAttribute attribute = new DeviceAttribute("test", new String[]{"some value"}, 0, 0);
-        TangoDataWrapper data = TangoDataWrapper.create(attribute);
+        TangoDataWrapper data = TangoDataWrapper.create(attribute, null);
         String[] result = type.extract(data);
 
         assertEquals("[some value]", Arrays.toString(result));

@@ -34,9 +34,12 @@
 
 package org.tango.client.ez.proxy;
 
+import fr.esrf.TangoApi.DeviceProxy;
 import org.junit.Test;
 
 import java.io.IOException;
+
+import static junit.framework.Assert.assertEquals;
 
 /**
  * @author Igor Khokhriakov <igor.khokhriakov@hzg.de>
@@ -49,6 +52,12 @@ public class TangoProxyImplTest {
 //        SomeStupidTangoDevice device = TangoProxy.proxy("",SomeStupidTangoDevice.class);
 //
 //        String result = device.executeCommand(new int[]{1,2,3});
+
+        TangoProxy proxy = TangoProxies.newDeviceProxyWrapper(new DeviceProxy("development/custom/0", "hzgxenvtest", "10000"));
+
+        String result = proxy.readAttribute("enumAttribute");
+
+        assertEquals("VALUE1", result);
     }
 
     private static interface SomeStupidTangoDevice {

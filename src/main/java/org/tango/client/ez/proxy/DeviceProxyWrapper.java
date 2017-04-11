@@ -85,14 +85,6 @@ public final class DeviceProxyWrapper implements TangoProxy {
         this(newDeviceProxy(name));
     }
 
-    private static DeviceProxy newDeviceProxy(String name) throws TangoProxyException {
-        try {
-            return new DeviceProxy(name);
-        } catch (DevFailed devFailed) {
-            throw new TangoProxyException(name, devFailed);
-        }
-    }
-
     public DeviceProxyWrapper(DeviceProxy proxy) throws TangoProxyException {
         logger.trace("DeviceProxyWrapper({})", proxy.get_name());
         try {
@@ -101,6 +93,14 @@ public final class DeviceProxyWrapper implements TangoProxy {
         } catch (DevFailed devFailed) {
             logger.debug("Failed to construct DeviceProxyWrapper for device {}", proxy.get_name());
             throw new TangoProxyException(proxy.get_name(), devFailed);
+        }
+    }
+
+    private static DeviceProxy newDeviceProxy(String name) throws TangoProxyException {
+        try {
+            return new DeviceProxy(name);
+        } catch (DevFailed devFailed) {
+            throw new TangoProxyException(name, devFailed);
         }
     }
 
@@ -168,8 +168,8 @@ public final class DeviceProxyWrapper implements TangoProxy {
         if (deviceAttribute.hasFailed()) {
             throw new DevFailed(deviceAttribute.getErrStack());
         }
-        TangoDataWrapper dataWrapper = TangoDataWrapper.create(deviceAttribute);
         TangoAttributeInfoWrapper attributeInfo = getAttributeInfo(attrName);
+        TangoDataWrapper dataWrapper = TangoDataWrapper.create(deviceAttribute, attributeInfo);
         TangoDataFormat<T> dataFormat = TangoDataFormat.createForAttrDataFormat(attributeInfo.toAttributeInfo().data_format);
         return dataFormat.extract(dataWrapper);
     }
@@ -214,10 +214,10 @@ public final class DeviceProxyWrapper implements TangoProxy {
     public <T> void writeAttribute(String attrName, T value) throws WriteAttributeException, NoSuchAttributeException {
         logger.trace("DeviceProxyWrapper#writeAttribute {}/{}={}", getName(), attrName, value);
         DeviceAttribute deviceAttribute = new DeviceAttribute(attrName);
-        TangoDataWrapper dataWrapper = TangoDataWrapper.create(deviceAttribute);
 
         try {
             TangoAttributeInfoWrapper attributeInfo = getAttributeInfo(attrName);
+            TangoDataWrapper dataWrapper = TangoDataWrapper.create(deviceAttribute, attributeInfo);
             int devDataType = attributeInfo.toAttributeInfo().data_type;
             TangoDataFormat<T> dataFormat = TangoDataFormat.createForAttrDataFormat(attributeInfo.toAttributeInfo().data_format);
             dataFormat.insert(dataWrapper, value, devDataType);
@@ -401,7 +401,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
             if (attrInf != null) return attrInf;
 
             try {
-                AttributeInfo info = proxy.get_attribute_info(attrName);
+                AttributeInfoEx info = proxy.get_attribute_info_ex(attrName);
                 attrInf = new TangoAttributeInfoWrapper(info);
                 attributeInfo.put(attrName, attrInf);
                 return attrInf;

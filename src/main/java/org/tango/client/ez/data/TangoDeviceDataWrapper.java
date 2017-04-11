@@ -481,4 +481,14 @@ public final class TangoDeviceDataWrapper extends TangoDataWrapper {
     public void insert_us(short[] argin) {
         data.insert_us(argin);
     }
+
+    @Override
+    public String extractEnumLabel() throws DevFailed {
+        throw new UnsupportedOperationException("This method is not supported in " + this.getClass());
+    }
+
+    @Override
+    public void insertEnumLabel(String value) {
+        throw new UnsupportedOperationException("This method is not supported in " + this.getClass());
+    }
 }

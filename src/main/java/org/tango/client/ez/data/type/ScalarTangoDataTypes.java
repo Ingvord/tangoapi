@@ -331,6 +331,24 @@ public class ScalarTangoDataTypes {
                     data.insert_uc((short) value.charValue());
                 }
             });
+    public static final String DEV_ENUM = "DevEnum";
+    public static final TangoDataType<String> ENUM = new ScalarTangoDataType<>(
+            TangoConst.Tango_DEV_ENUM, DEV_ENUM, String.class, String.class, new ValueExtracter<String>() {
+        @Override
+        public String extract(TangoDataWrapper data) throws ValueExtractionException {
+            try {
+                return data.extractEnumLabel();
+            } catch (DevFailed devFailed) {
+                throw new ValueExtractionException(TangoUtils.convertDevFailedToException(devFailed));
+            }
+        }
+    },
+            new ValueInserter<String>() {
+                @Override
+                public void insert(TangoDataWrapper data, String value, int dimX, int dimY) throws ValueInsertionException {
+                    data.insertEnumLabel(value);
+                }
+            });
     public static final String DEV_ENCODED = "DevEncoded";
     /**
      * This only supports JPEG_GRAY8 format, i.e. use BufferedImage.TYPE_BYTE_GRAY and read images as jpeg to extract data
@@ -376,7 +394,7 @@ public class ScalarTangoDataTypes {
 
     static Collection<? extends TangoDataType<?>> values() {
         //TODO remove warning
-        return Sets.newHashSet(ENCODED, STATE, VOID, BOOLEAN, STRING, SHORT, U_SHORT, U_CHAR, INT, U_INT, LONG, U_LONG, FLOAT, DOUBLE, DEV_VAR_LONG_STRING_ARRAY, DEV_VAR_DOUBLE_STRING_ARRAY);
+        return Sets.newHashSet(ENCODED, STATE, VOID, BOOLEAN, STRING, SHORT, U_SHORT, U_CHAR, INT, U_INT, LONG, U_LONG, FLOAT, DOUBLE, DEV_VAR_LONG_STRING_ARRAY, DEV_VAR_DOUBLE_STRING_ARRAY, ENUM);
     }
 
     public static class ScalarTangoDataType<T> extends TangoDataType<T> {

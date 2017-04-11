@@ -35,6 +35,7 @@
 package org.tango.client.ez.proxy;
 
 import fr.esrf.TangoApi.AttributeInfo;
+import fr.esrf.TangoApi.AttributeInfoEx;
 import org.tango.client.ez.data.format.TangoDataFormat;
 import org.tango.client.ez.data.type.TangoDataType;
 import org.tango.client.ez.data.type.UnknownTangoDataType;
@@ -49,7 +50,7 @@ public final class TangoAttributeInfoWrapper {
     /**
      * Tango attribute info
      */
-    protected final AttributeInfo info;
+    protected final AttributeInfoEx info;
 
     /**
      * Attribute TangoDataType
@@ -71,7 +72,7 @@ public final class TangoAttributeInfoWrapper {
      *
      * @param info attribute info
      */
-    TangoAttributeInfoWrapper(AttributeInfo info) throws UnknownTangoDataType {
+    TangoAttributeInfoWrapper(AttributeInfoEx info) throws UnknownTangoDataType {
         this.info = info;
         this.format = TangoDataFormat.createForAttrDataFormat(info.data_format);
         this.type = this.format.getDataType(info.data_type);
@@ -99,6 +100,10 @@ public final class TangoAttributeInfoWrapper {
     }
 
     public AttributeInfo toAttributeInfo() {
+        return info;
+    }
+
+    public AttributeInfoEx toAttributeInfoEx() {
         return info;
     }
 }

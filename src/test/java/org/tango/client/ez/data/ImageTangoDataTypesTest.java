@@ -61,7 +61,7 @@ public class ImageTangoDataTypesTest {
 
         DeviceAttribute attribute = new DeviceAttribute("test", new double[]{1., 3., 2., 4.}, 2, 2);
 
-        TangoDataWrapper attrWrapper = TangoDataWrapper.create(attribute);
+        TangoDataWrapper attrWrapper = TangoDataWrapper.create(attribute, null);
 
         TangoImage<double[]> image = type.extract(attrWrapper);
 
@@ -77,7 +77,7 @@ public class ImageTangoDataTypesTest {
 
         DeviceAttribute attribute = new DeviceAttribute("test");
 
-        TangoDataWrapper attrWrapper = TangoDataWrapper.create(attribute);
+        TangoDataWrapper attrWrapper = TangoDataWrapper.create(attribute, null);
 
         type.insert(attrWrapper, TangoImage.<double[]>from2DArray(new double[][]{{1., 3.}, {2., 4.}}));
 
@@ -101,7 +101,7 @@ public class ImageTangoDataTypesTest {
         attribute.insert(encoded);
         attribute.getAttributeValueObject_5().data_format = AttrDataFormat.SCALAR;//insert always set FMT_UNKNOWN
 
-        TangoDataWrapper data = TangoDataWrapper.create(attribute);
+        TangoDataWrapper data = TangoDataWrapper.create(attribute, null);
 
         TangoDataFormat<BufferedImage> format = TangoDataFormat.createForAttrDataFormat(attribute.getDataFormat());
 

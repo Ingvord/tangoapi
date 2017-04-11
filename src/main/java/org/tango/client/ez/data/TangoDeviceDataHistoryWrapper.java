@@ -29,12 +29,16 @@ public class TangoDeviceDataHistoryWrapper extends TangoDataWrapper {
         return wrapped.getDimX();
     }
 
-    public void setTimeVal(TimeVal tval) {
-        wrapped.setTimeVal(tval);
+    public void setDimX(int dim) throws DevFailed {
+        wrapped.setDimX(dim);
     }
 
     public TimeVal getTimeVal() {
         return wrapped.getTimeVal();
+    }
+
+    public void setTimeVal(TimeVal tval) {
+        wrapped.setTimeVal(tval);
     }
 
     public long getTimeValSec() {
@@ -45,25 +49,21 @@ public class TangoDeviceDataHistoryWrapper extends TangoDataWrapper {
         return wrapped.getTime();
     }
 
-    public void setAttrQuality(AttrQuality q) throws DevFailed {
-        wrapped.setAttrQuality(q);
-    }
-
     public AttrQuality getAttrQuality() throws DevFailed {
         return wrapped.getAttrQuality();
     }
 
-    public void setDimX(int dim) throws DevFailed {
-        wrapped.setDimX(dim);
-    }
-
-    public void setDimY(int dim) throws DevFailed {
-        wrapped.setDimY(dim);
+    public void setAttrQuality(AttrQuality q) throws DevFailed {
+        wrapped.setAttrQuality(q);
     }
 
     @Override
     public int getDimY() throws DevFailed {
         return wrapped.getDimY();
+    }
+
+    public void setDimY(int dim) throws DevFailed {
+        wrapped.setDimY(dim);
     }
 
     public Any extractAny() throws DevFailed {
@@ -344,12 +344,12 @@ public class TangoDeviceDataHistoryWrapper extends TangoDataWrapper {
         return wrapped.hasFailed();
     }
 
-    public void setErrStack(DevError[] err) {
-        wrapped.setErrStack(err);
-    }
-
     public DevError[] getErrStack() {
         return wrapped.getErrStack();
+    }
+
+    public void setErrStack(DevError[] err) {
+        wrapped.setErrStack(err);
     }
 
     public TypeCode type() {
@@ -369,20 +369,20 @@ public class TangoDeviceDataHistoryWrapper extends TangoDataWrapper {
         return wrapped.getNbWritten();
     }
 
-    public void setWrittenDimX(int nb) {
-        wrapped.setWrittenDimX(nb);
-    }
-
-    public void setWrittenDimY(int nb) {
-        wrapped.setWrittenDimY(nb);
-    }
-
     public int getWrittenDimX() {
         return wrapped.getWrittenDimX();
     }
 
+    public void setWrittenDimX(int nb) {
+        wrapped.setWrittenDimX(nb);
+    }
+
     public int getWrittenDimY() {
         return wrapped.getWrittenDimY();
+    }
+
+    public void setWrittenDimY(int nb) {
+        wrapped.setWrittenDimY(nb);
     }
 
     @Override
@@ -592,6 +592,16 @@ public class TangoDeviceDataHistoryWrapper extends TangoDataWrapper {
 
     @Override
     public void insert(DevState state[], int x, int y){
+        throw new UnsupportedOperationException("This method is not supported in " + this.getClass());
+    }
+
+    @Override
+    public String extractEnumLabel() throws DevFailed {
+        throw new UnsupportedOperationException("This method is not supported in " + this.getClass());
+    }
+
+    @Override
+    public void insertEnumLabel(String value) {
         throw new UnsupportedOperationException("This method is not supported in " + this.getClass());
     }
 }

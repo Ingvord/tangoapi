@@ -38,6 +38,7 @@ import fr.esrf.Tango.*;
 import fr.esrf.TangoApi.DeviceAttribute;
 import fr.esrf.TangoApi.DeviceData;
 import fr.esrf.TangoApi.DeviceDataHistory;
+import org.tango.client.ez.proxy.TangoAttributeInfoWrapper;
 
 /**
  * @author Igor Khokhriakov <igor.khokhriakov@hzg.de>
@@ -49,8 +50,8 @@ public abstract class TangoDataWrapper {
         return new TangoDeviceDataHistoryWrapper(history);
     }
 
-    public static TangoDataWrapper create(DeviceAttribute attribute) {
-        return new TangoDeviceAttributeWrapper(attribute);
+    public static TangoDataWrapper create(DeviceAttribute attribute, TangoAttributeInfoWrapper attributeInfo) {
+        return new TangoDeviceAttributeWrapper(attribute, attributeInfo);
     }
 
     public static TangoDataWrapper create(DeviceData data) {
@@ -224,4 +225,8 @@ public abstract class TangoDataWrapper {
 
 
     public abstract int getNbRead() throws DevFailed;
+
+    public abstract String extractEnumLabel() throws DevFailed;
+
+    public abstract void insertEnumLabel(String value);
 }
