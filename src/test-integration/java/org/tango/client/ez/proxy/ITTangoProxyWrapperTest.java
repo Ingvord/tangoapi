@@ -121,7 +121,7 @@ public class ITTangoProxyWrapperTest {
         PRC.destroy();
     }
 
-    @Test(expected = TangoProxyException.class)
+    @Test(expected = NoSuchAttributeException.class)
     public void testReadAttribute_Failed() throws Exception {
         TangoProxy instance = new DeviceProxyWrapper(TEST_TANGO);
 
