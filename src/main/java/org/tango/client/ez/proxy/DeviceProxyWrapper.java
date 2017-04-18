@@ -125,6 +125,8 @@ public final class DeviceProxyWrapper implements TangoProxy {
             return readAttributeValue(attrName, deviceAttribute);
         } catch (DevFailed e) {
             logger.debug("DeviceProxyWrapper#readAttribute has failed. {}/{}", getName(), attrName);
+            if (e.errors.length > 0 && API_ATTR_NOT_FOUND.equalsIgnoreCase(e.errors[0].reason))
+                throw new NoSuchAttributeException();
             throw new ReadAttributeException(getName(), attrName, e);
         } catch (ValueExtractionException e) {
             logger.debug("DeviceProxyWrapper#readAttribute has failed. {}/{}", getName(), attrName);
@@ -154,6 +156,8 @@ public final class DeviceProxyWrapper implements TangoProxy {
             return new ValueTime<T>(result, time);
         } catch (DevFailed e) {
             logger.debug("DeviceProxyWrapper#readAttributeValueAndTime has failed. {}/{}", getName(), attrName);
+            if (e.errors.length > 0 && API_ATTR_NOT_FOUND.equalsIgnoreCase(e.errors[0].reason))
+                throw new NoSuchAttributeException();
             throw new ReadAttributeException(getName(), attrName, e);
         } catch (ValueExtractionException e) {
             logger.debug("DeviceProxyWrapper#readAttributeValueAndTime has failed. {}/{}", getName(), attrName);
@@ -192,6 +196,8 @@ public final class DeviceProxyWrapper implements TangoProxy {
             return new ValueTimeQuality<T>(result, time, deviceAttribute.getQuality());
         } catch (DevFailed e) {
             logger.debug("DeviceProxyWrapper#readAttributeValueTimeQuality has failed. {}/{}", getName(), attrName);
+            if (e.errors.length > 0 && API_ATTR_NOT_FOUND.equalsIgnoreCase(e.errors[0].reason))
+                throw new NoSuchAttributeException();
             throw new ReadAttributeException(getName(), attrName, e);
         } catch (ValueExtractionException e) {
             logger.debug("DeviceProxyWrapper#readAttributeValueTimeQuality has failed. {}/{}", getName(), attrName);
