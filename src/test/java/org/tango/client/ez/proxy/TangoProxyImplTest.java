@@ -35,7 +35,6 @@
 package org.tango.client.ez.proxy;
 
 import fr.esrf.TangoApi.DeviceProxy;
-import org.junit.Test;
 
 import java.io.IOException;
 
@@ -46,7 +45,7 @@ import static junit.framework.Assert.assertEquals;
  * @since 20.06.13
  */
 public class TangoProxyImplTest {
-    @Test
+    //@Test
     public void testProxy() throws Exception {
         //TODO create "remote" device
 //        SomeStupidTangoDevice device = TangoProxy.proxy("",SomeStupidTangoDevice.class);
