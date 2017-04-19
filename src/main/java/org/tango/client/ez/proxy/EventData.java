@@ -34,6 +34,8 @@
 
 package org.tango.client.ez.proxy;
 
+import fr.esrf.TangoApi.DeviceAttribute;
+
 /**
  * Container for event data.
  * <p/>
@@ -47,10 +49,12 @@ package org.tango.client.ez.proxy;
 public final class EventData<T> {
     private final T value;
     private final long time;
+    private final DeviceAttribute deviceAttribute;
 
-    public EventData(T value, long time) {
+    public EventData(T value, long time, DeviceAttribute deviceAttribute) {
         this.value = value;
         this.time = time;
+        this.deviceAttribute = deviceAttribute;
     }
 
     public T getValue() {
@@ -62,5 +66,9 @@ public final class EventData<T> {
      */
     public long getTime() {
         return time;
+    }
+
+    public DeviceAttribute asDeviceAttribute() {
+        return deviceAttribute;
     }
 }
