@@ -37,6 +37,8 @@ package org.tango.client.ez.proxy;
 import fr.esrf.Tango.DevFailed;
 import fr.esrf.TangoApi.DeviceAttribute;
 import fr.esrf.TangoApi.events.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.tango.client.ez.data.TangoDataWrapper;
 import org.tango.client.ez.data.format.TangoDataFormat;
 import org.tango.client.ez.util.TangoUtils;
@@ -58,11 +60,19 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class TangoEventDispatcher<T> implements ITangoChangeListener, ITangoPeriodicListener,
         ITangoArchiveListener, ITangoUserListener {
+    private final Logger logger = LoggerFactory.getLogger(TangoEventDispatcher.class);
+
     private final Queue<WeakReference<TangoEventListener<T>>> listeners = new ConcurrentLinkedQueue<
             WeakReference<TangoEventListener<T>>>();
 
     public void addListener(TangoEventListener<T> listener) {
-        listeners.add(new WeakReference<TangoEventListener<T>>(listener));
+        boolean isAdded = listeners.add(new WeakReference<TangoEventListener<T>>(listener));
+        logger.debug("Listener {} has been added: {}", listener, isAdded);
+    }
+
+    public void removeListener(TangoEventListener<T> listener) {
+        boolean isRemoved = listeners.remove(listener);
+        logger.debug("Listener {} has been removed: {}", listener, isRemoved);
     }
 
     @Override

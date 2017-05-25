@@ -81,7 +81,9 @@ public interface TangoProxy {
      */
     <T> void addEventListener(String attrName, TangoEvent event, TangoEventListener<T> listener) throws TangoProxyException;
 
-    public void unsubscribeFromEvent(String attrName, TangoEvent event) throws TangoProxyException;
+    <T> void removeEventListener(String attrName, TangoEvent event, TangoEventListener<T> listener) throws TangoProxyException;
+
+    void unsubscribeFromEvent(String attrName, TangoEvent event) throws TangoProxyException;
 
     TangoCommandInfoWrapper getCommandInfo(String cmdName) throws TangoProxyException, NoSuchCommandException;
 

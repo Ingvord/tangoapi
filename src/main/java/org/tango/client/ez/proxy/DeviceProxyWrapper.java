@@ -337,12 +337,21 @@ public final class DeviceProxyWrapper implements TangoProxy {
 
     @SuppressWarnings("unchecked")
     public <T> void addEventListener(String attrName, TangoEvent event, TangoEventListener<T> listener) throws TangoProxyException {
-        logger.trace("DeviceProxyWrapper#addEventListener {}/{}.{}", getName(), attrName, event);
+        logger.trace("DeviceProxyWrapper#addEventListener {}/{}.{}={}", getName(), attrName, event, listener);
         String eventKey = getEventKey(attrName, event);
         if (!dispatchers.containsKey(eventKey))
             subscribeToEvent(attrName, event);
         TangoEventDispatcher<T> dispatcher = (TangoEventDispatcher<T>) dispatchers.get(eventKey);//T is irrelevant at runtime
         dispatcher.addListener(listener);
+    }
+
+    @Override
+    public <T> void removeEventListener(String attrName, TangoEvent event, TangoEventListener<T> listener) throws TangoProxyException {
+        logger.trace("DeviceProxyWrapper#removeEventListener {}/{}.{}={}", getName(), attrName, event, listener);
+        String eventKey = getEventKey(attrName, event);
+        TangoEventDispatcher<T> dispatcher = (TangoEventDispatcher<T>) dispatchers.get(eventKey);
+        if (dispatcher == null) return;
+        dispatcher.removeListener(listener);
     }
 
     @Override
