@@ -61,17 +61,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class TangoEventDispatcher<T> implements ITangoChangeListener, ITangoPeriodicListener,
         ITangoArchiveListener, ITangoUserListener {
     private final Logger logger = LoggerFactory.getLogger(TangoEventDispatcher.class);
-
-    private final Queue<WeakReference<TangoEventListener<T>>> listeners = new ConcurrentLinkedQueue<
-            WeakReference<TangoEventListener<T>>>();
+    private final Queue<TangoEventListenerWeakReference<T>> listeners = new ConcurrentLinkedQueue<>();
 
     public void addListener(TangoEventListener<T> listener) {
-        boolean isAdded = listeners.add(new WeakReference<TangoEventListener<T>>(listener));
+        boolean isAdded = listeners.add(new TangoEventListenerWeakReference<>(listener));
         logger.debug("Listener {} has been added: {}", listener, isAdded);
     }
 
     public void removeListener(TangoEventListener<T> listener) {
-        boolean isRemoved = listeners.remove(listener);
+        boolean isRemoved = listeners.remove(new TangoEventListenerWeakReference<>(listener));
         logger.debug("Listener {} has been removed: {}", listener, isRemoved);
     }
 
@@ -94,7 +92,7 @@ public class TangoEventDispatcher<T> implements ITangoChangeListener, ITangoPeri
             TangoDataWrapper data = TangoDataWrapper.create(deviceAttribute, null);//TODO extract TangoAttributeInfoWrapper.create
             TangoDataFormat<T> format = TangoDataFormat.createForAttrDataFormat(deviceAttribute.getDataFormat());
             EventData<T> result = new EventData<>(format.extract(data), deviceAttribute.getTimeValMillisSec(), deviceAttribute);
-            for (Iterator<WeakReference<TangoEventListener<T>>> iterator = listeners.iterator(); iterator.hasNext(); ) {
+            for (Iterator<TangoEventListenerWeakReference<T>> iterator = listeners.iterator(); iterator.hasNext(); ) {
                 WeakReference<TangoEventListener<T>> weakRef = iterator.next();
                 TangoEventListener<T> listener = weakRef.get();
                 if (listener != null) {
@@ -109,7 +107,7 @@ public class TangoEventDispatcher<T> implements ITangoChangeListener, ITangoPeri
     }
 
     private void handleError(Exception error) {
-        for (Iterator<WeakReference<TangoEventListener<T>>> iterator = listeners.iterator(); iterator.hasNext(); ) {
+        for (Iterator<TangoEventListenerWeakReference<T>> iterator = listeners.iterator(); iterator.hasNext(); ) {
             WeakReference<TangoEventListener<T>> weakRef = iterator.next();
             TangoEventListener<T> listener = weakRef.get();
             if (listener != null) {
@@ -150,6 +148,30 @@ public class TangoEventDispatcher<T> implements ITangoChangeListener, ITangoPeri
             handleError(TangoUtils.convertDevFailedToException(devFailed));
         } catch (Exception ex) {
             handleError(ex);
+        }
+    }
+
+    private static class TangoEventListenerWeakReference<T> extends WeakReference<TangoEventListener<T>> {
+        private final TangoEventListener<T> referent;
+
+        public TangoEventListenerWeakReference(TangoEventListener<T> referent) {
+            super(referent);
+            this.referent = referent;
+        }
+
+        @Override
+        public int hashCode() {
+            return referent.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (TangoEventListenerWeakReference.class.isAssignableFrom(obj.getClass())) {
+                return referent.equals(((TangoEventListenerWeakReference) obj).referent);
+            } else if (TangoEventListener.class.isAssignableFrom(obj.getClass())) {
+                return referent.equals(obj);
+            }
+            return false;
         }
     }
 }
