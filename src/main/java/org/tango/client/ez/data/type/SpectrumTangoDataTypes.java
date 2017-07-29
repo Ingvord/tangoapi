@@ -217,12 +217,12 @@ public class SpectrumTangoDataTypes {
             new ValueInserter<int[]>() {
                 @Override
                 public void insert(TangoDataWrapper data, int[] value, int dimX, int dimY) throws ValueInsertionException {
-                    data.insert(value);
+                    data.insert_us(value);
                 }
             }
     );
     public static final String DEV_VAR_ULONG_ARR = "DevVarULongArr";
-    public static final TangoDataType<long[]> UINT_ARR = new SpectrumTangoDataType<long[]>(
+    public static final TangoDataType<long[]> ULONG_ARR = new SpectrumTangoDataType<long[]>(
             TangoConst.Tango_DEVVAR_ULONGARRAY, DEV_VAR_ULONG_ARR, long[].class,
             new ValueExtracter<long[]>() {
                 @Override
@@ -237,12 +237,12 @@ public class SpectrumTangoDataTypes {
             new ValueInserter<long[]>() {
                 @Override
                 public void insert(TangoDataWrapper data, long[] value, int dimX, int dimY) throws ValueInsertionException {
-                    data.insert(value);
+                    data.insert_ul(value);
                 }
             }
     );
     public static final String DEV_VAR_U_LONG_64_ARR = "DevVarULong64Arr";
-    public static final TangoDataType<long[]> ULONG_ARR = new SpectrumTangoDataType<long[]>(
+    public static final TangoDataType<long[]> ULONG64_ARR = new SpectrumTangoDataType<long[]>(
             TangoConst.Tango_DEVVAR_ULONG64ARRAY, DEV_VAR_U_LONG_64_ARR, long[].class,
             new ValueExtracter<long[]>() {
                 @Override
@@ -257,7 +257,7 @@ public class SpectrumTangoDataTypes {
             new ValueInserter<long[]>() {
                 @Override
                 public void insert(TangoDataWrapper data, long[] value, int dimX, int dimY) throws ValueInsertionException {
-                    data.insert(value);
+                    data.insert_u64(value);
                 }
             }
     );
@@ -284,7 +284,7 @@ public class SpectrumTangoDataTypes {
     }
 
     static Collection<? extends TangoDataType<?>> values() {
-        return Sets.newHashSet(STRING_ARR, DOUBLE_ARR, FLOAT_ARR, SHORT_ARR, INT_ARR, LONG_ARR, CHAR_ARR, USHORT_ARR, UINT_ARR, ULONG_ARR);
+        return Sets.newHashSet(STRING_ARR, DOUBLE_ARR, FLOAT_ARR, SHORT_ARR, INT_ARR, LONG_ARR, CHAR_ARR, USHORT_ARR, ULONG_ARR, ULONG64_ARR);
     }
 
     public static final class SpectrumTangoDataType<T> extends TangoDataType<T> {

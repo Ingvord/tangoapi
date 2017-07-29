@@ -44,6 +44,9 @@ import java.util.Map;
  */
 public final class TangoDataTypes {
     private static final TangoDataType<?>[] TYPES = new TangoDataType<?>[30];
+    private static final Map<Class<?>, TangoDataType<?>> CLASSES = new IdentityHashMap<Class<?>, TangoDataType<?>>();
+    private static final Map<String, TangoDataType<?>> STRINGS = new HashMap<String, TangoDataType<?>>();
+    private static final TangoDataType<?>[] imageTypes = new TangoDataType<?>[30];
 
     static {
         for (TangoDataType<?> type : ScalarTangoDataTypes.values()) {
@@ -53,8 +56,6 @@ public final class TangoDataTypes {
             TangoDataTypes.TYPES[type.getAlias()] = type;
         }
     }
-
-    private static final Map<Class<?>, TangoDataType<?>> CLASSES = new IdentityHashMap<Class<?>, TangoDataType<?>>();
 
     static {
         CLASSES.put(String.class, ScalarTangoDataTypes.STRING);
@@ -83,8 +84,6 @@ public final class TangoDataTypes {
         //TODO others
     }
 
-    private static final Map<String, TangoDataType<?>> STRINGS = new HashMap<String, TangoDataType<?>>();
-
     static {
         STRINGS.put(ScalarTangoDataTypes.DEV_STRING, ScalarTangoDataTypes.STRING);
         STRINGS.put(ScalarTangoDataTypes.DEV_DOUBLE, ScalarTangoDataTypes.DOUBLE);
@@ -102,12 +101,10 @@ public final class TangoDataTypes {
         STRINGS.put(SpectrumTangoDataTypes.DEV_VAR_LONG_ARR, SpectrumTangoDataTypes.INT_ARR);
         STRINGS.put(SpectrumTangoDataTypes.DEV_VAR_SHORT_ARR, SpectrumTangoDataTypes.SHORT_ARR);
         STRINGS.put(SpectrumTangoDataTypes.DEV_VAR_USHORT_ARR, SpectrumTangoDataTypes.USHORT_ARR);
-        STRINGS.put(SpectrumTangoDataTypes.DEV_VAR_ULONG_ARR, SpectrumTangoDataTypes.ULONG_ARR);
+        STRINGS.put(SpectrumTangoDataTypes.DEV_VAR_ULONG_ARR, SpectrumTangoDataTypes.ULONG64_ARR);
         STRINGS.put(SpectrumTangoDataTypes.DEV_VAR_BOOLEAN_ARR, SpectrumTangoDataTypes.BOOL_ARR);
         //TODO etc
     }
-
-    private static final TangoDataType<?>[] imageTypes = new TangoDataType<?>[30];
 
     static {
         for (TangoDataType<?> type : ImageTangoDataTypes.values()) {
