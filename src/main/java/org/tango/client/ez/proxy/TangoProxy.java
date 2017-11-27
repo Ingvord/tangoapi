@@ -65,7 +65,14 @@ public interface TangoProxy {
 
     <T, V> V executeCommand(String cmd, T value) throws ExecuteCommandException, NoSuchCommandException;
 
-    void subscribeToEvent(String attrName, TangoEvent event) throws TangoProxyException, NoSuchAttributeException;
+    /**
+     * @param attrName
+     * @param event
+     * @return true if subscription was done
+     * @throws TangoProxyException
+     * @throws NoSuchAttributeException
+     */
+    boolean subscribeToEvent(String attrName, TangoEvent event) throws TangoProxyException, NoSuchAttributeException;
 
     /**
      * Before calling this method make sure that client is already subscribed to the attribute.

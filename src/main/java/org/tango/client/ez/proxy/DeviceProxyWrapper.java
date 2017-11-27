@@ -290,7 +290,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
     }
 
     @Override
-    public void subscribeToEvent(String attrName, TangoEvent event) throws TangoProxyException {
+    public boolean subscribeToEvent(String attrName, TangoEvent event) throws TangoProxyException {
         logger.trace("DeviceProxyWrapper#subscribeToEvent {}/{}.{}", getName(), attrName, event);
         //TODO filters
         String[] filters = new String[0];
@@ -298,7 +298,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
 
         TangoEventDispatcher<?> dispatcher = dispatchers.get(eventKey);
 
-        if (dispatcher != null) return;
+        if (dispatcher != null) return false;
 
         dispatcher = new TangoEventDispatcher<Object>();
         TangoEventDispatcher<?> oldDispatcher = dispatchers.putIfAbsent(eventKey, dispatcher);
@@ -306,7 +306,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
 
         try {
             synchronized (subscriptionGuard) {
-                if (subscriptionSet.contains(eventKey)) return;
+                if (subscriptionSet.contains(eventKey)) return false;
                 switch (event) {
                     case CHANGE:
                         eventsAdapter.addTangoChangeListener(dispatcher, attrName, filters, true);
@@ -323,7 +323,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
                     default:
                         throw new IllegalArgumentException("Unknown TangoEvent:" + event);
                 }
-                subscriptionSet.add(eventKey);
+                return subscriptionSet.add(eventKey);
             }
         } catch (DevFailed devFailed) {
             logger.debug("DeviceProxyWrapper#subscribeToEvent has failed. {}/{}.{}", getName(), attrName, event);
