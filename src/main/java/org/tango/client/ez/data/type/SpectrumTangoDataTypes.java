@@ -280,6 +280,26 @@ public class SpectrumTangoDataTypes {
         }
     });
 
+    public static final int TANGO_DEV_BYTE_ARR = 98;
+    public static final String DEV_VAR_BYTE_ARR = "DevVarByteArr";
+    public static final TangoDataType<byte[]> BYTE_ARR = new SpectrumTangoDataType<byte[]>(
+            TANGO_DEV_BYTE_ARR, DEV_VAR_BYTE_ARR, byte[].class, new ValueExtracter<byte[]>() {
+        @Override
+        public byte[] extract(TangoDataWrapper data) throws ValueExtractionException {
+            try {
+                return data.extractCharArray();
+            } catch (DevFailed devFailed) {
+                throw new ValueExtractionException(TangoUtils.convertDevFailedToException(devFailed));
+            }
+        }
+    }, new ValueInserter<byte[]>() {
+        @Override
+        public void insert(TangoDataWrapper data, byte[] value, int dimX, int dimY) throws ValueInsertionException {
+            data.insert(value);
+        }
+    });
+
+
     private SpectrumTangoDataTypes() {
     }
 

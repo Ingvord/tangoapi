@@ -80,6 +80,7 @@ public final class SpectrumTangoDataFormat<T> extends TangoDataFormat<T> {
      */
     @Override
     public TangoDataType<T> getDataType(int devDataType) throws UnknownTangoDataType {
+        if(devDataType == TangoConst.Tango_DEV_UCHAR) return (TangoDataType<T>) SpectrumTangoDataTypes.BYTE_ARR;
         Integer typeMapping = typesMapping.get(devDataType);
         if (typeMapping == null) {
             typeMapping = typesMapping.inverse().get(devDataType);
